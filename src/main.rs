@@ -1,6 +1,5 @@
 use enkanetwork_rs::{EnkaNetwork, IconData};
 
-mod dupe;
 mod gen;
 
 fn main() -> anyhow::Result<()> {
@@ -18,7 +17,15 @@ async fn _main(api: &EnkaNetwork) -> anyhow::Result<()> {
     let data = api.simple(uid).await.unwrap();
     let data_id = data.profile().show_character_list()[0].clone();
     let data = data.character(data_id).unwrap().to_owned();
-    let image = gen::generate(data, &api, "ja", &icons).await.unwrap();
+    let image = gen::generate(
+        data,
+        &api,
+        "ja",
+        &icons,
+        gen::ScoreCounter::ChargeEfficiency,
+    )
+    .await
+    .unwrap();
     image.save("./tests/image.png").unwrap();
     Ok(())
 }
