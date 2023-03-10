@@ -1,0 +1,15 @@
+[package]
+name = "artifacter"
+version = "0.1.0"
+edition = "2021"
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[dependencies]
+anyhow = "1.0.69"
+enkanetwork-rs = { git = "https://github.com/eratou/enkanetwork-rs", version = "0.0.2" }
+image = "0.24.5"
+imageproc = "0.23.0"
+rusttype = "0.9.3"
+show-image = "0.13.1"
+tokio = { version = "1.26.0", features = ["full"] }
