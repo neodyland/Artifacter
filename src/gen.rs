@@ -1,4 +1,4 @@
-use std::{collections::HashMap, fmt::Display};
+use std::{collections::HashMap, fmt::Display, hash::Hash};
 
 use enkanetwork_rs::{Character, Element, EnkaNetwork, IconData, Reliquary, ReliquaryType, Stats};
 use image::{
@@ -401,12 +401,12 @@ pub async fn generate(
         format!(
             "{}%",
             round_to_1_decimal_places(
-                default_status
-                    .damage_bonus
-                    .get(&data.element)
-                    .unwrap_or(&0.0)
-                    .to_owned()
-                    * 100.0
+                    default_status
+                        .damage_bonus
+                        .get(&data.element)
+                        .unwrap_or(&0.0)
+                        .to_owned()
+                 * 100.0
             )
         ),
     ];

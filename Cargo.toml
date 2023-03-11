@@ -8,7 +8,7 @@ edition = "2021"
 [dependencies]
 anyhow = "1.0.69"
 dotenv = "0.15.0"
-enkanetwork-rs = { git = "https://github.com/eratou/enkanetwork-rs", version = "0.0.2" }
+enkanetwork-rs = { git = "https://github.com/neodyland/enkanetwork-rs", version = "0.0.2" }
 image = "0.24.5"
 imageproc = "0.23.0"
 poise = "0.5.2"
