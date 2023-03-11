@@ -73,8 +73,7 @@ pub async fn generate(
             character_image.resize_exact(1200, 600, imageops::FilterType::Nearest);
         imageops::overlay(&mut image, &character_image, -225, 50);
     } else {
-        let character_image =
-            character_image.resize_exact(600, 600, imageops::FilterType::Nearest);
+        let character_image = character_image.resize_exact(600, 600, imageops::FilterType::Nearest);
         imageops::overlay(&mut image, &character_image, 150, 50);
     }
     let character_name = data.name(api, lang).ok()?;

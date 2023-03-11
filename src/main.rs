@@ -15,6 +15,7 @@ struct Data {
     pub icons: IconData,
     pub cache: HashMap<u64, (ScoreCounter, u32)>,
     pub channel: u64,
+    pub looping: bool,
 }
 type Error = Box<dyn std::error::Error + Send + Sync>;
 type Context<'a> = poise::Context<'a, Arc<Mutex<Data>>, Error>;
@@ -68,15 +69,18 @@ async fn event_event_handler(
     match event {
         poise::Event::Ready { data_about_bot } => {
             println!("{} is connected!", data_about_bot.user.name);
-            let ctx = ctx.clone();
-            tokio::spawn(async move {
-                ctx.set_activity(Activity::playing(format!(
-                    "Bot is working in {} servers!",
-                    ctx.cache.guild_count()
-                )))
-                .await;
-                std::thread::sleep(std::time::Duration::from_secs(20));
-            });
+            let ctx = Arc::new(ctx.to_owned());
+            if data.lock().await.looping == false {
+                data.lock().await.looping = true;
+                tokio::spawn(async move {
+                    loop {
+                        let activity =
+                            Activity::playing(&format!("{} guilds", ctx.cache.guild_count()));
+                        ctx.set_activity(activity).await;
+                        tokio::time::sleep(std::time::Duration::from_secs(20)).await;
+                    }
+                });
+            }
         }
         poise::Event::InteractionCreate { interaction } => {
             if let Interaction::MessageComponent(select_menu) = interaction {
@@ -225,6 +229,7 @@ async fn _main(api: EnkaNetwork) -> anyhow::Result<()> {
             .expect("Expected a channel id in the environment")
             .parse()
             .unwrap(),
+        looping: false,
     };
     let framework = poise::Framework::builder()
         .options(poise::FrameworkOptions {
