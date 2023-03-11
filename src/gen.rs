@@ -1,4 +1,4 @@
-use std::collections::HashMap;
+use std::{collections::HashMap, fmt::Display};
 
 use enkanetwork_rs::{Character, Element, EnkaNetwork, IconData, Reliquary, ReliquaryType, Stats};
 use image::{
@@ -24,8 +24,8 @@ impl ScoreCounter {
             ScoreCounter::Normal => "Normal",
             ScoreCounter::Hp => "Hp",
             ScoreCounter::Def => "Def",
-            ScoreCounter::ElementalMastery => "ElementalMastery",
-            ScoreCounter::ChargeEfficiency => "ChargeEfficiency",
+            ScoreCounter::ElementalMastery => "Mastery",
+            ScoreCounter::ChargeEfficiency => "Charge",
         }
     }
     fn ja(&self) -> &str {
@@ -37,11 +37,17 @@ impl ScoreCounter {
             ScoreCounter::ChargeEfficiency => "チャージ型",
         }
     }
-    pub fn to_string(&self, lang: &str) -> String {
+    pub fn to_string_locale(&self, lang: &str) -> String {
         match lang {
             "ja" => self.ja().to_string(),
             _ => self.en().to_string(),
         }
+    }
+}
+
+impl Display for ScoreCounter {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        write!(f, "{}", self.en())
     }
 }
 
@@ -150,7 +156,7 @@ pub async fn generate(
         image::imageops::Triangle,
     );
     image::imageops::overlay(&mut image, &weapon_rarity_img, 1422, 173);
-    let ascension = format!("R{}", weapon.refinement);
+    let ascension = format!("R{}", weapon.refinement + 1);
     draw_text_mut(
         &mut image,
         white.clone(),
@@ -374,21 +380,18 @@ pub async fn generate(
         (default_status.display_max_hp.round() as u32).to_string(),
         (default_status.display_attack.round() as u32).to_string(),
         (default_status.display_defense.round() as u32).to_string(),
+        (default_status.elemental_mastery.round() as i64).to_string(),
         format!(
             "{}%",
-            round_to_1_decimal_places(default_status.elemental_mastery)
+            round_to_1_decimal_places(default_status.critical_rate * 100.0)
         ),
         format!(
             "{}%",
-            round_to_1_decimal_places(default_status.energy_recharge)
+            round_to_1_decimal_places(default_status.critical_damage * 100.0)
         ),
         format!(
             "{}%",
-            round_to_1_decimal_places(default_status.critical_rate)
-        ),
-        format!(
-            "{}%",
-            round_to_1_decimal_places(default_status.critical_damage)
+            round_to_1_decimal_places(default_status.energy_recharge * 100.0)
         ),
         format!(
             "{}%",
@@ -398,6 +401,7 @@ pub async fn generate(
                     .get(&data.element)
                     .unwrap_or(&0.0)
                     .to_owned()
+                    * 100.0
             )
         ),
     ];
@@ -429,7 +433,11 @@ pub async fn generate(
         &element_name,
     );
 
-    let sets = data.reliquarys().into_iter().map(|x| x.set_name(api, lang)).collect::<Vec<Option<&str>>>();
+    let sets = data
+        .reliquarys()
+        .into_iter()
+        .map(|x| x.set_name(api, lang))
+        .collect::<Vec<Option<&str>>>();
     let mut set = HashMap::<String, u32>::new();
     for s in sets {
         if s.is_none() {
@@ -473,7 +481,7 @@ pub async fn generate(
         &format!("{}", set_count),
     );
 
-    let kind = counter.to_string(&lang);
+    let kind = counter.to_string_locale(&lang);
     let scale = Scale::uniform(35.0);
     let (kind_w, _) = text_size(scale.clone(), &font, &kind);
     draw_text_mut(
@@ -525,11 +533,11 @@ fn get_score(data: &Reliquary, counter: &ScoreCounter) -> (f64, Vec<String>) {
         let value = sub.1;
         match stat {
             Stats::Critical => {
-                score += value;
+                score += value * 2.0;
                 used.push(Stats::Critical);
             }
             Stats::CriticalHurt => {
-                score += value * 2.0;
+                score += value;
                 used.push(Stats::CriticalHurt);
             }
             Stats::AttackPercent => {

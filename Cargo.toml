@@ -7,9 +7,12 @@ edition = "2021"
 
 [dependencies]
 anyhow = "1.0.69"
+dotenv = "0.15.0"
 enkanetwork-rs = { git = "https://github.com/eratou/enkanetwork-rs", version = "0.0.2" }
 image = "0.24.5"
 imageproc = "0.23.0"
+poise = "0.5.2"
 rusttype = "0.9.3"
+serde_json = "1.0.94"
 show-image = "0.13.1"
 tokio = { version = "1.26.0", features = ["full"] }
