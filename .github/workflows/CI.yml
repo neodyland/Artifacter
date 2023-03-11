@@ -17,9 +17,9 @@ jobs:
           - arm64-unknown-linux-musl
         include:
           - target: arm64-unknown-linux-musl
-            os: ubuntu-latest
+            os: arm64-ubuntu-latest
 
-    runs-on: ${{ matrix.os }}
+    runs-on: ["arm64-ubuntu-latest"]
 
     steps:
       - name: Setup code
