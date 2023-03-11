@@ -38,14 +38,14 @@ jobs:
 
       - name: Install Python
         uses: actions/setup-python@v2
-
-      - name: Restore mtime
-        run: python ./git-restore-mtime.py
-
       - name: Install build tools
         run: |
           sudo apt-get update
-          sudo apt-get install gcc cmake g++ pkg-config libfontconfig1-dev -y
+          sudo apt-get install gcc cmake g++ pkg-config libfontconfig1-dev git-restore-mtime -y
+
+      - name: Restore mtime
+        run: git restore-mtime
+
       
       - name: Setup Rust toolchain
         uses: actions-rs/toolchain@v1
