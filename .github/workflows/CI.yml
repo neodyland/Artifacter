@@ -27,8 +27,8 @@ jobs:
 
       - name: Install build tools
         run: |
-          apt-get update
-          apt-get install gcc cmake g++ pkg-config libfontconfig1-dev -y
+          sudo apt-get update
+          sudo apt-get install gcc cmake g++ pkg-config libfontconfig1-dev -y
       
       - name: Setup Rust toolchain
         uses: actions-rs/toolchain@v1
