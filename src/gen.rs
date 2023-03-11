@@ -1,4 +1,4 @@
-use std::{collections::HashMap, fmt::Display, hash::Hash};
+use std::{collections::HashMap, fmt::Display};
 
 use enkanetwork_rs::{Character, Element, EnkaNetwork, IconData, Reliquary, ReliquaryType, Stats};
 use image::{
