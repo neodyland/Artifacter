@@ -24,6 +24,23 @@ jobs:
     steps:
       - name: Setup code
         uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
+
+      - name: Cache
+        uses: actions/cache@v2
+        with:
+          path: |
+            ~/.cargo/registry
+            ~/.cargo/git
+            target
+          key: ${{ runner.os }}-cargo-${{ hashFiles('**/Cargo.lock') }}
+
+      - name: Install Python
+        uses: actions/setup-python@v2
+
+      - name: Restore mtime
+        run: python ./git-restore-mtime.py
 
       - name: Install build tools
         run: |
