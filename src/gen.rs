@@ -74,8 +74,8 @@ pub async fn generate(
         imageops::overlay(&mut image, &character_image, -225, 50);
     } else {
         let character_image =
-            character_image.resize_exact(300, 600, imageops::FilterType::Nearest);
-        imageops::overlay(&mut image, &character_image, 225, 50);
+            character_image.resize_exact(600, 600, imageops::FilterType::Nearest);
+        imageops::overlay(&mut image, &character_image, 150, 50);
     }
     let character_name = data.name(api, lang).ok()?;
     let character_level = format!("Lv.{},{}", data.level, data.friendship().to_string());
