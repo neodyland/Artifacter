@@ -1,12 +1,15 @@
-use std::{collections::HashMap, env, sync::Arc, borrow::Cow, io::Cursor};
+use std::{borrow::Cow, collections::HashMap, env, io::Cursor, sync::Arc};
 
-use enkanetwork_rs::{EnkaNetwork, IconData, Character};
+use enkanetwork_rs::{EnkaNetwork, IconData};
 use gen::ScoreCounter;
 use image::ImageOutputFormat;
-use poise::serenity_prelude::{self as serenity, Interaction,AttachmentType, CreateComponents};
+use poise::serenity_prelude::{self as serenity, Activity, AttachmentType, Interaction};
 use tokio::sync::Mutex;
-mod gen;
 
+use crate::util::create_components;
+
+mod gen;
+mod util;
 struct Data {
     pub api: EnkaNetwork,
     pub icons: IconData,
@@ -16,69 +19,7 @@ struct Data {
 type Error = Box<dyn std::error::Error + Send + Sync>;
 type Context<'a> = poise::Context<'a, Arc<Mutex<Data>>, Error>;
 
-fn create_components(components: &mut CreateComponents,characters: Vec<&Character>, api: &EnkaNetwork, lang: &str) {
-    components.create_action_row(|f| {
-        f.create_select_menu(|f| {
-            f.custom_id("character");
-            f.placeholder("キャラクターを選択してください");
-            f.options(|f| {
-                for character in characters {
-                    let name = &character.name(api, lang);
-                    if name.is_err() {
-                        continue;
-                    }
-                    let name = name.as_ref().unwrap().to_owned();
-                    f.create_option(|f| {
-                        f.label(name.clone());
-                        f.value(&character.id.0);
-                        f.description(name);
-                        f
-                    });
-                }
-                f
-            });
-            f
-        });
-        f
-    });
-    components.create_action_row(|f| {
-        f.create_select_menu(|f| {
-            f.custom_id("score");
-            f.placeholder("計算方式を選択してください");
-            f.options(|f| {
-                f.create_option(|f| {
-                    f.label("通常");
-                    f.value("normal");
-                    f
-                });
-                f.create_option(|f| {
-                    f.label("HP型");
-                    f.value("hp");
-                    f
-                });
-                f.create_option(|f| {
-                    f.label("防御型");
-                    f.value("def");
-                    f
-                });
-                f.create_option(|f| {
-                    f.label("熟知型");
-                    f.value("mastery");
-                    f
-                });
-                f.create_option(|f| {
-                    f.label("チャージ型");
-                    f.value("charge");
-                    f
-                });
-                f
-            })
-        });
-        f
-    });
-}
-
-//モーダルを送信します
+/// UIDからデータを取得します
 #[poise::command(slash_command)]
 async fn build(ctx: Context<'_>, #[description = "ユーザーID"] uid: i32) -> Result<(), Error> {
     let data = ctx.data();
@@ -95,7 +36,10 @@ async fn build(ctx: Context<'_>, #[description = "ユーザーID"] uid: i32) -> 
         .map(|c| c.to_owned().to_owned())
         .collect::<Vec<_>>();
     ctx.send(|b| {
-        b.components(|c| {create_components(c,characters, api, "ja");c})
+        b.components(|c| {
+            create_components(c, characters, api, "ja");
+            c
+        })
         .embed(|e| {
             let rgb = [0x00, 0xff, 0x00];
             e.color(convert_rgb(rgb));
@@ -110,7 +54,7 @@ async fn build(ctx: Context<'_>, #[description = "ユーザーID"] uid: i32) -> 
     Ok(())
 }
 
-fn convert_rgb(rgb: [u8;3]) -> u32 {
+fn convert_rgb(rgb: [u8; 3]) -> u32 {
     let [r, g, b] = rgb;
     (r as u32) << 16 | (g as u32) << 8 | b as u32
 }
@@ -123,11 +67,22 @@ async fn event_event_handler(
 ) -> Result<(), Error> {
     match event {
         poise::Event::Ready { data_about_bot } => {
-            println!("{} is connected!", data_about_bot.user.name)
+            println!("{} is connected!", data_about_bot.user.name);
+            let ctx = ctx.clone();
+            tokio::spawn(async move {
+                ctx.set_activity(Activity::playing(format!(
+                    "Bot is working in {} servers!",
+                    ctx.cache.guild_count()
+                )))
+                .await;
+                std::thread::sleep(std::time::Duration::from_secs(20));
+            });
         }
         poise::Event::InteractionCreate { interaction } => {
             if let Interaction::MessageComponent(select_menu) = interaction {
-                if select_menu.data.custom_id == "character" || select_menu.data.custom_id == "score" {
+                if select_menu.data.custom_id == "character"
+                    || select_menu.data.custom_id == "score"
+                {
                     let uid = select_menu.message.embeds.first();
                     if uid.is_none() {
                         return Ok(());
@@ -211,14 +166,17 @@ async fn event_event_handler(
                     let img = img.unwrap();
                     let mut image_data: Vec<u8> = Vec::new();
                     img.write_to(&mut Cursor::new(&mut image_data), ImageOutputFormat::Png)?;
-                    let msg = ctx.http.send_files(
-                        data.channel,
-                        vec![AttachmentType::Bytes {
-                            data: Cow::Owned(image_data),
-                            filename: "image.png".to_string(),
-                        }],
-                        &serde_json::Map::new(),
-                    ).await?;
+                    let msg = ctx
+                        .http
+                        .send_files(
+                            data.channel,
+                            vec![AttachmentType::Bytes {
+                                data: Cow::Owned(image_data),
+                                filename: "image.png".to_string(),
+                            }],
+                            &serde_json::Map::new(),
+                        )
+                        .await?;
                     let _ = select_menu
                         .edit_original_interaction_response(&ctx.http, |f| {
                             f.embed(|f| {
@@ -264,7 +222,9 @@ async fn _main(api: EnkaNetwork) -> anyhow::Result<()> {
         icons,
         cache: HashMap::new(),
         channel: env::var("CHANNEL")
-            .expect("Expected a channel id in the environment").parse().unwrap(),
+            .expect("Expected a channel id in the environment")
+            .parse()
+            .unwrap(),
     };
     let framework = poise::Framework::builder()
         .options(poise::FrameworkOptions {
@@ -278,7 +238,8 @@ async fn _main(api: EnkaNetwork) -> anyhow::Result<()> {
         .intents(serenity::GatewayIntents::GUILDS)
         .setup(|ctx, _ready, framework| {
             Box::pin(async move {
-                poise::builtins::register_globally(ctx, &framework.options().commands).await?;
+                poise::builtins::register_globally(&ctx.http, &framework.options().commands)
+                    .await?;
                 Ok(Arc::new(Mutex::new(data)))
             })
         });

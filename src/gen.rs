@@ -68,9 +68,15 @@ pub async fn generate(
     .decode()
     .ok()?;
     let character_image = data.image_gacha_splash(api).await?;
-    let character_image = character_image.resize_exact(1200, 600, imageops::FilterType::Nearest);
-    imageops::overlay(&mut image, &character_image, -225, 50);
-
+    if is_not_mains(data.name(api, "ja").ok()?) {
+        let character_image =
+            character_image.resize_exact(1200, 600, imageops::FilterType::Nearest);
+        imageops::overlay(&mut image, &character_image, -225, 50);
+    } else {
+        let character_image =
+            character_image.resize_exact(600, 1200, imageops::FilterType::Nearest);
+        imageops::overlay(&mut image, &character_image, 75, 50);
+    }
     let character_name = data.name(api, lang).ok()?;
     let character_level = format!("Lv.{},{}", data.level, data.friendship().to_string());
     let white = image::Rgba([255, 255, 255, 255]);
@@ -630,4 +636,8 @@ fn get_rank_img(score: f64, part: Option<ReliquaryType>) -> Option<DynamicImage>
     let mut image = image::open(format!("assets/grades/{}.png", score)).ok()?;
     image = image.resize(45, 45, FilterType::Nearest);
     Some(image)
+}
+
+fn is_not_mains(name: &str) -> bool {
+    return name != "旅人";
 }
