@@ -19,7 +19,7 @@ jobs:
           - target: arm64-unknown-linux-musl
             os: arm64-ubuntu-latest
 
-    runs-on: ["arm64-ubuntu-latest"]
+    runs-on: ["ubuntu-latest"]
 
     steps:
       - name: Setup code
