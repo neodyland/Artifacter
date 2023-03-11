@@ -3,3 +3,4 @@ tests/
 target/
 Cargo.lock
 .env
+build/
