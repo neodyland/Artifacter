@@ -462,10 +462,11 @@ pub async fn generate(
     } else {
         *largest_set.unwrap().1
     };
+    let set_width = text_size(scale, &font, &set_name).0;
     draw_text_mut(
         &mut image,
         white.clone(),
-        1590,
+        1640 - set_width / 2,
         260,
         scale,
         &font,
