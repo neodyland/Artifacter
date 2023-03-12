@@ -242,7 +242,7 @@ pub async fn generate(
         image::imageops::overlay(&mut image, &rank_img, artifact_x + 50, 1015);
         let score = round_to_1_decimal_places(score).to_string();
         let scale = Scale::uniform(40.0);
-        let score_width = text_size(scale.clone(), &font, &score).0;
+        let score_width = text_size(scale.into(), &font, &score).0;
         draw_text_mut(
             &mut image,
             white.clone(),
@@ -368,13 +368,13 @@ pub async fn generate(
     image::imageops::overlay(&mut image, &rank_img, 1810, 355);
     let text = round_to_1_decimal_places(artifact_scores).to_string();
     let scale = Scale::uniform(90.0);
-    let (text_w, text_h) = text_size(scale.clone(), &font, &text);
+    let (text_w, text_h) = text_size(scale.into(), &font, &text);
     draw_text_mut(
         &mut image,
         white.clone(),
         1630 - text_w / 2,
         450 - text_h / 2,
-        scale.clone(),
+        scale.into(),
         &font,
         &text,
     );
@@ -456,16 +456,20 @@ pub async fn generate(
             set.insert(s.to_string(), 1);
         }
     }
-    let largest_set = set.iter().max_by_key(|x| x.1);
-    let set_name = if largest_set.is_none() {
-        "None".to_string()
+    let mut largest_set_key = 0;
+    let mut largest_set: Option<(&String, &u32)> = None;
+    for (key, value) in set.iter() {
+        if value > &largest_set_key {
+            largest_set = Some((key, value));
+            largest_set_key = *value;
+        }
+    }
+    let (set_name, set_count) = if largest_set.is_none() {
+        ("None".to_string(), 0)
+    } else if largest_set_key < 2 {
+        ("None".to_string(), 0)
     } else {
-        largest_set.unwrap().0.to_string()
-    };
-    let set_count = if largest_set.is_none() {
-        0
-    } else {
-        *largest_set.unwrap().1
+        (largest_set.unwrap().0.to_string(), *largest_set.unwrap().1)
     };
     let set_width = text_size(scale, &font, &set_name).0;
     draw_text_mut(
@@ -489,13 +493,13 @@ pub async fn generate(
 
     let kind = counter.to_string_locale(&lang);
     let scale = Scale::uniform(35.0);
-    let (kind_w, _) = text_size(scale.clone(), &font, &kind);
+    let (kind_w, _) = text_size(scale.into(), &font, &kind);
     draw_text_mut(
         &mut image,
         white.clone(),
         1870 - kind_w,
         580,
-        scale.clone(),
+        scale.into(),
         &font,
         &kind,
     );

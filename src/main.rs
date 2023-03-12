@@ -1,15 +1,19 @@
-use std::{borrow::Cow, collections::HashMap, env, io::Cursor, sync::Arc};
+use std::{collections::HashMap, env, io::Cursor, sync::Arc};
 
+use crate::util::create_components;
 use enkanetwork_rs::{EnkaNetwork, IconData};
 use gen::ScoreCounter;
 use image::ImageOutputFormat;
-use poise::serenity_prelude::{
-    self as serenity, Activity, AttachmentType, CreateComponents, CreateEmbed, Interaction,
-    InteractionResponseType,
+use poise::{
+    serenity_prelude::{
+        ComponentInteractionDataKind, CreateAttachment, CreateEmbed, CreateEmbedFooter,
+        CreateInteractionResponse, CreateInteractionResponseMessage, EditInteractionResponse,
+        Interaction,
+    },
+    CreateReply,
 };
+use serenity::gateway::ActivityData;
 use tokio::sync::Mutex;
-
-use crate::util::create_components;
 
 mod gen;
 mod util;
@@ -17,7 +21,6 @@ struct Data {
     pub api: EnkaNetwork,
     pub icons: IconData,
     pub cache: HashMap<u64, (ScoreCounter, u32)>,
-    pub channel: u64,
     pub looping: bool,
 }
 type Error = Box<dyn std::error::Error + Send + Sync>;
@@ -27,8 +30,8 @@ type Context<'a> = poise::Context<'a, Arc<Mutex<Data>>, Error>;
 #[poise::command(slash_command)]
 async fn build(ctx: Context<'_>, #[description = "ユーザーID"] uid: i32) -> Result<(), Error> {
     if uid.to_string().len() != 9 {
-        ctx.send(|b| b.content("ユーザーIDは9桁の数字でなければなりません。"))
-            .await?;
+        let msg = CreateReply::new().content("ユーザーIDは9桁の数字でなければなりません。");
+        ctx.send(msg).await?;
         return Ok(());
     }
     ctx.defer().await?;
@@ -46,26 +49,19 @@ async fn build(ctx: Context<'_>, #[description = "ユーザーID"] uid: i32) -> 
         .map(|c| c.to_owned().to_owned())
         .collect::<Vec<_>>();
     if characters.is_empty() {
-        ctx.send(|b| b.content("キャラクターが登録されていません。"))
-            .await?;
+        let msg = CreateReply::new().content("キャラクターが登録されていません。");
+        ctx.send(msg).await?;
         return Ok(());
     }
-    ctx.send(|b| {
-        b.components(|c| {
-            create_components(c, characters, api, "ja", &uid);
-            c
-        })
-        .embed(|e| {
-            let rgb = [0x00, 0xff, 0x00];
-            e.color(convert_rgb(rgb));
-            e.title("キャラクターを選択してください").footer(|f| {
-                f.text(format!("{}", uid));
-                f
-            });
-            e
-        })
-    })
-    .await?;
+    let footer = CreateEmbedFooter::new(format!("{}", uid));
+    let embed = CreateEmbed::default()
+        .title("キャラクターを選択してください")
+        .footer(footer)
+        .color(convert_rgb([0x00, 0xff, 0x00]));
+    let builder = CreateReply::default()
+        .components(create_components(characters, api, "ja", &uid))
+        .embed(embed);
+    ctx.send(builder).await?;
     Ok(())
 }
 
@@ -75,13 +71,15 @@ fn convert_rgb(rgb: [u8; 3]) -> u32 {
 }
 
 async fn event_event_handler(
-    ctx: &serenity::Context,
-    event: &poise::Event<'_>,
+    event: &serenity::all::FullEvent,
     _framework: poise::FrameworkContext<'_, Arc<Mutex<Data>>, Error>,
     data: &Arc<Mutex<Data>>,
 ) -> Result<(), Error> {
     match event {
-        poise::Event::Ready { data_about_bot } => {
+        serenity::all::FullEvent::Ready {
+            ctx,
+            data_about_bot,
+        } => {
             println!("{} is connected!", data_about_bot.user.name);
             let ctx = Arc::new(ctx.to_owned());
             if data.lock().await.looping == false {
@@ -89,146 +87,136 @@ async fn event_event_handler(
                 tokio::spawn(async move {
                     loop {
                         let activity =
-                            Activity::playing(&format!("{} guilds", ctx.cache.guild_count()));
-                        ctx.set_activity(activity).await;
+                            ActivityData::playing(&format!("{} guilds", ctx.cache.guild_count()));
+                        ctx.set_activity(Some(activity));
                         tokio::time::sleep(std::time::Duration::from_secs(20)).await;
                     }
                 });
             }
         }
-        poise::Event::InteractionCreate { interaction } => {
-            if let Interaction::MessageComponent(select_menu) = interaction {
-                if select_menu.data.custom_id == "character"
-                    || select_menu.data.custom_id == "score"
-                {
-                    select_menu.defer(&ctx.http).await?;
-                    let uid = select_menu.message.embeds.first();
-                    if uid.is_none() {
-                        return Ok(());
-                    }
-                    let uid = &uid.unwrap().footer;
-                    if uid.is_none() {
-                        return Ok(());
-                    }
-                    let uid = &uid.as_ref().unwrap().text.parse::<i32>();
-                    if uid.is_err() {
-                        return Ok(());
-                    }
-                    let uid = uid.as_ref().unwrap();
-                    let mut data = data.lock().await;
-                    let user = data.api.simple(*uid).await?;
-                    let ids = user.profile().show_character_list();
-                    let characters = ids.iter().map(|id| user.character(*id)).collect::<Vec<_>>();
-                    let characters = characters
-                        .iter()
-                        .filter_map(|c| c.as_ref())
-                        .collect::<Vec<_>>();
-                    let characters = characters
-                        .iter()
-                        .map(|c| c.to_owned().to_owned())
-                        .collect::<Vec<_>>();
-                    let lang = "ja";
-                    let value = select_menu.data.values.first();
-                    let mut current = data
-                        .cache
-                        .remove(&select_menu.message.id.0)
-                        .unwrap_or((ScoreCounter::Normal, 114514));
-                    if select_menu.data.custom_id == "score" {
-                        let normal = &"normal".to_string();
-                        let score = value.unwrap_or(normal);
-                        if score == "normal" {
-                            current.0 = ScoreCounter::Normal;
-                        } else if score == "hp" {
-                            current.0 = ScoreCounter::Hp;
-                        } else if score == "def" {
-                            current.0 = ScoreCounter::Def;
-                        } else if score == "mastery" {
-                            current.0 = ScoreCounter::ElementalMastery;
-                        } else if score == "charge" {
-                            current.0 = ScoreCounter::ChargeEfficiency;
-                        }
-                        data.cache
-                            .insert(select_menu.message.id.0, current.to_owned());
-                    } else {
-                        let character = characters.iter().find(|c| {
-                            c.id.0
-                                == value
-                                    .unwrap_or(&"114514".to_string())
-                                    .parse()
-                                    .unwrap_or(114514)
-                        });
-                        if character.is_none() {
-                            return Ok(());
-                        }
-                        let character = character.unwrap().to_owned().to_owned();
-                        current.1 = character.id.0.clone();
-                        data.cache
-                            .insert(select_menu.message.id.0, current.to_owned());
-                    }
-                    let character = characters.iter().find(|c| c.id.0 == current.1);
-                    if character.is_none() {
-                        return Ok(());
-                    }
-                    let character = character.unwrap().to_owned().to_owned();
-                    let img = gen::generate(
-                        character.to_owned(),
-                        &data.api,
-                        &lang,
-                        &data.icons,
-                        current.0,
-                    )
-                    .await;
-                    if img.is_none() {
-                        return Ok(());
-                    }
-                    let img = img.unwrap();
-                    let mut image_data: Vec<u8> = Vec::new();
-                    img.write_to(&mut Cursor::new(&mut image_data), ImageOutputFormat::Png)?;
-                    let msg = ctx
-                        .http
-                        .send_files(
-                            data.channel,
-                            vec![AttachmentType::Bytes {
-                                data: Cow::Owned(image_data),
-                                filename: "image.png".to_string(),
-                            }],
-                            &serde_json::Map::new(),
-                        )
-                        .await?;
-                    let _ = select_menu
-                        .edit_original_interaction_response(&ctx.http, |f| {
-                            f.embed(|f| {
-                                f.title("キャラクターを選択してください");
-                                f.image(&msg.attachments[0].url);
-                                f.footer(|f| {
-                                    f.text(format!("{}", uid));
-                                    f
+        serenity::all::FullEvent::InteractionCreate { ctx, interaction } => {
+            if let Interaction::Component(select_menu) = interaction {
+                let custom_id = select_menu.data.custom_id.clone();
+                match select_menu.data.kind.clone() {
+                    ComponentInteractionDataKind::StringSelect { values } => {
+                        if &custom_id == "character" || &custom_id == "score" {
+                            let value = values.first();
+                            select_menu.defer(&ctx.http).await?;
+                            let uid = select_menu.message.embeds.first();
+                            if uid.is_none() {
+                                return Ok(());
+                            }
+                            let uid = &uid.unwrap().footer;
+                            if uid.is_none() {
+                                return Ok(());
+                            }
+                            let uid = &uid.as_ref().unwrap().text.parse::<i32>();
+                            if uid.is_err() {
+                                return Ok(());
+                            }
+                            let uid = uid.as_ref().unwrap();
+                            let mut data = data.lock().await;
+                            let user = data.api.simple(*uid).await?;
+                            let ids = user.profile().show_character_list();
+                            let characters =
+                                ids.iter().map(|id| user.character(*id)).collect::<Vec<_>>();
+                            let characters = characters
+                                .iter()
+                                .filter_map(|c| c.as_ref())
+                                .collect::<Vec<_>>();
+                            let characters = characters
+                                .iter()
+                                .map(|c| c.to_owned().to_owned())
+                                .collect::<Vec<_>>();
+                            let lang = "ja";
+                            let mut current = data
+                                .cache
+                                .remove(&select_menu.message.id.get())
+                                .unwrap_or((ScoreCounter::Normal, 114514));
+                            if custom_id == "score" {
+                                let normal = &"normal".to_string();
+                                let score = value.unwrap_or(normal);
+                                if score == "normal" {
+                                    current.0 = ScoreCounter::Normal;
+                                } else if score == "hp" {
+                                    current.0 = ScoreCounter::Hp;
+                                } else if score == "def" {
+                                    current.0 = ScoreCounter::Def;
+                                } else if score == "mastery" {
+                                    current.0 = ScoreCounter::ElementalMastery;
+                                } else if score == "charge" {
+                                    current.0 = ScoreCounter::ChargeEfficiency;
+                                }
+                                data.cache
+                                    .insert(select_menu.message.id.get(), current.to_owned());
+                            } else {
+                                let character = characters.iter().find(|c| {
+                                    c.id.0
+                                        == value
+                                            .unwrap_or(&"114514".to_string())
+                                            .parse()
+                                            .unwrap_or(114514)
                                 });
-                                f.color(convert_rgb(character.element.color_rgb()));
-                                f
-                            })
-                            .components(|b| {
-                                create_components(b, characters, &data.api, "ja", &uid);
-                                b
-                            })
-                        })
-                        .await;
-                } else if &select_menu.data.custom_id == "end" {
-                    let e = select_menu.message.embeds.first();
-                    if e.is_none() {
-                        return Ok(());
+                                if character.is_none() {
+                                    return Ok(());
+                                }
+                                let character = character.unwrap().to_owned().to_owned();
+                                current.1 = character.id.0.clone();
+                                data.cache
+                                    .insert(select_menu.message.id.get(), current.to_owned());
+                            }
+                            let character = characters.iter().find(|c| c.id.0 == current.1);
+                            if character.is_none() {
+                                return Ok(());
+                            }
+                            let character = character.unwrap().to_owned().to_owned();
+                            let img = gen::generate(
+                                character.to_owned(),
+                                &data.api,
+                                &lang,
+                                &data.icons,
+                                current.0,
+                            )
+                            .await;
+                            if img.is_none() {
+                                return Ok(());
+                            }
+                            let img = img.unwrap();
+                            let mut image_data: Vec<u8> = Vec::new();
+                            img.write_to(
+                                &mut Cursor::new(&mut image_data),
+                                ImageOutputFormat::Png,
+                            )?;
+                            let footer = CreateEmbedFooter::new(format!("{}", uid));
+                            let e = CreateEmbed::default()
+                                .title(format!("{}のステータス", character.name(&data.api, lang)?))
+                                .image("attachment://image.png")
+                                .footer(footer)
+                                .color(convert_rgb(character.element.color_rgb()));
+                            let at = CreateAttachment::bytes(image_data, "image.png");
+                            let res = EditInteractionResponse::new()
+                                .new_attachment(at)
+                                .components(create_components(characters, &data.api, "ja", &uid))
+                                .embed(e);
+                            select_menu.edit_response(&ctx.http, res).await?;
+                        }
                     }
-                    let e = e.unwrap();
-                    let mut e = CreateEmbed::from(e.to_owned());
-                    e.title("終了しました");
-                    select_menu
-                        .create_interaction_response(&ctx.http, |f| {
-                            f.kind(InteractionResponseType::UpdateMessage)
-                                .interaction_response_data(|d| {
-                                    d.add_embed(e).set_components(CreateComponents(vec![]))
-                                })
-                        })
-                        .await?;
+                    ComponentInteractionDataKind::Button => {
+                        if &custom_id == "end" {
+                            let e = select_menu.message.embeds.first();
+                            if e.is_none() {
+                                return Ok(());
+                            }
+                            let e = e.unwrap();
+                            let e = CreateEmbed::from(e.to_owned()).title("終了しました");
+                            let res = CreateInteractionResponseMessage::default()
+                                .add_embed(e)
+                                .components(vec![]);
+                            let res = CreateInteractionResponse::UpdateMessage(res);
+                            select_menu.create_response(&ctx.http, res).await?;
+                        }
+                    }
+                    _ => {}
                 }
             }
         }
@@ -255,31 +243,35 @@ async fn _main(api: EnkaNetwork) -> anyhow::Result<()> {
         api,
         icons,
         cache: HashMap::new(),
-        channel: env::var("CHANNEL")
-            .expect("Expected a channel id in the environment")
-            .parse()
-            .unwrap(),
         looping: false,
     };
-    let framework = poise::Framework::builder()
-        .options(poise::FrameworkOptions {
+    let frame = poise::Framework::new(
+        poise::FrameworkOptions {
             commands: vec![build()],
-            event_handler: |ctx, event, framework, user_data| {
-                Box::pin(event_event_handler(ctx, event, framework, user_data))
+            listener: |event, framework, user_data| {
+                Box::pin(event_event_handler(event, framework, user_data))
             },
             ..Default::default()
-        })
-        .token(token)
-        .intents(serenity::GatewayIntents::GUILDS)
-        .client_settings(|c| c.cache_settings(|c| c.max_messages(0)))
-        .setup(|ctx, _ready, framework| {
+        },
+        |ctx, _ready, framework| {
             Box::pin(async move {
-                poise::builtins::register_globally(&ctx.http, &framework.options().commands)
-                    .await?;
+                let cmd = poise::builtins::create_application_commands(
+                    framework.options().commands.as_slice(),
+                );
+                serenity::all::Command::set_global_application_commands(&ctx.http, cmd).await?;
                 Ok(Arc::new(Mutex::new(data)))
             })
-        });
+        },
+    );
+    let mut client = serenity::Client::builder(token, serenity::all::GatewayIntents::GUILDS)
+        .framework(frame)
+        .cache_settings(|f| {
+            f.cache_users = false;
+            f.max_messages = 0;
+            f
+        })
+        .await?;
 
-    framework.run().await.unwrap();
+    client.start_autosharded().await?;
     Ok(())
 }
