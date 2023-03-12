@@ -88,6 +88,7 @@ async fn event_event_handler(
                 if select_menu.data.custom_id == "character"
                     || select_menu.data.custom_id == "score"
                 {
+                    select_menu.defer(&ctx.http).await?;
                     let uid = select_menu.message.embeds.first();
                     if uid.is_none() {
                         return Ok(());
@@ -156,7 +157,6 @@ async fn event_event_handler(
                         return Ok(());
                     }
                     let character = character.unwrap().to_owned().to_owned();
-                    select_menu.defer(&ctx.http).await?;
                     let img = gen::generate(
                         character.to_owned(),
                         &data.api,
