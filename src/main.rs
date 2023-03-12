@@ -23,6 +23,7 @@ type Context<'a> = poise::Context<'a, Arc<Mutex<Data>>, Error>;
 /// UIDからデータを取得します
 #[poise::command(slash_command)]
 async fn build(ctx: Context<'_>, #[description = "ユーザーID"] uid: i32) -> Result<(), Error> {
+    ctx.defer().await?;
     let data = ctx.data();
     let api = &data.lock().await.api;
     let user = api.simple(uid).await?;
