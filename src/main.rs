@@ -271,6 +271,7 @@ async fn _main(api: EnkaNetwork) -> anyhow::Result<()> {
         })
         .token(token)
         .intents(serenity::GatewayIntents::GUILDS)
+        .client_settings(|c| c.cache_settings(|c| c.max_messages(0)))
         .setup(|ctx, _ready, framework| {
             Box::pin(async move {
                 poise::builtins::register_globally(&ctx.http, &framework.options().commands)
