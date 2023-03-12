@@ -15,7 +15,6 @@ use poise::{
 use serenity::gateway::ActivityData;
 use tokio::sync::Mutex;
 
-mod gen;
 mod util;
 struct Data {
     pub api: EnkaNetwork,

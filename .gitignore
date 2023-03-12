@@ -1,5 +1,4 @@
 cache/
-tests/
 target/
 Cargo.lock
 .env

@@ -58,7 +58,7 @@ pub async fn generate(
     icons: &IconData,
     counter: ScoreCounter,
 ) -> Option<DynamicImage> {
-    let font = include_bytes!("../assets/font.ttf");
+    let font = include_bytes!("../../assets/font.ttf");
     let font = Font::try_from_bytes(font)?;
     let mut image = Reader::open(format!(
         "assets/base/{}.png",

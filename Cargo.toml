@@ -9,13 +9,9 @@ edition = "2021"
 anyhow = "1.0.69"
 dotenv = "0.15.0"
 enkanetwork-rs = { git = "https://github.com/neodyland/enkanetwork-rs", version = "0.0.3" }
-image = "0.24.5"
-imageproc = "0.23.0"
-rusttype = "0.9.3"
 serde_json = "1.0.94"
-show-image = "0.13.1"
 tokio = { version = "1.26.0", features = ["full"] }
-
+image = "0.24.5"
 
 [dependencies.poise]
 git = "https://github.com/serenity-rs/poise"
@@ -26,3 +22,6 @@ default-features = false
 features = ["builder", "client", "gateway", "model", "utils", "collector", "framework"]
 git = "https://github.com/serenity-rs/serenity"
 branch = "next"
+
+[dependencies.gen]
+path = "./lib"
