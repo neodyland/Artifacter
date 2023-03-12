@@ -1,4 +1,9 @@
-use std::{collections::HashMap, env, io::Cursor, sync::Arc};
+use std::{
+    collections::HashMap,
+    env,
+    io::{BufWriter, Cursor},
+    sync::Arc,
+};
 
 use crate::util::create_components;
 use enkanetwork_rs::{EnkaNetwork, IconData};
@@ -7,8 +12,7 @@ use image::ImageOutputFormat;
 use poise::{
     serenity_prelude::{
         ComponentInteractionDataKind, CreateAttachment, CreateEmbed, CreateEmbedFooter,
-        EditInteractionResponse,
-        Interaction,
+        EditInteractionResponse, Interaction,
     },
     CreateReply,
 };
@@ -181,18 +185,18 @@ async fn event_event_handler(
                                 return Ok(());
                             }
                             let img = img.unwrap();
-                            let mut image_data: Vec<u8> = Vec::new();
-                            img.write_to(
-                                &mut Cursor::new(&mut image_data),
-                                ImageOutputFormat::Png,
-                            )?;
+                            let mut image_data = BufWriter::new(Cursor::new(Vec::new()));
+                            img.write_to(&mut image_data, ImageOutputFormat::Png)?;
                             let footer = CreateEmbedFooter::new(format!("{}", uid));
                             let e = CreateEmbed::default()
                                 .title(format!("{}のステータス", character.name(&data.api, lang)?))
                                 .image("attachment://image.png")
                                 .footer(footer)
                                 .color(convert_rgb(character.element.color_rgb()));
-                            let at = CreateAttachment::bytes(image_data, "image.png");
+                            let at = CreateAttachment::bytes(
+                                image_data.into_inner()?.into_inner(),
+                                "image.png",
+                            );
                             let res = EditInteractionResponse::new()
                                 .new_attachment(at)
                                 .components(create_components(characters, &data.api, "ja", &uid))

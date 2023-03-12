@@ -1,7 +1,6 @@
 use enkanetwork_rs::{Character, EnkaNetwork};
 use poise::serenity_prelude::{
-    CreateActionRow, CreateButton, CreateSelectMenu, CreateSelectMenuKind,
-    CreateSelectMenuOption,
+    CreateActionRow, CreateButton, CreateSelectMenu, CreateSelectMenuKind, CreateSelectMenuOption,
 };
 
 pub fn create_components(
@@ -46,8 +45,8 @@ pub fn create_components(
     let button = CreateActionRow::Buttons(vec![
         CreateButton::new_link(format!("https://enka.network/u/{}", uid)).label("Enka Network"),
         /*CreateButton::new("end")
-            .style(ButtonStyle::Danger)
-            .label("終了"),*/
+        .style(ButtonStyle::Danger)
+        .label("終了"),*/
     ]);
     vec![chara, score, button]
 }
