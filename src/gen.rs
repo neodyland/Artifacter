@@ -401,12 +401,12 @@ pub async fn generate(
         format!(
             "{}%",
             round_to_1_decimal_places(
-                    default_status
-                        .damage_bonus
-                        .get(&data.element)
-                        .unwrap_or(&0.0)
-                        .to_owned()
-                 * 100.0
+                default_status
+                    .damage_bonus
+                    .get(&data.element)
+                    .unwrap_or(&0.0)
+                    .to_owned()
+                    * 100.0
             )
         ),
     ];
