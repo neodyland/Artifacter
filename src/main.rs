@@ -85,7 +85,6 @@ async fn event_event_handler(
         }
         poise::Event::InteractionCreate { interaction } => {
             if let Interaction::MessageComponent(select_menu) = interaction {
-                select_menu.defer(&ctx.http).await?;
                 if select_menu.data.custom_id == "character"
                     || select_menu.data.custom_id == "score"
                 {
