@@ -7,7 +7,7 @@ use image::ImageOutputFormat;
 use poise::{
     serenity_prelude::{
         ComponentInteractionDataKind, CreateAttachment, CreateEmbed, CreateEmbedFooter,
-        CreateInteractionResponse, CreateInteractionResponseMessage, EditInteractionResponse,
+        EditInteractionResponse,
         Interaction,
     },
     CreateReply,
@@ -202,19 +202,20 @@ async fn event_event_handler(
                         }
                     }
                     ComponentInteractionDataKind::Button => {
-                        if &custom_id == "end" {
+                        /* if custom_id == "end" {
                             let e = select_menu.message.embeds.first();
                             if e.is_none() {
                                 return Ok(());
                             }
                             let e = e.unwrap();
-                            let e = CreateEmbed::from(e.to_owned()).title("終了しました");
-                            let res = CreateInteractionResponseMessage::default()
-                                .add_embed(e)
-                                .components(vec![]);
+                            let e = CreateEmbed::from(e.to_owned());
+                            let res = CreateInteractionResponseMessage::new()
+                                .embed(e)
+                                .components(vec![])
+                                .files(vec![]);
                             let res = CreateInteractionResponse::UpdateMessage(res);
                             select_menu.create_response(&ctx.http, res).await?;
-                        }
+                        }*/
                     }
                     _ => {}
                 }
