@@ -3,7 +3,10 @@ use std::{borrow::Cow, collections::HashMap, env, io::Cursor, sync::Arc};
 use enkanetwork_rs::{EnkaNetwork, IconData};
 use gen::ScoreCounter;
 use image::ImageOutputFormat;
-use poise::serenity_prelude::{self as serenity, Activity, AttachmentType, Interaction};
+use poise::serenity_prelude::{
+    self as serenity, Activity, AttachmentType, CreateComponents, CreateEmbed, Interaction,
+    InteractionResponseType,
+};
 use tokio::sync::Mutex;
 
 use crate::util::create_components;
@@ -23,6 +26,11 @@ type Context<'a> = poise::Context<'a, Arc<Mutex<Data>>, Error>;
 /// UIDからデータを取得します
 #[poise::command(slash_command)]
 async fn build(ctx: Context<'_>, #[description = "ユーザーID"] uid: i32) -> Result<(), Error> {
+    if uid.to_string().len() != 9 {
+        ctx.send(|b| b.content("ユーザーIDは9桁の数字でなければなりません。"))
+            .await?;
+        return Ok(());
+    }
     ctx.defer().await?;
     let data = ctx.data();
     let api = &data.lock().await.api;
@@ -37,9 +45,14 @@ async fn build(ctx: Context<'_>, #[description = "ユーザーID"] uid: i32) -> 
         .iter()
         .map(|c| c.to_owned().to_owned())
         .collect::<Vec<_>>();
+    if characters.is_empty() {
+        ctx.send(|b| b.content("キャラクターが登録されていません。"))
+            .await?;
+        return Ok(());
+    }
     ctx.send(|b| {
         b.components(|c| {
-            create_components(c, characters, api, "ja");
+            create_components(c, characters, api, "ja", &uid);
             c
         })
         .embed(|e| {
@@ -195,11 +208,27 @@ async fn event_event_handler(
                                 f
                             })
                             .components(|b| {
-                                create_components(b, characters, &data.api, "ja");
+                                create_components(b, characters, &data.api, "ja", &uid);
                                 b
                             })
                         })
                         .await;
+                } else if &select_menu.data.custom_id == "end" {
+                    let e = select_menu.message.embeds.first();
+                    if e.is_none() {
+                        return Ok(());
+                    }
+                    let e = e.unwrap();
+                    let mut e = CreateEmbed::from(e.to_owned());
+                    e.title("終了しました");
+                    select_menu
+                        .create_interaction_response(&ctx.http, |f| {
+                            f.kind(InteractionResponseType::UpdateMessage)
+                                .interaction_response_data(|d| {
+                                    d.add_embed(e).set_components(CreateComponents(vec![]))
+                                })
+                        })
+                        .await?;
                 }
             }
         }
