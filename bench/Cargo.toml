@@ -10,3 +10,4 @@ gen = { path = "../lib" }
 enkanetwork-rs = { git = "https://github.com/neodyland/enkanetwork-rs", version = "0.0.3" }
 tokio = { version = "1.26.0", features = ["full"] }
 anyhow = "1.0.69"
+show-image = "0.13.1"

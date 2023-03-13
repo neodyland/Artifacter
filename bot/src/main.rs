@@ -1,14 +1,8 @@
-use std::{
-    collections::HashMap,
-    env,
-    io::{BufWriter, Cursor},
-    sync::Arc,
-};
+use std::{collections::HashMap, env, sync::Arc};
 
-use crate::util::create_components;
+use crate::util::{create_components, json, Locale};
 use enkanetwork_rs::{EnkaNetwork, IconData};
-use gen::ScoreCounter;
-use image::ImageOutputFormat;
+use gen::{ImageFormat, Lang, ScoreCounter};
 use poise::{
     serenity_prelude::{
         ComponentInteractionDataKind, CreateAttachment, CreateEmbed, CreateEmbedFooter,
@@ -23,17 +17,30 @@ mod util;
 struct Data {
     pub api: EnkaNetwork,
     pub icons: IconData,
-    pub cache: HashMap<u64, (ScoreCounter, u32)>,
+    pub cache: HashMap<u64, (ScoreCounter, u32,ImageFormat)>,
     pub looping: bool,
 }
 type Error = Box<dyn std::error::Error + Send + Sync>;
 type Context<'a> = poise::Context<'a, Arc<Mutex<Data>>, Error>;
 
-/// UIDからデータを取得します
-#[poise::command(slash_command)]
-async fn build(ctx: Context<'_>, #[description = "ユーザーID"] uid: i32) -> Result<(), Error> {
+/// fetch data from User Id
+#[poise::command(slash_command,description_localized("ja","UIDからデータを取得します"))]
+async fn build(
+    ctx: Context<'_>,
+    #[description = "UID"]
+    #[description_localized("ja", "ユーザーID")]
+    uid: i32,
+) -> Result<(), Error> {
+    let locale = ctx.locale().unwrap_or("ja");
+    let lang = Lang::from(locale);
     if uid.to_string().len() != 9 {
-        let msg = CreateReply::new().content("ユーザーIDは9桁の数字でなければなりません。");
+        let msg = CreateReply::new().content(
+            Locale::from(json!({
+                "ja": "ユーザーIDは9桁の数字でなければなりません。",
+                "en": "User ID must be a 9-digit number.",
+            }))
+            .get(&lang),
+        );
         ctx.send(msg).await?;
         return Ok(());
     }
@@ -52,17 +59,21 @@ async fn build(ctx: Context<'_>, #[description = "ユーザーID"] uid: i32) -> 
         .map(|c| c.to_owned().to_owned())
         .collect::<Vec<_>>();
     if characters.is_empty() {
-        let msg = CreateReply::new().content("キャラクターが登録されていません。");
+        let msg = CreateReply::new().content(Locale::from(
+            json!({"ja":"キャラクターが登録されていません。(もしくは非公開になっています)","en": "No character is set(Or it may be private)"})).get(&lang));
         ctx.send(msg).await?;
         return Ok(());
     }
     let footer = CreateEmbedFooter::new(format!("{}", uid));
     let embed = CreateEmbed::default()
-        .title("キャラクターを選択してください")
+        .title(
+            Locale::from(json!({"ja":"キャラクターを選択してください","en": "Select a character"}))
+                .get(&lang),
+        )
         .footer(footer)
         .color(convert_rgb([0x00, 0xff, 0x00]));
     let builder = CreateReply::default()
-        .components(create_components(characters, api, "ja", &uid))
+        .components(create_components(characters, api, &lang, &uid))
         .embed(embed);
     ctx.send(builder).await?;
     Ok(())
@@ -102,7 +113,7 @@ async fn event_event_handler(
                 let custom_id = select_menu.data.custom_id.clone();
                 match select_menu.data.kind.clone() {
                     ComponentInteractionDataKind::StringSelect { values } => {
-                        if &custom_id == "character" || &custom_id == "score" {
+                        if &custom_id == "character" || &custom_id == "score" || &custom_id == "format" {
                             let value = values.first();
                             select_menu.defer(&ctx.http).await?;
                             let uid = select_menu.message.embeds.first();
@@ -131,11 +142,11 @@ async fn event_event_handler(
                                 .iter()
                                 .map(|c| c.to_owned().to_owned())
                                 .collect::<Vec<_>>();
-                            let lang = "ja";
+                            let lang = Lang::Ja;
                             let mut current = data
                                 .cache
                                 .remove(&select_menu.message.id.get())
-                                .unwrap_or((ScoreCounter::Normal, 114514));
+                                .unwrap_or((ScoreCounter::Normal, 114514,ImageFormat::Png));
                             if custom_id == "score" {
                                 let normal = &"normal".to_string();
                                 let score = value.unwrap_or(normal);
@@ -151,8 +162,8 @@ async fn event_event_handler(
                                     current.0 = ScoreCounter::ChargeEfficiency;
                                 }
                                 data.cache
-                                    .insert(select_menu.message.id.get(), current.to_owned());
-                            } else {
+                                    .insert(select_menu.message.id.get(), current.clone());
+                            } else if custom_id == "character" {
                                 let character = characters.iter().find(|c| {
                                     c.id.0
                                         == value
@@ -166,7 +177,17 @@ async fn event_event_handler(
                                 let character = character.unwrap().to_owned().to_owned();
                                 current.1 = character.id.0.clone();
                                 data.cache
-                                    .insert(select_menu.message.id.get(), current.to_owned());
+                                    .insert(select_menu.message.id.get(), current.clone());
+                            } else {
+                                let d = &"png".to_string();
+                                let f = value.unwrap_or(d);
+                                if f == "png" {
+                                    current.2 = ImageFormat::Png;
+                                } else if f == "jpg" {
+                                    current.2 = ImageFormat::Jpeg;
+                                }
+                                data.cache
+                                    .insert(select_menu.message.id.get(), current.clone());
                             }
                             let character = characters.iter().find(|c| c.id.0 == current.1);
                             if character.is_none() {
@@ -179,27 +200,33 @@ async fn event_event_handler(
                                 &lang,
                                 &data.icons,
                                 current.0,
+                                current.2.clone(),
                             )
                             .await;
                             if img.is_none() {
                                 return Ok(());
                             }
                             let img = img.unwrap();
-                            let mut image_data = BufWriter::new(Cursor::new(Vec::new()));
-                            img.write_to(&mut image_data, ImageOutputFormat::Png)?;
                             let footer = CreateEmbedFooter::new(format!("{}", uid));
+                            let filename = format!("image.{}", current.2.to_string());
                             let e = CreateEmbed::default()
-                                .title(format!("{}のステータス", character.name(&data.api, lang)?))
-                                .image("attachment://image.png")
+                                .title(
+                                    Locale::from(json!({"ja":format!(
+                                            "{}のステータス",
+                                            character.name(&data.api, &lang.to_string())?
+                                        ),"en": format!(
+                                        "Status: {}",
+                                        character.name(&data.api, &lang.to_string())?
+                                    )}))
+                                    .get(&lang),
+                                )
+                                .attachment(&filename)
                                 .footer(footer)
                                 .color(convert_rgb(character.element.color_rgb()));
-                            let at = CreateAttachment::bytes(
-                                image_data.into_inner()?.into_inner(),
-                                "image.png",
-                            );
+                            let at = CreateAttachment::bytes(img, filename);
                             let res = EditInteractionResponse::new()
                                 .new_attachment(at)
-                                .components(create_components(characters, &data.api, "ja", &uid))
+                                .components(create_components(characters, &data.api, &lang, &uid))
                                 .embed(e);
                             select_menu.edit_response(&ctx.http, res).await?;
                         }

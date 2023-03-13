@@ -1,13 +1,56 @@
-use std::{collections::HashMap, fmt::Display};
+use std::{
+    collections::HashMap,
+    fmt::Display,
+    io::{BufWriter, Cursor},
+};
 
-use enkanetwork_rs::{Character, Element, EnkaNetwork, IconData, Reliquary, ReliquaryType, Stats};
+use enkanetwork_rs::{
+    Character, CharacterId, Element, EnkaNetwork, IconData, Reliquary, ReliquaryType, Stats,
+};
 use image::{
     imageops::{self, resize, FilterType},
     io::Reader,
-    DynamicImage, Rgba,
+    DynamicImage, ImageOutputFormat, Rgba,
 };
 use imageproc::drawing::{draw_text_mut, text_size};
 use rusttype::{Font, Scale};
+
+pub enum ImageFormat {
+    Png,
+    Jpeg,
+    Pixel,
+}
+
+impl Clone for ImageFormat {
+    fn clone(&self) -> Self {
+        match self {
+            ImageFormat::Png => ImageFormat::Png,
+            ImageFormat::Jpeg => ImageFormat::Jpeg,
+            ImageFormat::Pixel => ImageFormat::Pixel,
+        }
+    }
+}
+
+impl Into<Option<ImageOutputFormat>> for ImageFormat {
+    fn into(self) -> Option<ImageOutputFormat> {
+        match self {
+            ImageFormat::Png => Some(ImageOutputFormat::Png),
+            ImageFormat::Jpeg => Some(ImageOutputFormat::Jpeg(20)),
+            ImageFormat::Pixel => None,
+        }
+    }
+}
+
+impl ToString for ImageFormat {
+    fn to_string(&self) -> String {
+        match self {
+            ImageFormat::Png => "png",
+            ImageFormat::Jpeg => "jpeg",
+            ImageFormat::Pixel => "pixel",
+        }
+        .to_string()
+    }
+}
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
 pub enum ScoreCounter {
@@ -51,13 +94,41 @@ impl Display for ScoreCounter {
     }
 }
 
+pub enum Lang {
+    En,
+    Ja,
+}
+
+impl ToString for Lang {
+    fn to_string(&self) -> String {
+        match self {
+            Lang::En => "en",
+            Lang::Ja => "ja",
+        }
+        .to_string()
+    }
+}
+
+impl From<&str> for Lang {
+    fn from(s: &str) -> Self {
+        match s {
+            "en" => Lang::En,
+            "ja" => Lang::Ja,
+            _ => Lang::Ja,
+        }
+    }
+}
+
 pub async fn generate(
     data: Character,
     api: &EnkaNetwork,
-    lang: &str,
+    lang: &Lang,
     icons: &IconData,
     counter: ScoreCounter,
-) -> Option<DynamicImage> {
+    format: ImageFormat,
+) -> Option<Vec<u8>> {
+    let format = Into::<Option<ImageOutputFormat>>::into(format);
+    let lang = &lang.to_string();
     let font = include_bytes!("../../assets/font.ttf");
     let font = Font::try_from_bytes(font)?;
     let mut image = Reader::open(format!(
@@ -68,7 +139,7 @@ pub async fn generate(
     .decode()
     .ok()?;
     let character_image = data.image_gacha_splash(api).await?;
-    if is_not_mains(data.name(api, "ja").ok()?) {
+    if is_not_mains(data.id) {
         let character_image =
             character_image.resize_exact(1200, 600, imageops::FilterType::Nearest);
         imageops::overlay(&mut image, &character_image, -225, 50);
@@ -111,7 +182,7 @@ pub async fn generate(
         let text = format!("Lv.{}", lv + ex);
         let (tw, th) = text_size(scale, &font, &text);
         let color = if lv + ex == 13 || (lv == 10 && first) {
-            image::Rgba([255, 0, 0, 255])
+            image::Rgba([0, 255, 255, 255])
         } else {
             white.clone()
         };
@@ -472,6 +543,19 @@ pub async fn generate(
         (largest_set.unwrap().0.to_string(), *largest_set.unwrap().1)
     };
     let set_width = text_size(scale, &font, &set_name).0;
+    if set_width > 300 {
+        let scale = Scale::uniform(20.0);
+        let set_width = text_size(scale, &font, &set_name).0;
+        draw_text_mut(
+            &mut image,
+            white.clone(),
+            1640 - set_width / 2,
+            265,
+            scale,
+            &font,
+            &set_name,
+        );
+    } else {
     draw_text_mut(
         &mut image,
         white.clone(),
@@ -481,6 +565,7 @@ pub async fn generate(
         &font,
         &set_name,
     );
+    }
     draw_text_mut(
         &mut image,
         white.clone(),
@@ -503,8 +588,13 @@ pub async fn generate(
         &font,
         &kind,
     );
-
-    Some(image)
+    if let Some(format) = format {
+        let mut buf = BufWriter::new(Cursor::new(Vec::new()));
+        image.write_to(&mut buf, format).ok()?;
+        Some(buf.into_inner().ok()?.into_inner())
+    } else {
+        Some(image.into_bytes())
+    }
 }
 
 pub fn is_percent(stat: &Stats) -> bool {
@@ -641,6 +731,6 @@ fn get_rank_img(score: f64, part: Option<ReliquaryType>) -> Option<DynamicImage>
     Some(image)
 }
 
-fn is_not_mains(name: &str) -> bool {
-    return name != "旅人";
+fn is_not_mains(name: CharacterId) -> bool {
+    name.0 != 10000005 && name.0 != 10000007
 }

@@ -1,13 +1,15 @@
 use enkanetwork_rs::{EnkaNetwork, IconData};
-use gen::{generate,ScoreCounter};
+use gen::{generate, ImageFormat, Lang, ScoreCounter};
+use show_image::{create_window, ImageInfo, ImageView};
 
-fn main() -> anyhow::Result<()>  {
+fn main() -> anyhow::Result<()> {
     let api = EnkaNetwork::new()?;
-    tokio::runtime::Builder::new_current_thread()
-        .enable_all()
-        .build()?
-        .block_on(_main(api))?;
-    Ok(())
+    show_image::run_context(|| {
+        tokio::runtime::Builder::new_current_thread()
+            .enable_all()
+            .build()?
+            .block_on(_main(api))
+    });
 }
 
 async fn _main(api: EnkaNetwork) -> anyhow::Result<()> {
@@ -19,7 +21,7 @@ async fn _main(api: EnkaNetwork) -> anyhow::Result<()> {
     }
     let user = user.unwrap();
     let charas = user.profile().show_character_list();
-    let character_id = charas.first();
+    let character_id = charas.get(3);
     if character_id.is_none() {
         return Ok(());
     }
@@ -31,14 +33,21 @@ async fn _main(api: EnkaNetwork) -> anyhow::Result<()> {
     let img = generate(
         character.to_owned(),
         &api,
-        "ja",
+        &Lang::En,
         &icons,
         ScoreCounter::Normal,
+        ImageFormat::Pixel,
     )
     .await;
     if img.is_none() {
         return Ok(());
     }
-    let _ = img.unwrap();
+    let img = img.unwrap();
+    let window = create_window("test", Default::default())?;
+    window.set_image(
+        "a",
+        ImageView::new(ImageInfo::rgba8(1920, 1080), img.as_slice()),
+    )?;
+    window.wait_until_destroyed()?;
     Ok(())
 }
