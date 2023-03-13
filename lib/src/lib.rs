@@ -15,6 +15,8 @@ use image::{
 use imageproc::drawing::{draw_text_mut, text_size};
 use rusttype::{Font, Scale};
 
+pub mod types;
+
 pub enum ImageFormat {
     Png,
     Jpeg,
@@ -114,6 +116,8 @@ impl From<&str> for Lang {
         match s {
             "en" => Lang::En,
             "ja" => Lang::Ja,
+            "en-US" => Lang::En,
+            "en-GB" => Lang::En,
             _ => Lang::Ja,
         }
     }
@@ -307,6 +311,33 @@ pub async fn generate(
     let mut artifact_x = 30;
     let mut artifact_scores = 0.0;
     for artifact in artifacts {
+        let gray = image::Rgba([240, 240, 240, 200]);
+        if let Some(o) = types::resolve_op(artifact) {
+            let mut sub_y = 785;
+            let o = o
+                .iter()
+                .map(|x| {
+                    x.iter()
+                        .map(|y| y.to_string())
+                        .collect::<Vec<_>>()
+                        .join("+")
+                })
+                .collect::<Vec<_>>();
+            let scale = Scale::uniform(15.0);
+            for x in o {
+                let width = text_size(scale.into(), &font, &x).0;
+                sub_y = sub_y + 52;
+                draw_text_mut(
+                    &mut image,
+                    gray.clone(),
+                    artifact_x as i32 + 340 - width,
+                    sub_y,
+                    scale,
+                    &font,
+                    &x,
+                );
+            }
+        };
         let (score, used) = get_score(artifact, &counter);
         artifact_scores += score;
         let rank_img = get_rank_img(score, Some(artifact.position))?;
@@ -411,15 +442,28 @@ pub async fn generate(
                 p.0 = [255, 255, 255, p.0[3]];
             }
             let scale = Scale::uniform(30.0);
-            draw_text_mut(
-                &mut image,
-                color.clone(),
-                artifact_x as i32 + 60,
-                sub_y,
-                scale,
-                &font,
-                &sub_type,
-            );
+            let sub_type_width = text_size(scale, &font, &sub_type).0;
+            if sub_type_width <= 200 {
+                draw_text_mut(
+                    &mut image,
+                    color.clone(),
+                    artifact_x as i32 + 60,
+                    sub_y,
+                    scale,
+                    &font,
+                    &sub_type,
+                );
+            } else {
+                draw_text_mut(
+                    &mut image,
+                    color.clone(),
+                    artifact_x as i32 + 60,
+                    sub_y + 7,
+                    Scale::uniform(20.0),
+                    &font,
+                    &sub_type,
+                );
+            }
             let sub_value_width = text_size(scale, &font, &sub_value).0;
             draw_text_mut(
                 &mut image,
@@ -453,36 +497,60 @@ pub async fn generate(
     let default_status = data.fight_prop();
     let mut status_y = 65;
     let statuslist = vec![
-        (default_status.display_max_hp.round() as u32).to_string(),
-        (default_status.display_attack.round() as u32).to_string(),
-        (default_status.display_defense.round() as u32).to_string(),
-        (default_status.elemental_mastery.round() as i64).to_string(),
-        format!(
-            "{}%",
-            round_to_1_decimal_places(default_status.critical_rate * 100.0)
+        (
+            (default_status.display_max_hp.round() as u32).to_string(),
+            Stats::Hp.name(api, lang)?,
         ),
-        format!(
-            "{}%",
-            round_to_1_decimal_places(default_status.critical_damage * 100.0)
+        (
+            (default_status.display_attack.round() as u32).to_string(),
+            Stats::Attack.name(api, lang)?,
         ),
-        format!(
-            "{}%",
-            round_to_1_decimal_places(default_status.energy_recharge * 100.0)
+        (
+            (default_status.display_defense.round() as u32).to_string(),
+            Stats::Defense.name(api, lang)?,
         ),
-        format!(
-            "{}%",
-            round_to_1_decimal_places(
-                default_status
-                    .damage_bonus
-                    .get(&data.element)
-                    .unwrap_or(&0.0)
-                    .to_owned()
-                    * 100.0
-            )
+        (
+            (default_status.elemental_mastery.round() as i64).to_string(),
+            Stats::ElementMastery.name(api, lang)?,
+        ),
+        (
+            format!(
+                "{}%",
+                round_to_1_decimal_places(default_status.critical_rate * 100.0)
+            ),
+            Stats::Critical.name(api, lang)?,
+        ),
+        (
+            format!(
+                "{}%",
+                round_to_1_decimal_places(default_status.critical_damage * 100.0)
+            ),
+            Stats::CriticalHurt.name(api, lang)?,
+        ),
+        (
+            format!(
+                "{}%",
+                round_to_1_decimal_places(default_status.energy_recharge * 100.0)
+            ),
+            Stats::ChargeEfficiency.name(api, lang)?,
+        ),
+        (
+            format!(
+                "{}%",
+                round_to_1_decimal_places(
+                    default_status
+                        .damage_bonus
+                        .get(&data.element)
+                        .unwrap_or(&0.0)
+                        .to_owned()
+                        * 100.0
+                )
+            ),
+            Stats::ElementAddHurt(data.element).name(api, lang)?,
         ),
     ];
     let scale = Scale::uniform(35.0);
-    for status in statuslist {
+    for (status, code) in statuslist {
         let status_width = text_size(scale, &font, &status).0;
         draw_text_mut(
             &mut image,
@@ -493,21 +561,20 @@ pub async fn generate(
             &font,
             &status,
         );
+        draw_text_mut(
+            &mut image,
+            white.clone(),
+            845,
+            status_y,
+            scale,
+            &font,
+            &code,
+        );
         status_y += 70;
     }
     status_y = status_y - 70;
     let img = data.element.image(icons, 2.5)?;
     image::imageops::overlay(&mut image, &img, 790, status_y.into());
-    let element_name = Stats::ElementAddHurt(data.element).name(api, lang)?;
-    draw_text_mut(
-        &mut image,
-        white.clone(),
-        845,
-        status_y,
-        scale,
-        &font,
-        &element_name,
-    );
 
     let sets = data
         .reliquarys()
@@ -529,8 +596,12 @@ pub async fn generate(
     }
     let mut largest_set_key = 0;
     let mut largest_set: Option<(&String, &u32)> = None;
+    let mut second_largest_set_key = 0;
+    let mut second_largest_set: Option<(&String, &u32)> = None;
     for (key, value) in set.iter() {
-        if value > &largest_set_key {
+        if value >= &largest_set_key {
+            second_largest_set = largest_set;
+            second_largest_set_key = largest_set_key;
             largest_set = Some((key, value));
             largest_set_key = *value;
         }
@@ -542,39 +613,125 @@ pub async fn generate(
     } else {
         (largest_set.unwrap().0.to_string(), *largest_set.unwrap().1)
     };
-    let set_width = text_size(scale, &font, &set_name).0;
-    if set_width > 300 {
-        let scale = Scale::uniform(20.0);
+    let (second_set_name, second_set_count) = if second_largest_set.is_none() {
+        (None, 0)
+    } else if second_largest_set_key < 2 {
+        (None, 0)
+    } else {
+        (
+            Some(second_largest_set.unwrap().0.to_string()),
+            *second_largest_set.unwrap().1,
+        )
+    };
+    if second_set_name.is_none() {
         let set_width = text_size(scale, &font, &set_name).0;
+        if set_width > 300 {
+            let scale = Scale::uniform(20.0);
+            let set_width = text_size(scale, &font, &set_name).0;
+            draw_text_mut(
+                &mut image,
+                white.clone(),
+                1640 - set_width / 2,
+                265,
+                scale,
+                &font,
+                &set_name,
+            );
+        } else {
+            draw_text_mut(
+                &mut image,
+                white.clone(),
+                1640 - set_width / 2,
+                260,
+                scale,
+                &font,
+                &set_name,
+            );
+        }
         draw_text_mut(
             &mut image,
             white.clone(),
-            1640 - set_width / 2,
-            265,
+            1820,
+            260,
             scale,
             &font,
-            &set_name,
+            &format!("{}", set_count),
         );
     } else {
-    draw_text_mut(
-        &mut image,
-        white.clone(),
-        1640 - set_width / 2,
-        260,
-        scale,
-        &font,
-        &set_name,
-    );
+        let second_set_name = second_set_name.unwrap();
+        let set_width = text_size(scale, &font, &set_name).0;
+        let second_set_width = text_size(scale, &font, &second_set_name).0;
+        let set_width = if set_width > second_set_width {
+            set_width
+        } else {
+            second_set_width
+        };
+        draw_text_mut(
+            &mut image,
+            white.clone(),
+            1820,
+            235,
+            scale,
+            &font,
+            &format!("{}", set_count),
+        );
+        draw_text_mut(
+            &mut image,
+            white.clone(),
+            1820,
+            280,
+            scale,
+            &font,
+            &format!("{}", second_set_count),
+        );
+        if set_width > 300 {
+            let scale = Scale::uniform(20.0);
+            let set_width = text_size(scale, &font, &set_name).0;
+            let second_set_width = text_size(scale, &font, &second_set_name).0;
+            let set_width = if set_width > second_set_width {
+                set_width
+            } else {
+                second_set_width
+            };
+            draw_text_mut(
+                &mut image,
+                white.clone(),
+                1640 - set_width / 2,
+                240,
+                scale,
+                &font,
+                &set_name,
+            );
+            draw_text_mut(
+                &mut image,
+                white.clone(),
+                1640 - set_width / 2,
+                285,
+                scale,
+                &font,
+                &second_set_name,
+            );
+        } else {
+            draw_text_mut(
+                &mut image,
+                white.clone(),
+                1640 - set_width / 2,
+                235,
+                scale,
+                &font,
+                &set_name,
+            );
+            draw_text_mut(
+                &mut image,
+                white.clone(),
+                1640 - set_width / 2,
+                280,
+                scale,
+                &font,
+                &second_set_name,
+            );
+        }
     }
-    draw_text_mut(
-        &mut image,
-        white.clone(),
-        1820,
-        260,
-        scale,
-        &font,
-        &format!("{}", set_count),
-    );
 
     let kind = counter.to_string_locale(&lang);
     let scale = Scale::uniform(35.0);

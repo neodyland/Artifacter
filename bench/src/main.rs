@@ -21,7 +21,7 @@ async fn _main(api: EnkaNetwork) -> anyhow::Result<()> {
     }
     let user = user.unwrap();
     let charas = user.profile().show_character_list();
-    let character_id = charas.get(3);
+    let character_id = charas.get(5);
     if character_id.is_none() {
         return Ok(());
     }

@@ -71,13 +71,28 @@ pub fn create_components(
             .get(lang),
     );
     let score = CreateActionRow::SelectMenu(score);
+    let format = CreateSelectMenu::new(
+        "format",
+        CreateSelectMenuKind::String {
+            options: vec![("PNG", "png"), ("JPEG", "jpeg")]
+                .iter()
+                .map(|x| CreateSelectMenuOption::new(x.0, x.1))
+                .collect(),
+        },
+    )
+    .max_values(1)
+    .min_values(1)
+    .placeholder(
+        Locale::from(json!({"ja":"拡張子を選択してください","en": "File format"})).get(lang),
+    );
+    let format = CreateActionRow::SelectMenu(format);
     let button = CreateActionRow::Buttons(vec![
         CreateButton::new_link(format!("https://enka.network/u/{}", uid)).label("Enka Network"),
         /*CreateButton::new("end")
         .style(ButtonStyle::Danger)
         .label("終了"),*/
     ]);
-    vec![chara, score, button]
+    vec![chara, score, format, button]
 }
 
 pub struct Locale {

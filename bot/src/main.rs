@@ -10,6 +10,7 @@ use poise::{
     },
     CreateReply,
 };
+use serde_json::Value;
 use serenity::gateway::ActivityData;
 use tokio::sync::Mutex;
 
@@ -17,14 +18,37 @@ mod util;
 struct Data {
     pub api: EnkaNetwork,
     pub icons: IconData,
-    pub cache: HashMap<u64, (ScoreCounter, u32,ImageFormat)>,
+    pub cache: HashMap<u64, (ScoreCounter, u32, ImageFormat)>,
     pub looping: bool,
 }
 type Error = Box<dyn std::error::Error + Send + Sync>;
 type Context<'a> = poise::Context<'a, Arc<Mutex<Data>>, Error>;
 
+fn get_score_calc(s: &ScoreCounter) -> Value {
+    match s {
+        ScoreCounter::Normal => {
+            json!({"ja": "会心率 × 2 + 会心ダメージ + 攻撃力(%)", "en": "Critical Rate × 2 + Critical Damage + Attack(%)"})
+        }
+        ScoreCounter::Hp => {
+            json!({"ja": "会心率 × 2 + 会心ダメージ + HP(%)", "en": "Critical Rate × 2 + Critical Damage + HP(%)"})
+        }
+        ScoreCounter::Def => {
+            json!({"ja": "会心率 × 2 + 会心ダメージ + 防御(%)", "en": "Critical Rate × 2 + Critical Damage + Defense(%)"})
+        }
+        ScoreCounter::ElementalMastery => {
+            json!({"ja": "会心率 × 2 + 会心ダメージ + (熟知 ÷ 4)", "en": "Critical Rate × 2 + Critical Damage + (Elemental Mastery ÷ 4)"})
+        }
+        ScoreCounter::ChargeEfficiency => {
+            json!({"ja": "会心率 × 2 + 会心ダメージ + 元素チャージ効率", "en": "Critical Rate × 2 + Critical Damage + Elemental Charge Efficiency"})
+        }
+    }
+}
+
 /// fetch data from User Id
-#[poise::command(slash_command,description_localized("ja","UIDからデータを取得します"))]
+#[poise::command(
+    slash_command,
+    description_localized("ja", "UIDからデータを取得します")
+)]
 async fn build(
     ctx: Context<'_>,
     #[description = "UID"]
@@ -111,9 +135,13 @@ async fn event_event_handler(
         serenity::all::FullEvent::InteractionCreate { ctx, interaction } => {
             if let Interaction::Component(select_menu) = interaction {
                 let custom_id = select_menu.data.custom_id.clone();
+                let lang = Lang::from(select_menu.locale.as_str());
                 match select_menu.data.kind.clone() {
                     ComponentInteractionDataKind::StringSelect { values } => {
-                        if &custom_id == "character" || &custom_id == "score" || &custom_id == "format" {
+                        if &custom_id == "character"
+                            || &custom_id == "score"
+                            || &custom_id == "format"
+                        {
                             let value = values.first();
                             select_menu.defer(&ctx.http).await?;
                             let uid = select_menu.message.embeds.first();
@@ -142,11 +170,10 @@ async fn event_event_handler(
                                 .iter()
                                 .map(|c| c.to_owned().to_owned())
                                 .collect::<Vec<_>>();
-                            let lang = Lang::Ja;
                             let mut current = data
                                 .cache
                                 .remove(&select_menu.message.id.get())
-                                .unwrap_or((ScoreCounter::Normal, 114514,ImageFormat::Png));
+                                .unwrap_or((ScoreCounter::Normal, 114514, ImageFormat::Png));
                             if custom_id == "score" {
                                 let normal = &"normal".to_string();
                                 let score = value.unwrap_or(normal);
@@ -183,7 +210,7 @@ async fn event_event_handler(
                                 let f = value.unwrap_or(d);
                                 if f == "png" {
                                     current.2 = ImageFormat::Png;
-                                } else if f == "jpg" {
+                                } else if f == "jpeg" {
                                     current.2 = ImageFormat::Jpeg;
                                 }
                                 data.cache
@@ -220,6 +247,7 @@ async fn event_event_handler(
                                     )}))
                                     .get(&lang),
                                 )
+                                .description(Locale::from(get_score_calc(&current.0)).get(&lang))
                                 .attachment(&filename)
                                 .footer(footer)
                                 .color(convert_rgb(character.element.color_rgb()));
