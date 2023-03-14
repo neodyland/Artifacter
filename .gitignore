@@ -4,4 +4,4 @@ Cargo.lock
 .env
 build/
 .venv/
-py/
+dist/
