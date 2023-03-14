@@ -1,7 +1,8 @@
 use std::{
     collections::HashMap,
     fmt::Display,
-    io::{BufWriter, Cursor}, str::FromStr,
+    io::{BufWriter, Cursor},
+    str::FromStr,
 };
 
 use enkanetwork_rs::{
