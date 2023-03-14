@@ -21,7 +21,7 @@ async fn _main(api: EnkaNetwork) -> anyhow::Result<()> {
     }
     let user = user.unwrap();
     let charas = user.profile().show_character_list();
-    let character_id = charas.get(5);
+    let character_id = charas.get(1);
     if character_id.is_none() {
         return Ok(());
     }
@@ -33,7 +33,7 @@ async fn _main(api: EnkaNetwork) -> anyhow::Result<()> {
     let img = generate(
         character.to_owned(),
         &api,
-        &Lang::En,
+        &Lang::Ja,
         &icons,
         ScoreCounter::Normal,
         ImageFormat::Pixel,

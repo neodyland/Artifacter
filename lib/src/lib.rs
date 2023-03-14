@@ -15,6 +15,7 @@ use image::{
 use imageproc::drawing::{draw_text_mut, text_size};
 use rusttype::{Font, Scale};
 
+pub mod locale;
 pub mod types;
 
 pub enum ImageFormat {
@@ -126,13 +127,13 @@ impl From<&str> for Lang {
 pub async fn generate(
     data: Character,
     api: &EnkaNetwork,
-    lang: &Lang,
+    raw_lang: &Lang,
     icons: &IconData,
     counter: ScoreCounter,
     format: ImageFormat,
 ) -> Option<Vec<u8>> {
     let format = Into::<Option<ImageOutputFormat>>::into(format);
-    let lang = &lang.to_string();
+    let lang = &raw_lang.to_string();
     let font = include_bytes!("../../assets/font.ttf");
     let font = Font::try_from_bytes(font)?;
     let mut image = Reader::open(format!(
@@ -481,6 +482,22 @@ pub async fn generate(
     }
     let rank_img = get_rank_img(artifact_scores, None)?;
     image::imageops::overlay(&mut image, &rank_img, 1810, 355);
+    let total_score = locale::Locale::from(locale::json!({
+        "en": "Total Score",
+        "ja": "総合スコア",
+    }))
+    .get(&raw_lang)
+    .to_string();
+    let scale = Scale::uniform(30.0);
+    draw_text_mut(
+        &mut image,
+        white.clone(),
+        1440,
+        350,
+        scale,
+        &font,
+        &total_score,
+    );
     let text = round_to_1_decimal_places(artifact_scores).to_string();
     let scale = Scale::uniform(90.0);
     let (text_w, text_h) = text_size(scale.into(), &font, &text);
@@ -623,6 +640,11 @@ pub async fn generate(
             *second_largest_set.unwrap().1,
         )
     };
+    let first_key_color = if largest_set_key > 3 {
+        Rgba([0, 255, 255, 255])
+    } else {
+        white.clone()
+    };
     if second_set_name.is_none() {
         let set_width = text_size(scale, &font, &set_name).0;
         if set_width > 300 {
@@ -630,7 +652,7 @@ pub async fn generate(
             let set_width = text_size(scale, &font, &set_name).0;
             draw_text_mut(
                 &mut image,
-                white.clone(),
+                first_key_color.clone(),
                 1640 - set_width / 2,
                 265,
                 scale,
@@ -640,7 +662,7 @@ pub async fn generate(
         } else {
             draw_text_mut(
                 &mut image,
-                white.clone(),
+                first_key_color,
                 1640 - set_width / 2,
                 260,
                 scale,

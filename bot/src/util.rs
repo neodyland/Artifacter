@@ -3,8 +3,8 @@ use gen::Lang;
 use poise::serenity_prelude::{
     CreateActionRow, CreateButton, CreateSelectMenu, CreateSelectMenuKind, CreateSelectMenuOption,
 };
-use serde_json::Value;
 
+pub use gen::locale::Locale;
 pub use serde_json::json;
 
 pub fn create_components(
@@ -93,26 +93,4 @@ pub fn create_components(
         .label("終了"),*/
     ]);
     vec![chara, score, format, button]
-}
-
-pub struct Locale {
-    pub ja: String,
-    pub en: String,
-}
-
-impl Locale {
-    pub fn get(&self, lang: &Lang) -> &str {
-        match lang {
-            Lang::Ja => &self.ja,
-            Lang::En => &self.en,
-        }
-    }
-}
-
-impl From<Value> for Locale {
-    fn from(value: Value) -> Self {
-        let ja = value["ja"].as_str().unwrap_or("空白").to_owned();
-        let en = value["en"].as_str().unwrap_or("Empty").to_owned();
-        Self { ja, en }
-    }
 }
