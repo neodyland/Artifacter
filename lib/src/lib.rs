@@ -16,8 +16,10 @@ use image::{
 use imageproc::drawing::{draw_text_mut, text_size};
 use rusttype::{Font, Scale};
 
+mod default;
 pub mod locale;
 pub mod types;
+pub use default::get_default;
 
 pub enum ImageFormat {
     Png,

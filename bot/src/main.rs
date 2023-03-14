@@ -203,6 +203,8 @@ async fn event_event_handler(
                                 }
                                 let character = character.unwrap().to_owned().to_owned();
                                 current.1 = character.id.0.clone();
+                                let def = gen::get_default(&character.id.0);
+                                current.0 = def;
                                 data.cache
                                     .insert(select_menu.message.id.get(), current.clone());
                             } else {
