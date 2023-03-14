@@ -1,20 +1,19 @@
+use std::fs;
+
 use enkanetwork_rs::{EnkaNetwork, IconData};
 use gen::{generate, ImageFormat, Lang, ScoreCounter};
-use show_image::{create_window, ImageInfo, ImageView};
 
 fn main() -> anyhow::Result<()> {
     let api = EnkaNetwork::new()?;
-    show_image::run_context(|| {
-        tokio::runtime::Builder::new_current_thread()
-            .enable_all()
-            .build()?
-            .block_on(_main(api))
-    });
+    tokio::runtime::Builder::new_current_thread()
+        .enable_all()
+        .build()?
+        .block_on(_main(api))
 }
 
 async fn _main(api: EnkaNetwork) -> anyhow::Result<()> {
     let icons = IconData::load(&api).await;
-    let uid = 827106332;
+    let uid = 882325070;
     let user = api.simple(uid).await;
     if user.is_err() {
         return Ok(());
@@ -43,11 +42,6 @@ async fn _main(api: EnkaNetwork) -> anyhow::Result<()> {
         return Ok(());
     }
     let img = img.unwrap();
-    let window = create_window("test", Default::default())?;
-    window.set_image(
-        "a",
-        ImageView::new(ImageInfo::rgba8(1920, 1080), img.as_slice()),
-    )?;
-    window.wait_until_destroyed()?;
+    fs::write("test.png", img)?;
     Ok(())
 }
