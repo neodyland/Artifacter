@@ -75,8 +75,8 @@ impl Subop {
 
 fn to_string(s: &Stats) -> Option<String> {
     let s = match s {
-        Stats::Critical => "crit_dmg",
-        Stats::CriticalHurt => "crit_per",
+        Stats::Critical => "crit_per",
+        Stats::CriticalHurt => "crit_dmg",
         Stats::ChargeEfficiency => "charge_per",
         Stats::DefensePercent => "def_per",
         Stats::AttackPercent => "atk_per",
