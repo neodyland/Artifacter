@@ -95,6 +95,7 @@ pub fn resolve_op(art: &Reliquary) -> Option<Vec<Vec<f64>>> {
     let subop = Subop::new();
     let mut result = Vec::new();
     let mut count = u64::from(art.level / 4 + art.rarity - 1);
+    let mut last_counts = HashMap::<u64, u64>::new();
     let mut dupes = Vec::<Vec<Vec<f64>>>::new();
     for sub in art.sub_stats {
         if sub.is_none() {
@@ -125,15 +126,15 @@ pub fn resolve_op(art: &Reliquary) -> Option<Vec<Vec<f64>>> {
             continue;
         }
         let sub = sub.unwrap();
+        let c = u64::try_from(sub.len()).ok()?;
+        if c > count {
+            count = 0;
+        } else {
+            count = count - c;
+        }
         if dupe.is_none() {
             dupes.push(vec![]);
             result.push(sub.to_vec());
-            let c = u64::try_from(sub.len()).ok()?;
-            if c > count {
-                count = 0;
-            } else {
-                count = count - c;
-            }
         } else {
             let dupe = dupe.unwrap();
             dupes.push(dupe.to_vec());
@@ -180,7 +181,15 @@ pub fn resolve_op(art: &Reliquary) -> Option<Vec<Vec<f64>>> {
             if i64::try_from(count).ok()? - i64::try_from(x).ok()? < 0 {
                 continue;
             }
-            count = count - x;
+            let last_count = last_counts
+                .get(&dp.try_into().unwrap())
+                .unwrap_or(&0)
+                .clone();
+            if count + last_count < x {
+                continue;
+            }
+            last_counts.insert(dp as u64, x);
+            count = count + last_count - x;
             dupe_count_result[dp] = dupe_count_result[dp] + 1;
         }
         i = i - 1;
