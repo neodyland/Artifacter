@@ -70,6 +70,5 @@ docs/_build/
 
 # Pyenv
 .python-version
-
 assets/
 test.png
