@@ -1,7 +1,7 @@
 use std::{
     collections::HashMap,
     fmt::Display,
-    io::{BufWriter, Cursor},
+    io::{BufWriter, Cursor}, str::FromStr,
 };
 
 use enkanetwork_rs::{
@@ -55,6 +55,19 @@ impl ToString for ImageFormat {
     }
 }
 
+impl FromStr for ImageFormat {
+    type Err = String;
+
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        match s {
+            "png" => Ok(ImageFormat::Png),
+            "jpeg" => Ok(ImageFormat::Jpeg),
+            "pixel" => Ok(ImageFormat::Pixel),
+            _ => Err(format!("{} is not ImageFormat", s)),
+        }
+    }
+}
+
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
 pub enum ScoreCounter {
     Normal,
@@ -94,6 +107,21 @@ impl ScoreCounter {
 impl Display for ScoreCounter {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         write!(f, "{}", self.en())
+    }
+}
+
+impl FromStr for ScoreCounter {
+    type Err = String;
+
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        match s {
+            "Normal" => Ok(ScoreCounter::Normal),
+            "Hp" => Ok(ScoreCounter::Hp),
+            "Def" => Ok(ScoreCounter::Def),
+            "ElementalMastery" => Ok(ScoreCounter::ElementalMastery),
+            "ChargeEfficiency" => Ok(ScoreCounter::ChargeEfficiency),
+            _ => Err(format!("{} is not ScoreCounter", s)),
+        }
     }
 }
 
