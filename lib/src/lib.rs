@@ -5,17 +5,15 @@ use std::{
     str::FromStr,
 };
 
-use enkanetwork_rs::{
-    Character, CharacterId, Element, EnkaNetwork, IconData, Reliquary, ReliquaryType, Stats,
-};
+use enkanetwork_rs::{Character, CharacterId, Element, EnkaNetwork, IconData, Reliquary, Stats};
 use image::{
-    imageops::{self, resize, FilterType},
-    io::Reader,
+    imageops::{self, resize},
     DynamicImage, ImageOutputFormat, Rgba,
 };
 use imageproc::drawing::{draw_text_mut, text_size};
 use rusttype::{Font, Scale};
 
+mod consts;
 mod default;
 pub mod locale;
 pub mod types;
@@ -167,13 +165,7 @@ pub async fn generate(
     let lang = &raw_lang.to_string();
     let font = include_bytes!("../../assets/font.ttf");
     let font = Font::try_from_bytes(font)?;
-    let mut image = Reader::open(format!(
-        "assets/base/{}.png",
-        data.element.to_string().to_lowercase()
-    ))
-    .ok()?
-    .decode()
-    .ok()?;
+    let mut image = consts::get_base_image(&data.element)?;
     let character_image = data.image_gacha_splash(api).await?;
     if is_not_mains(data.id) {
         let character_image =
@@ -259,14 +251,7 @@ pub async fn generate(
     let weapon_img = weapon.image_icon(api).await.ok()?;
     let weapon_img = weapon_img.resize_exact(129, 128, image::imageops::Triangle);
     image::imageops::overlay(&mut image, &weapon_img, 1430, 50);
-    let weapon_rarity_img =
-        Reader::open(format!("assets/rarity/{}.png", weapon.rarity.to_string())).ok()?;
-    let weapon_rarity_img = weapon_rarity_img.decode().ok()?;
-    let weapon_rarity_img = weapon_rarity_img.resize_exact(
-        (weapon_rarity_img.width() as f32 * 0.9).round() as u32,
-        (weapon_rarity_img.height() as f32 * 0.9).round() as u32,
-        image::imageops::Triangle,
-    );
+    let weapon_rarity_img = consts::get_rarity_image(weapon.rarity)?;
     image::imageops::overlay(&mut image, &weapon_rarity_img, 1422, 173);
     let ascension = format!("R{}", weapon.refinement + 1);
     draw_text_mut(
@@ -372,7 +357,7 @@ pub async fn generate(
         };
         let (score, used) = get_score(artifact, &counter);
         artifact_scores += score;
-        let rank_img = get_rank_img(score, Some(artifact.position))?;
+        let rank_img = consts::get_grade_image(score, Some(artifact.position))?;
         image::imageops::overlay(&mut image, &rank_img, artifact_x + 50, 1015);
         let score = round_to_1_decimal_places(score).to_string();
         let scale = Scale::uniform(40.0);
@@ -511,7 +496,7 @@ pub async fn generate(
         }
         artifact_x += 373;
     }
-    let rank_img = get_rank_img(artifact_scores, None)?;
+    let rank_img = consts::get_grade_image(artifact_scores, None)?;
     image::imageops::overlay(&mut image, &rank_img, 1810, 355);
     let total_score = locale::Locale::from(locale::json!({
         "en": "Total Score",
@@ -884,61 +869,6 @@ fn get_score(data: &Reliquary, counter: &ScoreCounter) -> (f64, Vec<String>) {
         }
     }
     (score, used.iter().map(|x| x.id().to_string()).collect())
-}
-
-struct Scores {
-    ss: f64,
-    s: f64,
-    a: f64,
-}
-
-fn get_scores_for_part(part: Option<ReliquaryType>) -> Scores {
-    if part.is_none() {
-        return Scores {
-            ss: 220.0,
-            s: 200.0,
-            a: 180.0,
-        };
-    }
-    let part = part.unwrap();
-    match part {
-        ReliquaryType::Circlet => Scores {
-            ss: 40.0,
-            s: 35.0,
-            a: 30.0,
-        },
-        ReliquaryType::Flower | ReliquaryType::Feather => Scores {
-            ss: 50.0,
-            s: 45.0,
-            a: 40.0,
-        },
-        ReliquaryType::Sands => Scores {
-            ss: 45.0,
-            s: 40.0,
-            a: 35.0,
-        },
-        ReliquaryType::Goblet => Scores {
-            ss: 45.0,
-            s: 40.0,
-            a: 37.0,
-        },
-    }
-}
-
-fn get_rank_img(score: f64, part: Option<ReliquaryType>) -> Option<DynamicImage> {
-    let scores = get_scores_for_part(part);
-    let score = if score >= scores.ss {
-        "SS".to_string()
-    } else if score >= scores.s {
-        "S".to_string()
-    } else if score >= scores.a {
-        "A".to_string()
-    } else {
-        "B".to_string()
-    };
-    let mut image = image::open(format!("assets/grades/{}.png", score)).ok()?;
-    image = image.resize(45, 45, FilterType::Nearest);
-    Some(image)
 }
 
 fn is_not_mains(name: CharacterId) -> bool {
