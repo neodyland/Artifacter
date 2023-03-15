@@ -9,3 +9,5 @@ Rust言語に書き換えられたGenshin Artifacter
 rustで書かれているため、メモリの消費が段違いに少ないです。
 3. 武器やキャラクターの画像データが自動更新  
 頻繁に更新されているデータを取得してくることで、自動更新されています。
+# Webサイト
+https://artifacter.neody.land/
