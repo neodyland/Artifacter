@@ -14,7 +14,9 @@ use serde_json::Value;
 use serenity::gateway::ActivityData;
 use tokio::sync::Mutex;
 
+mod logger;
 mod util;
+
 struct Data {
     pub api: EnkaNetwork,
     pub icons: IconData,
@@ -118,7 +120,7 @@ async fn event_event_handler(
             ctx,
             data_about_bot,
         } => {
-            println!("{} is connected!", data_about_bot.user.name);
+            log::info!("{} is connected!", data_about_bot.user.name);
             let ctx = Arc::new(ctx.to_owned());
             if data.lock().await.looping == false {
                 data.lock().await.looping = true;
@@ -223,6 +225,7 @@ async fn event_event_handler(
                                 return Ok(());
                             }
                             let character = character.unwrap().to_owned().to_owned();
+                            let now = std::time::Instant::now();
                             let img = gen::generate(
                                 character.to_owned(),
                                 &data.api,
@@ -233,8 +236,14 @@ async fn event_event_handler(
                             )
                             .await;
                             if img.is_none() {
+                                log::error!(
+                                    "Failed to generate image for uid: {} and cid: {}",
+                                    uid,
+                                    character.id.0
+                                );
                                 return Ok(());
                             }
+                            log::info!("Generated image in {}ms", now.elapsed().as_millis());
                             let img = img.unwrap();
                             let footer = CreateEmbedFooter::new(format!("{}", uid));
                             let filename = format!("image.{}", current.2.to_string());
@@ -288,6 +297,7 @@ async fn event_event_handler(
 }
 
 fn main() -> anyhow::Result<()> {
+    logger::logger_init();
     dotenv::dotenv().ok();
     let api = EnkaNetwork::new()?;
     tokio::runtime::Builder::new_current_thread()
