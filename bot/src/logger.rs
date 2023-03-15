@@ -1,13 +1,14 @@
 use env_logger::Builder;
+use log::LevelFilter;
 use std::env;
 
 pub fn logger_init() {
+    let level = env::var("LOG_LEVEL")
+        .unwrap_or("INFO".to_string())
+        .parse()
+        .unwrap();
     Builder::new()
-        .filter_level(
-            env::var("LOG_LEVEL")
-                .unwrap_or("INFO".to_string())
-                .parse()
-                .unwrap(),
-        )
+        .filter_level(LevelFilter::Warn)
+        .filter_module("artifacter", level)
         .init();
 }
