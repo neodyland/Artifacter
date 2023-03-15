@@ -300,7 +300,8 @@ fn main() -> anyhow::Result<()> {
     logger::logger_init();
     dotenv::dotenv().ok();
     let api = EnkaNetwork::new()?;
-    tokio::runtime::Builder::new_current_thread()
+    tokio::runtime::Builder::new_multi_thread()
+        .worker_threads(10)
         .enable_all()
         .build()?
         .block_on(_main(api))?;
