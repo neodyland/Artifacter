@@ -9,7 +9,7 @@ name = "artifacter_py"
 crate-type = ["cdylib"]
 
 [dependencies]
-enkanetwork-rs = { git = "https://github.com/neodyland/enkanetwork-rs", version = "0.0.3" }
+enkanetwork-rs = { git = "https://github.com/neodyland/enkanetwork-rs", version = "0.0.4" }
 pyo3 = "0.18.1"
 pyo3-asyncio = { version = "0.18.0", features = ["attributes","tokio-runtime"] }
 tokio = { version = "1.26.0", features = ["full"] }

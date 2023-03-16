@@ -1,4 +1,4 @@
 rm -rf build
-cargo build -r
+cargo build -r --bin artifacter
 mkdir -p build
-mv target/release/artifacter build/art
+cp target/release/artifacter build/art

@@ -9,7 +9,7 @@ edition = "2021"
 image = "0.24.5"
 imageproc = "0.23.0"
 rusttype = "0.9.3"
-enkanetwork-rs = { git = "https://github.com/neodyland/enkanetwork-rs", version = "0.0.3" }
+enkanetwork-rs = { git = "https://github.com/neodyland/enkanetwork-rs", version = "0.0.4" }
 serde_json = "1.0.94"
 serde = { version = "1.0.155", features = ["derive"] }
 anyhow = "1.0.69"
