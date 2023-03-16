@@ -8,7 +8,7 @@ edition = "2021"
 [dependencies]
 anyhow = "1.0.69"
 dotenv = "0.15.0"
-enkanetwork-rs = { git = "https://github.com/neodyland/enkanetwork-rs", version = "0.0.4" }
+enkanetwork-rs = { path = "../enkanetwork-rs" }
 serde_json = "1.0.94"
 tokio = { version = "1.26.0", features = ["full"] }
 log = "0.4.17"

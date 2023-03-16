@@ -1,3 +1,4 @@
+git submodule sync
 rm -rf build
 cargo build -r --bin artifacter
 mkdir -p build

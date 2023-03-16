@@ -8,7 +8,7 @@ edition = "2021"
 [dependencies]
 axum = "0.6.11"
 tokio = { version = "1.26.0", features = ["full"] }
-enkanetwork-rs = { git = "https://github.com/neodyland/enkanetwork-rs", version = "0.0.4" }
+enkanetwork-rs = { path = "../enkanetwork-rs" }
 anyhow = "1.0.69"
 gen = { path = "../lib" }
 serde = { version = "1.0.156", features = ["derive"] }
