@@ -1,0 +1,18 @@
+[package]
+name = "artifacter"
+version = "0.1.0"
+edition = "2021"
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[dependencies]
+anyhow = "1.0.69"
+dotenv = "0.15.0"
+enkanetwork-rs = { git = "https://github.com/neodyland/enkanetwork-rs", version = "0.0.3" }
+line-bot-sdk-rust = { version = "0.1", features = ["rocket_support"] }
+rocket = "0.4"
+serde_json = "1.0.94"
+tokio = { version = "1.26.0", features = ["full"] }
+
+[dependencies.gen]
+path = "../lib"
