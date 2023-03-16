@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>WebAssembly test</title>
+<script crossorigin src="https://unpkg.com/react@18/umd/react.development.js"></script>
+<script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
+<script type="module">
+    import wasm from "/artifacter_wasm.js";
+    const { w_load, get_characters, generate } = await wasm();
+    await w_load();
+    const e = React.createElement;
+    ReactDOM.createRoot(document.getElementById("root")).render(
+        e("div", null,
+            e("button", { onClick: () => load() }, "Load"),
+            e("button", { onClick: () => get_characters() }, "Get characters"),
+            e("button", { onClick: () => generate() }, "Generate")
+        )
+    );
+</script>
+</head>
+<body>
+    <div id="root">
+
+    </div>
+</body>
+</html>
