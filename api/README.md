@@ -27,3 +27,18 @@ RETURNS:
 # リクエスト例
 `/v0/generate?uid=827106332&cid=10000069&counter=ElementalMastery`  
 `/v0/generate?uid=827106332&cid=10000069&counter=ElementalMastery&lang=En`
+
+# ビルド中のエラーについて
+もしも、ビルド中にエラーが出た場合は以下のようにビルド用ライブラリをインストールしてください。
+```sh
+sudo apt update
+sudo apt install gcc clang g++ c++ pkg-config cmake libfontconfig-dev -y
+```
+これでも解消されない場合は[公式サイト](https://artifacter.neody.land/)よりDiscordサーバーに参加し、お問い合わせください。
+
+# 対応OS
+動作確認済みのOS一覧です
+- Windows11(x86-64)
+- MacOS13(x86-64)
+- Ubuntu20.08(arm64)
+- Ubuntu20.08(x86-64)
