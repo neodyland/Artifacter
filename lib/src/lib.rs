@@ -18,20 +18,18 @@ mod default;
 pub mod locale;
 pub mod types;
 pub use default::get_default;
+use serde::Deserialize;
 
+#[derive(Debug, Clone, Deserialize)]
 pub enum ImageFormat {
     Png,
     Jpeg,
     Pixel,
 }
 
-impl Clone for ImageFormat {
-    fn clone(&self) -> Self {
-        match self {
-            ImageFormat::Png => ImageFormat::Png,
-            ImageFormat::Jpeg => ImageFormat::Jpeg,
-            ImageFormat::Pixel => ImageFormat::Pixel,
-        }
+impl Default for ImageFormat {
+    fn default() -> Self {
+        ImageFormat::Png
     }
 }
 
@@ -69,7 +67,7 @@ impl FromStr for ImageFormat {
     }
 }
 
-#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Deserialize)]
 pub enum ScoreCounter {
     Normal,
     Hp,
@@ -126,9 +124,22 @@ impl FromStr for ScoreCounter {
     }
 }
 
+impl Default for ScoreCounter {
+    fn default() -> Self {
+        ScoreCounter::Normal
+    }
+}
+
+#[derive(Debug, Deserialize)]
 pub enum Lang {
     En,
     Ja,
+}
+
+impl Default for Lang {
+    fn default() -> Self {
+        Lang::Ja
+    }
 }
 
 impl ToString for Lang {
@@ -161,7 +172,6 @@ pub async fn generate(
     counter: ScoreCounter,
     format: ImageFormat,
 ) -> Option<Vec<u8>> {
-    let format = Into::<Option<ImageOutputFormat>>::into(format);
     let lang = &raw_lang.to_string();
     let font = include_bytes!("../../assets/font.ttf");
     let font = Font::try_from_bytes(font)?;
@@ -783,6 +793,11 @@ pub async fn generate(
         &font,
         &kind,
     );
+    convert(image, format)
+}
+
+pub fn convert(image: DynamicImage, format: ImageFormat) -> Option<Vec<u8>> {
+    let format = Into::<Option<ImageOutputFormat>>::into(format);
     if let Some(format) = format {
         let mut buf = BufWriter::new(Cursor::new(Vec::new()));
         image.write_to(&mut buf, format).ok()?;

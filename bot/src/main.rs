@@ -92,15 +92,39 @@ async fn build(
     }
     let footer = CreateEmbedFooter::new(format!("{}", uid));
     let embed = CreateEmbed::default()
-        .title(
-            Locale::from(json!({"ja":"キャラクターを選択してください","en": "Select a character"}))
-                .get(&lang),
-        )
+        .title(format!(
+            "{}({},{})",
+            user.profile().nickname(),
+            user.profile().level(),
+            user.profile().world_level()
+        ))
         .footer(footer)
-        .color(convert_rgb([0x00, 0xff, 0x00]));
-    let builder = CreateReply::default()
+        .color(convert_rgb([0x00, 0xff, 0x00]))
+        .description(user.profile().signature())
+        .image("attachment://name_card.png")
+        .fields(vec![(
+            Locale::from(json!(
+                {"ja": "アチーブメント", "en": "Achievements"}
+            ))
+            .get(&lang),
+            user.profile().achievement().to_string(),
+            false,
+        )]);
+    let card = gen::convert(
+        user.profile().name_card().image(&api).await?,
+        ImageFormat::Png,
+    );
+    let attachment = if card.is_some() {
+        Some(CreateAttachment::bytes(card.unwrap(), "name_card.png"))
+    } else {
+        None
+    };
+    let mut builder = CreateReply::default()
         .components(create_components(characters, api, &lang, &uid))
         .embed(embed);
+    if attachment.is_some() {
+        builder = builder.attachment(attachment.unwrap());
+    }
     ctx.send(builder).await?;
     Ok(())
 }
