@@ -1,3 +1,4 @@
+use js_sys::{Array, JsString, Number};
 use wasm_bindgen::prelude::*;
 
 // When the `wee_alloc` feature is enabled, use `wee_alloc` as the global
@@ -6,12 +7,11 @@ use wasm_bindgen::prelude::*;
 #[global_allocator]
 static ALLOC: wee_alloc::WeeAlloc = wee_alloc::WeeAlloc::INIT;
 
+use base64::{engine::general_purpose, Engine as _};
 use enkanetwork_rs::{CharacterId, EnkaNetwork, IconData};
 use gen::{generate as rs_generate, ImageFormat, Lang, ScoreCounter};
 use once_cell::sync::OnceCell;
 use std::str::FromStr;
-use itertools::join;
-use base64::{Engine as _, engine::general_purpose};
 
 static ENKA: OnceCell<EnkaNetwork> = OnceCell::new();
 
@@ -19,38 +19,58 @@ static ICON_DATA: OnceCell<IconData> = OnceCell::new();
 
 /// Load
 #[wasm_bindgen]
-pub async fn w_load() -> Result<(),String> {
-    let enka = EnkaNetwork::new().map_err(|e| e.to_string())?;
+pub async fn w_load() -> Result<JsValue, JsValue> {
+    console_error_panic_hook::set_once();
+    let enka = EnkaNetwork::new_wasm()
+        .await
+        .map_err(|e| JsError::new(&e.to_string()))?;
     let icon_data = enka.icon_data().await;
     let e = ENKA.set(enka);
     if e.is_err() {
-        return Err("EnkaNetwork already loaded".to_string());
+        return Err(JsError::new("EnkaNetwork already loaded").into());
     }
     let e = ICON_DATA.set(icon_data);
     if e.is_err() {
-        return Err("IconData already loaded".to_string());
+        return Err(JsError::new("IconData already loaded").into());
     }
-    Ok(())
+    Ok(JsValue::UNDEFINED)
 }
 
 /// get characters
 #[wasm_bindgen]
-pub async fn get_characters(uid: i32) -> Result<String,String> {
-    let enka = ENKA
-        .get()
-        .ok_or("EnkaNetwork not loaded")?;
-    let user = enka
-        .simple(uid)
-        .await?;
-    Ok(join(user
+pub async fn get_characters(uid: i32, lang: String) -> Result<JsValue, JsValue> {
+    let lang = Lang::from(lang.as_str());
+    let enka = ENKA.get().ok_or(JsError::new("EnkaNetwork not loaded"))?;
+    let user = enka.simple(uid).await.map_err(|e| JsError::new(&e))?;
+    let v = &user
         .profile()
         .show_character_list()
         .to_owned()
         .iter()
-        .map(|x| x.0)
-        .collect::<Vec<_>>(),","))
+        .map(|x| {
+            (
+                x.0,
+                user.character(x.to_owned())
+                    .unwrap()
+                    .name(&enka, &lang.to_string())
+                    .unwrap_or("Unknown"),
+            )
+        })
+        .collect::<Vec<_>>();
+    let array = Array::new();
+    for x in v {
+        array.push(
+            &[
+                &JsValue::from(Number::from(x.0.to_owned())),
+                &JsValue::from(JsString::from(x.1.to_owned())),
+            ]
+            .iter()
+            .cloned()
+            .collect::<Array>(),
+        );
+    }
+    Ok(array.into())
 }
-
 /// generater
 #[wasm_bindgen]
 pub async fn generate(
@@ -59,24 +79,18 @@ pub async fn generate(
     lang: String,
     format: String,
     counter: String,
-) -> Result<String,String> {
+) -> Result<JsValue, JsValue> {
     let lang = Lang::from(lang.as_str());
-    let enka = ENKA
-        .get()
-        .ok_or("EnkaNetwork not loaded")?;
-    let icon_data = ICON_DATA
-        .get()
-        .ok_or("IconData not loaded")?;
-    let user = enka
-        .simple(uid)
-        .await?;
+    let enka = ENKA.get().ok_or(JsError::new("EnkaNetwork not loaded"))?;
+    let icon_data = ICON_DATA.get().ok_or(JsError::new("IconData not loaded"))?;
+    let user = enka.simple(uid).await.map_err(|e| JsError::new(&e))?;
     let character = user.character(CharacterId(cid));
     if character.is_none() {
-        return Err("Character not found".to_string());
+        return Err(JsError::new("Character not found").into());
     }
     let character = character.unwrap();
-    let counter = ScoreCounter::from_str(counter.as_str())?;
-    let format = ImageFormat::from_str(format.as_str())?;
+    let counter = ScoreCounter::from_str(counter.as_str()).map_err(|e| JsError::new(&e))?;
+    let format = ImageFormat::from_str(format.as_str()).map_err(|e| JsError::new(&e))?;
     let result = rs_generate(
         character.to_owned(),
         enka,
@@ -87,7 +101,10 @@ pub async fn generate(
     )
     .await;
     if result.is_none() {
-        return Err("Generate failed".to_string());
+        return Err(JsError::new("Generate failed").into());
     }
-    Ok(general_purpose::STANDARD_NO_PAD.encode(result.unwrap()))
+    let result = result.unwrap();
+    let str = general_purpose::STANDARD_NO_PAD.encode(result.as_slice());
+    let res = JsString::from(str);
+    Ok(res.into())
 }

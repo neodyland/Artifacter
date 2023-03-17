@@ -1,27 +1,67 @@
 <!DOCTYPE html>
 <html>
-<head>
-<meta charset="utf-8">
-<title>WebAssembly test</title>
-<script crossorigin src="https://unpkg.com/react@18/umd/react.development.js"></script>
-<script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
-<script type="module">
-    import wasm from "/artifacter_wasm.js";
-    const { w_load, get_characters, generate } = await wasm();
-    await w_load();
-    const e = React.createElement;
-    ReactDOM.createRoot(document.getElementById("root")).render(
-        e("div", null,
-            e("button", { onClick: () => load() }, "Load"),
-            e("button", { onClick: () => get_characters() }, "Get characters"),
-            e("button", { onClick: () => generate() }, "Generate")
-        )
-    );
-</script>
-</head>
-<body>
-    <div id="root">
 
-    </div>
+<head>
+    <meta charset="utf-8">
+    <title>WebAssembly test</title>
+    <script type="module">
+        import wasm, * as W from "/artifacter_wasm.js";
+        await wasm();
+        const { w_load, get_characters: get_characters_raw, generate: generate_raw } = W;
+        await w_load();
+        function get_characters() {
+            const uid = document.getElementById("uid").value;
+            const lang = document.getElementById("lang").value;
+            const characters = get_characters_raw(Number(uid),lang);
+            return characters;
+        }
+        function generate() {
+            const uid = document.getElementById("uid").value;
+            const cid = document.getElementById("cid").value;
+            const lang = document.getElementById("lang").value;
+            const format = document.getElementById("format").value;
+            const counter = document.getElementById("counter").value;
+            const image = generate_raw(
+                Number(uid),
+                Number(cid),
+                lang,
+                format,
+                counter,
+            );
+            return image;
+        }
+        async function get() {
+            const characters = await get_characters();
+            const ul = document.querySelector("ul");
+            ul.innerHTML = "";
+            for (const character of characters) {
+                const li = document.createElement("li");
+                li.textContent = character;
+                ul.appendChild(li);
+            }
+        }
+        async function gen() {
+            const image = generate();
+            document.querySelector("img")
+                .setAttribute("src", "data:image/png;base64," + await image);
+        }
+        document.getElementById("get").addEventListener("click", get);
+        document.getElementById("gen").addEventListener("click", gen);
+    </script>
+</head>
+
+<body>
+    <input type="text" id="uid" value="827106332" />
+    <button id="get">Get characters</button>
+    <input type="text" id="cid" />
+    <ul>
+
+    </ul>
+    <input type="text" id="lang" value="Ja" />
+    <input type="text" id="format" value="png" />
+    <input type="text" id="counter" value="Normal" />
+    <button id="gen">Generate</button>
+    <img />
 </body>
+
 </html>

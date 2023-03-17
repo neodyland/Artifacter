@@ -23,7 +23,7 @@ pub fn create_components(
         let name = name.as_ref().unwrap().to_owned();
         options.push(
             CreateSelectMenuOption::new(name.clone(), format!("{}", &character.id.0))
-                .description(format!("{}Lv",character.level)),
+                .description(format!("{}Lv", character.level)),
         )
     }
     let chara = CreateSelectMenu::new("character", CreateSelectMenuKind::String { options })
