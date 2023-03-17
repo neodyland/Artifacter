@@ -5,7 +5,7 @@ use gen::{generate, ImageFormat, Lang, ScoreCounter};
 
 fn main() -> anyhow::Result<()> {
     let api = EnkaNetwork::new()?;
-    tokio::runtime::Builder::new_current_thread()
+    tokio::runtime::Builder::new_multi_thread()
         .enable_all()
         .build()?
         .block_on(_main(api))
@@ -13,19 +13,22 @@ fn main() -> anyhow::Result<()> {
 
 async fn _main(api: EnkaNetwork) -> anyhow::Result<()> {
     let icons = IconData::load(&api).await;
-    let uid = 882325070;
+    let uid = 827106332;
     let user = api.simple(uid).await;
     if user.is_err() {
+        println!("Error: {}", user.err().unwrap());
         return Ok(());
     }
     let user = user.unwrap();
     let charas = user.profile().show_character_list();
-    let character_id = charas.get(1);
+    let character_id = charas.get(6);
     if character_id.is_none() {
+        println!("Error: No character");
         return Ok(());
     }
     let character = user.character(*character_id.unwrap());
     if character.is_none() {
+        println!("Error: No character");
         return Ok(());
     }
     let character = character.unwrap();
@@ -35,7 +38,7 @@ async fn _main(api: EnkaNetwork) -> anyhow::Result<()> {
         &Lang::Ja,
         &icons,
         ScoreCounter::Normal,
-        ImageFormat::Pixel,
+        ImageFormat::Png,
     )
     .await;
     if img.is_none() {

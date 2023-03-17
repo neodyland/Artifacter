@@ -246,9 +246,19 @@ pub async fn generate(
         if let Some(c) = icons.image("Const.svg", 5.0) {
             image::imageops::overlay(&mut base_img, &c, 0, 0);
         }
+        let unique_color = data.element.color_rgb();
         if !clock.is_unlock() {
             for p in img.pixels_mut() {
                 p.0 = [100, 100, 100, p.0[3]];
+            }
+        } else {
+            for p in img.pixels_mut() {
+                if p.0[0] == 255 && p.0[1] == 255 && p.0[2] == 255 {
+                    p.0 = [255, 255, 255, p.0[3]];
+                    p[0] = unique_color[0];
+                    p[1] = unique_color[1];
+                    p[2] = unique_color[2];
+                }
             }
         }
         let img = resize(&img, 40, 40, image::imageops::Triangle);
