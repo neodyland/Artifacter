@@ -3,136 +3,27 @@ use std::{collections::HashMap, env, sync::Arc};
 use crate::util::{create_components, json, Locale};
 use enkanetwork_rs::{EnkaNetwork, IconData};
 use gen::{ImageFormat, Lang, ScoreCounter};
-use poise::{
-    serenity_prelude::{
+use poise::serenity_prelude::{
         ComponentInteractionDataKind, CreateAttachment, CreateEmbed, CreateEmbedFooter,
         EditInteractionResponse, Interaction,
-    },
-    CreateReply,
 };
-use serde_json::Value;
 use serenity::gateway::ActivityData;
 use tokio::sync::Mutex;
 
 mod logger;
 mod util;
+mod commands;
 
-struct Data {
+use util::{convert_rgb,get_score_calc};
+
+pub struct Data {
     pub api: EnkaNetwork,
     pub icons: IconData,
     pub cache: HashMap<u64, (ScoreCounter, u32, ImageFormat)>,
     pub looping: bool,
 }
-type Error = Box<dyn std::error::Error + Send + Sync>;
-type Context<'a> = poise::Context<'a, Arc<Mutex<Data>>, Error>;
-
-fn get_score_calc(s: &ScoreCounter) -> Value {
-    match s {
-        ScoreCounter::Normal => {
-            json!({"ja": "会心率 × 2 + 会心ダメージ + 攻撃力(%)", "en": "Critical Rate × 2 + Critical Damage + Attack(%)"})
-        }
-        ScoreCounter::Hp => {
-            json!({"ja": "会心率 × 2 + 会心ダメージ + HP(%)", "en": "Critical Rate × 2 + Critical Damage + HP(%)"})
-        }
-        ScoreCounter::Def => {
-            json!({"ja": "会心率 × 2 + 会心ダメージ + 防御(%)", "en": "Critical Rate × 2 + Critical Damage + Defense(%)"})
-        }
-        ScoreCounter::ElementalMastery => {
-            json!({"ja": "会心率 × 2 + 会心ダメージ + (熟知 ÷ 4)", "en": "Critical Rate × 2 + Critical Damage + (Elemental Mastery ÷ 4)"})
-        }
-        ScoreCounter::ChargeEfficiency => {
-            json!({"ja": "会心率 × 2 + 会心ダメージ + 元素チャージ効率", "en": "Critical Rate × 2 + Critical Damage + Elemental Charge Efficiency"})
-        }
-    }
-}
-
-/// fetch data from User Id
-#[poise::command(
-    slash_command,
-    description_localized("ja", "UIDからデータを取得します")
-)]
-async fn build(
-    ctx: Context<'_>,
-    #[description = "UID"]
-    #[description_localized("ja", "ユーザーID")]
-    uid: i32,
-) -> Result<(), Error> {
-    let locale = ctx.locale().unwrap_or("ja");
-    let lang = Lang::from(locale);
-    if uid.to_string().len() != 9 {
-        let msg = CreateReply::new().content(
-            Locale::from(json!({
-                "ja": "ユーザーIDは9桁の数字でなければなりません。",
-                "en": "User ID must be a 9-digit number.",
-            }))
-            .get(&lang),
-        );
-        ctx.send(msg).await?;
-        return Ok(());
-    }
-    ctx.defer().await?;
-    let data = ctx.data();
-    let api = &data.lock().await.api;
-    let user = api.simple(uid).await?;
-    let ids = user.profile().show_character_list();
-    let characters = ids.iter().map(|id| user.character(*id)).collect::<Vec<_>>();
-    let characters = characters
-        .iter()
-        .filter_map(|c| c.as_ref())
-        .collect::<Vec<_>>();
-    let characters = characters
-        .iter()
-        .map(|c| c.to_owned().to_owned())
-        .collect::<Vec<_>>();
-    if characters.is_empty() {
-        let msg = CreateReply::new().content(Locale::from(
-            json!({"ja":"キャラクターが登録されていません。(もしくは非公開になっています)","en": "No character is set(Or it may be private)"})).get(&lang));
-        ctx.send(msg).await?;
-        return Ok(());
-    }
-    let footer = CreateEmbedFooter::new(format!("{}", uid));
-    let embed = CreateEmbed::default()
-        .title(format!(
-            "{}({},{})",
-            user.profile().nickname(),
-            user.profile().level(),
-            user.profile().world_level()
-        ))
-        .footer(footer)
-        .color(convert_rgb([0x00, 0xff, 0x00]))
-        .description(user.profile().signature())
-        .image("attachment://name_card.png")
-        .fields(vec![(
-            Locale::from(json!(
-                {"ja": "アチーブメント", "en": "Achievements"}
-            ))
-            .get(&lang),
-            user.profile().achievement().to_string(),
-            false,
-        )]);
-    let card = gen::convert(
-        user.profile().name_card().image(&api).await?,
-        ImageFormat::Png,
-    );
-    let attachment = if card.is_some() {
-        Some(CreateAttachment::bytes(card.unwrap(), "name_card.png"))
-    } else {
-        None
-    };
-    let mut builder = CreateReply::default()
-        .components(create_components(characters, api, &lang, &uid))
-        .embed(embed);
-    if attachment.is_some() {
-        builder = builder.attachment(attachment.unwrap());
-    }
-    ctx.send(builder).await?;
-    Ok(())
-}
-
-fn convert_rgb(rgb: [u8; 3]) -> u32 {
-    let [r, g, b] = rgb;
-    (r as u32) << 16 | (g as u32) << 8 | b as u32
-}
+pub type Error = Box<dyn std::error::Error + Send + Sync>;
+pub type Context<'a> = poise::Context<'a, Arc<Mutex<Data>>, Error>;
 
 async fn event_event_handler(
     event: &serenity::all::FullEvent,
@@ -343,7 +234,7 @@ async fn _main(api: EnkaNetwork) -> anyhow::Result<()> {
     };
     let frame = poise::Framework::new(
         poise::FrameworkOptions {
-            commands: vec![build()],
+            commands: vec![commands::build()],
             listener: |event, framework, user_data| {
                 Box::pin(event_event_handler(event, framework, user_data))
             },

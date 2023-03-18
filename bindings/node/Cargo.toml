@@ -10,8 +10,8 @@ crate-type = ["cdylib"]
 # Default enable napi4 feature, see https://nodejs.org/api/n-api.html#node-api-version-matrix
 napi = { version = "2.11.1", default-features = false, features = ["napi4","tokio_rt"] }
 napi-derive = "2.11.0"
-enkanetwork-rs = { path = "../enkanetwork-rs" }
-gen = { path = "../lib" }
+enkanetwork-rs = { path = "../../enkanetwork-rs" }
+gen = { path = "../../lib/gen" }
 once_cell = "1.17.1"
 tokio = { version = "*", features = ["full"] }
 

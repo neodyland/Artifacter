@@ -19,7 +19,7 @@ pub struct Dupe {
 
 impl Dupe {
     pub fn new() -> Self {
-        serde_json::from_str(include_str!("../../assets/dupe.json")).unwrap()
+        serde_json::from_str(include_str!("../../../assets/dupe.json")).unwrap()
     }
     pub fn get(&self, s: &str) -> Option<HashMap<String, Vec<Vec<f64>>>> {
         Some(match s {
@@ -54,7 +54,7 @@ pub struct Subop {
 
 impl Subop {
     pub fn new() -> Self {
-        serde_json::from_str(include_str!("../../assets/subop.json")).unwrap()
+        serde_json::from_str(include_str!("../../../assets/subop.json")).unwrap()
     }
     pub fn get(&self, s: &str) -> Option<HashMap<String, Vec<f64>>> {
         Some(match s {

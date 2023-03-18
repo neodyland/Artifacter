@@ -173,7 +173,7 @@ pub async fn generate(
     format: ImageFormat,
 ) -> Option<Vec<u8>> {
     let lang = &raw_lang.to_string();
-    let font = include_bytes!("../../assets/font.ttf");
+    let font = include_bytes!("../../../assets/font.ttf");
     let font = Font::try_from_bytes(font)?;
     let mut image = consts::get_base_image(&data.element)?;
     let character_image = data.image_gacha_splash(api).await?;

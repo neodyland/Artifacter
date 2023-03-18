@@ -1,8 +1,9 @@
 use enkanetwork_rs::{Character, EnkaNetwork};
-use gen::Lang;
+use gen::{Lang, ScoreCounter};
 use poise::serenity_prelude::{
     CreateActionRow, CreateButton, CreateSelectMenu, CreateSelectMenuKind, CreateSelectMenuOption,
 };
+use serde_json::Value;
 
 pub use gen::locale::Locale;
 pub use serde_json::json;
@@ -93,4 +94,30 @@ pub fn create_components(
         .label("終了"),*/
     ]);
     vec![chara, score, format, button]
+}
+
+pub fn convert_rgb(rgb: [u8; 3]) -> u32 {
+    let [r, g, b] = rgb;
+    (r as u32) << 16 | (g as u32) << 8 | b as u32
+}
+
+
+pub fn get_score_calc(s: &ScoreCounter) -> Value {
+    match s {
+        ScoreCounter::Normal => {
+            json!({"ja": "会心率 × 2 + 会心ダメージ + 攻撃力(%)", "en": "Critical Rate × 2 + Critical Damage + Attack(%)"})
+        }
+        ScoreCounter::Hp => {
+            json!({"ja": "会心率 × 2 + 会心ダメージ + HP(%)", "en": "Critical Rate × 2 + Critical Damage + HP(%)"})
+        }
+        ScoreCounter::Def => {
+            json!({"ja": "会心率 × 2 + 会心ダメージ + 防御(%)", "en": "Critical Rate × 2 + Critical Damage + Defense(%)"})
+        }
+        ScoreCounter::ElementalMastery => {
+            json!({"ja": "会心率 × 2 + 会心ダメージ + (熟知 ÷ 4)", "en": "Critical Rate × 2 + Critical Damage + (Elemental Mastery ÷ 4)"})
+        }
+        ScoreCounter::ChargeEfficiency => {
+            json!({"ja": "会心率 × 2 + 会心ダメージ + 元素チャージ効率", "en": "Critical Rate × 2 + Critical Damage + Elemental Charge Efficiency"})
+        }
+    }
 }

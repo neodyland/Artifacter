@@ -22,8 +22,8 @@ console_error_panic_hook = { version = "0.1.6", optional = true }
 # compared to the default allocator's ~10K. It is slower than the default
 # allocator, however.
 wee_alloc = { version = "0.4.5", optional = true }
-enkanetwork-rs = { path = "../enkanetwork-rs" }
-gen = { path = "../lib" }
+enkanetwork-rs = { path = "../../enkanetwork-rs" }
+gen = { path = "../../lib/gen" }
 once_cell = "1.17.1"
 wasm-bindgen-futures = "0.4.34"
 base64 = "0.21.0"

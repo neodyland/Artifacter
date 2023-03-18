@@ -25,4 +25,4 @@ git = "https://github.com/serenity-rs/serenity"
 branch = "next"
 
 [dependencies.gen]
-path = "../lib"
+path = "../lib/gen"
