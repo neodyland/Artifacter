@@ -1,5 +1,5 @@
 FROM rust:latest AS builder
-RUN apt-get update -y && apt-get install -y clang gcc g++ make cmake c++ tesseract-ocr libtesseract-dev
+RUN apt-get update -y && apt-get install -y clang gcc g++ cmake tesseract-ocr libtesseract-dev
 COPY . /app
 WORKDIR /app
 RUN sh build.sh
