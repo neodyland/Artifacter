@@ -4,17 +4,17 @@ use crate::util::{create_components, json, Locale};
 use enkanetwork_rs::{EnkaNetwork, IconData};
 use gen::{ImageFormat, Lang, ScoreCounter};
 use poise::serenity_prelude::{
-        ComponentInteractionDataKind, CreateAttachment, CreateEmbed, CreateEmbedFooter,
-        EditInteractionResponse, Interaction,
+    ComponentInteractionDataKind, CreateAttachment, CreateEmbed, CreateEmbedFooter,
+    EditInteractionResponse, Interaction,
 };
 use serenity::gateway::ActivityData;
 use tokio::sync::Mutex;
 
+mod commands;
 mod logger;
 mod util;
-mod commands;
 
-use util::{convert_rgb,get_score_calc};
+use util::{convert_rgb, get_score_calc};
 
 pub struct Data {
     pub api: EnkaNetwork,
@@ -186,6 +186,99 @@ async fn event_event_handler(
                         }
                     }
                     ComponentInteractionDataKind::Button => {
+                        if custom_id == "build" {
+                            select_menu.defer(&ctx.http).await?;
+                            let uid = select_menu.message.embeds.first();
+                            if uid.is_none() {
+                                return Ok(());
+                            }
+                            let uid = &uid.unwrap().footer;
+                            if uid.is_none() {
+                                return Ok(());
+                            }
+                            let uid = &uid.as_ref().unwrap().text.parse::<i32>();
+                            if uid.is_err() {
+                                return Ok(());
+                            }
+                            let uid = uid.as_ref().unwrap();
+                            let data = data.lock().await;
+                            let user = data.api.simple(*uid).await?;
+                            let ids = user.profile().show_character_list();
+                            let characters =
+                                ids.iter().map(|id| user.character(*id)).collect::<Vec<_>>();
+                            let characters = characters
+                                .iter()
+                                .filter_map(|c| c.as_ref())
+                                .collect::<Vec<_>>();
+                            let characters = characters
+                                .iter()
+                                .map(|c| c.to_owned().to_owned())
+                                .collect::<Vec<_>>();
+                            if characters.is_empty() {
+                                let msg = EditInteractionResponse::new().components(vec![]).embeds(vec![]).content(Locale::from(
+                                    json!({"ja":"キャラクターが登録されていません。(もしくは非公開になっています)","en": "No character is set(Or it may be private)"})).get(&lang));
+                                select_menu.edit_response(&ctx.http, msg).await?;
+                                return Ok(());
+                            }
+                            let footer = CreateEmbedFooter::new(format!("{}", uid));
+                            let embed = CreateEmbed::default()
+                                .title(format!(
+                                    "{}({},{})",
+                                    user.profile().nickname(),
+                                    user.profile().level(),
+                                    user.profile().world_level()
+                                ))
+                                .footer(footer)
+                                .color(convert_rgb([0x00, 0xff, 0x00]))
+                                .description(user.profile().signature())
+                                .image("attachment://name_card.png")
+                                .fields(vec![
+                                    (
+                                        Locale::from(json!(
+                                            {"ja": "アチーブメント", "en": "Achievements"}
+                                        ))
+                                        .get(&lang),
+                                        user.profile().achievement().to_string(),
+                                        true,
+                                    ),
+                                    (
+                                        Locale::from(json!(
+                                            {"ja": "螺旋", "en": "Spiral Abyss"}
+                                        ))
+                                        .get(&lang),
+                                        format!(
+                                            "{}{}{}{}",
+                                            user.profile().tower_floor_index(),
+                                            Locale::from(json!(
+                                                {"ja": "階", "en": "F"}
+                                            ))
+                                            .get(&lang),
+                                            user.profile().tower_level_index(),
+                                            Locale::from(json!(
+                                                {"ja": "層", "en": "L"}
+                                            ))
+                                            .get(&lang)
+                                        ),
+                                        true,
+                                    ),
+                                ]);
+                            let card = gen::convert(
+                                user.profile().name_card().image(&data.api).await?,
+                                ImageFormat::Png,
+                            );
+                            let attachment = if card.is_some() {
+                                Some(CreateAttachment::bytes(card.unwrap(), "name_card.png"))
+                            } else {
+                                None
+                            };
+                            let mut builder = EditInteractionResponse::default()
+                                .components(create_components(characters, &data.api, &lang, &uid))
+                                .embed(embed);
+                            if attachment.is_some() {
+                                builder = builder.new_attachment(attachment.unwrap());
+                            }
+                            select_menu.edit_response(&ctx.http, builder).await?;
+                        }
                         /* if custom_id == "end" {
                             let e = select_menu.message.embeds.first();
                             if e.is_none() {
@@ -234,7 +327,7 @@ async fn _main(api: EnkaNetwork) -> anyhow::Result<()> {
     };
     let frame = poise::Framework::new(
         poise::FrameworkOptions {
-            commands: vec![commands::build()],
+            commands: vec![commands::build(), commands::read_img()],
             listener: |event, framework, user_data| {
                 Box::pin(event_event_handler(event, framework, user_data))
             },

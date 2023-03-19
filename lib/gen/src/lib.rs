@@ -5,7 +5,9 @@ use std::{
     str::FromStr,
 };
 
-use enkanetwork_rs::{Character, CharacterId, Element, EnkaNetwork, IconData, Reliquary, Stats};
+use enkanetwork_rs::{
+    Character, CharacterId, Element, EnkaNetwork, IconData, Reliquary, Stats, StatsValue,
+};
 use image::{
     imageops::{self, resize},
     DynamicImage, ImageOutputFormat, Rgba,
@@ -841,10 +843,10 @@ fn round_to_1_decimal_places(x: f64) -> f64 {
     (x * 10.0).round() / 10.0
 }
 
-fn get_score(data: &Reliquary, counter: &ScoreCounter) -> (f64, Vec<String>) {
+pub fn mini_score(data: [Option<StatsValue>; 4], counter: &ScoreCounter) -> (f64, Vec<String>) {
     let mut score = 0.0;
     let mut used: Vec<Stats> = Vec::new();
-    for sub in data.sub_stats {
+    for sub in data {
         if sub.is_none() {
             continue;
         }
@@ -894,6 +896,10 @@ fn get_score(data: &Reliquary, counter: &ScoreCounter) -> (f64, Vec<String>) {
         }
     }
     (score, used.iter().map(|x| x.id().to_string()).collect())
+}
+
+pub fn get_score(data: &Reliquary, counter: &ScoreCounter) -> (f64, Vec<String>) {
+    mini_score(data.sub_stats, counter)
 }
 
 fn is_not_mains(name: CharacterId) -> bool {

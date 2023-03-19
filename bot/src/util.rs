@@ -101,7 +101,6 @@ pub fn convert_rgb(rgb: [u8; 3]) -> u32 {
     (r as u32) << 16 | (g as u32) << 8 | b as u32
 }
 
-
 pub fn get_score_calc(s: &ScoreCounter) -> Value {
     match s {
         ScoreCounter::Normal => {

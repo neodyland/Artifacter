@@ -1,10 +1,18 @@
-use gen::{Lang,locale::Locale, ImageFormat};
-use poise::{CreateReply,serenity_prelude::{CreateEmbed,CreateEmbedFooter, CreateAttachment}};
+use gen::{locale::Locale, ImageFormat, Lang};
+use poise::{
+    serenity_prelude::{
+        ButtonStyle, CreateActionRow, CreateAttachment, CreateButton, CreateEmbed,
+        CreateEmbedFooter,
+    },
+    CreateReply,
+};
+use read_img::read_image_trimed;
 use serde_json::json;
 
-use crate::{Context,Error, util::{convert_rgb, create_components}};
-
-
+use crate::{
+    util::{convert_rgb, create_components},
+    Context, Error,
+};
 
 /// fetch data from User Id
 #[poise::command(
@@ -62,32 +70,36 @@ pub async fn build(
         .color(convert_rgb([0x00, 0xff, 0x00]))
         .description(user.profile().signature())
         .image("attachment://name_card.png")
-        .fields(vec![(
-            Locale::from(json!(
-                {"ja": "アチーブメント", "en": "Achievements"}
-            ))
-            .get(&lang),
-            user.profile().achievement().to_string(),
-            true,
-        ),(
-            Locale::from(json!(
-                {"ja": "螺旋", "en": "Spiral Abyss"}
-            ))
-            .get(&lang),
-            format!(
-                "{}{}{}{}",
-                user.profile().tower_floor_index(),
+        .fields(vec![
+            (
                 Locale::from(json!(
-                    {"ja": "階", "en": "F"}
+                    {"ja": "アチーブメント", "en": "Achievements"}
                 ))
                 .get(&lang),
-                user.profile().tower_level_index(),
-                Locale::from(json!(
-                    {"ja": "層", "en": "L"}
-                )).get(&lang)
+                user.profile().achievement().to_string(),
+                true,
             ),
-            true,
-        )]);
+            (
+                Locale::from(json!(
+                    {"ja": "螺旋", "en": "Spiral Abyss"}
+                ))
+                .get(&lang),
+                format!(
+                    "{}{}{}{}",
+                    user.profile().tower_floor_index(),
+                    Locale::from(json!(
+                        {"ja": "階", "en": "F"}
+                    ))
+                    .get(&lang),
+                    user.profile().tower_level_index(),
+                    Locale::from(json!(
+                        {"ja": "層", "en": "L"}
+                    ))
+                    .get(&lang)
+                ),
+                true,
+            ),
+        ]);
     let card = gen::convert(
         user.profile().name_card().image(&api).await?,
         ImageFormat::Png,
@@ -109,10 +121,10 @@ pub async fn build(
 
 /// get artifact score from image
 #[poise::command(
-    context_menu_command = "artifact",
-    description_localized("ja", "画像から神器スコアを取得します")
+    context_menu_command = "Read Image",
+    description_localized("ja", "画像から情報を取得します")
 )]
-pub async fn artifact(
+pub async fn read_img(
     ctx: Context<'_>,
     #[description = "image"]
     #[description_localized("ja", "画像")]
@@ -136,6 +148,30 @@ pub async fn artifact(
         return Ok(());
     }
     let image = image.unwrap();
+    if image.width.is_none() || image.content_type.is_none() {
+        let msg = CreateReply::new().content(
+            Locale::from(json!({
+                "ja": "画像が添付されていません。",
+                "en": "No image attached.",
+            }))
+            .get(&lang),
+        );
+        ctx.send(msg).await?;
+        return Ok(());
+    }
+    if image.content_type.as_ref().unwrap() != "image/png"
+        && image.content_type.as_ref().unwrap() != "image/jpeg"
+    {
+        let msg = CreateReply::new().content(
+            Locale::from(json!({
+                "ja": "画像の形式がpng|jpegではありません。",
+                "en": "Image format is not png|jpeg.",
+            }))
+            .get(&lang),
+        );
+        ctx.send(msg).await?;
+        return Ok(());
+    }
     let image = image.download().await;
     if image.is_err() {
         let msg = CreateReply::new().content(
@@ -149,7 +185,41 @@ pub async fn artifact(
         return Ok(());
     }
     let image = image.unwrap();
-    let msg = CreateReply::new();
+    let image = read_image_trimed(image, api, &lang.to_string()).await;
+    if image.is_none() {
+        let msg = CreateReply::new().content(
+            Locale::from(json!({
+                "ja": "画像から情報が読み取れませんでした。",
+                "en": "Failed to read image.",
+            }))
+            .get(&lang),
+        );
+        ctx.send(msg).await?;
+        return Ok(());
+    }
+    let image = image.unwrap();
+    let footer = CreateEmbedFooter::new(format!("{}", image.2.unwrap_or(0)));
+    let embed = CreateEmbed::default()
+        .title(Locale::from(json!({"ja": "読み取り結果", "en": "Result"})).get(&lang))
+        .field(image.0.clone().map(|e| e.0).unwrap_or(
+            Locale::from(json!({"ja": "聖遺物", "en": "Relic"})).get(&lang).to_string()
+        ), image.0.clone().map(|e| e.1).unwrap_or(Locale::from(json!({"ja": "聖遺物の情報は見つかりませんでした", "en": "No relic information found"})).get(&lang).to_string()), true)
+        .field(Locale::from(json!({"ja": "スコア", "en": "Score"})).get(&lang).to_string(),
+        image.0.clone().map(|e| e.2).unwrap_or(Locale::from(json!({"ja": "聖遺物の情報は見つかりませんでした", "en": "No relic information found"})).get(&lang).to_string())
+        ,true)
+        .footer(footer)
+        .color(convert_rgb([0x00, 0xff, 0x00]));
+    let b = CreateButton::new("build")
+        .style(ButtonStyle::Primary)
+        .label(
+            Locale::from(json!({
+                "ja": "このユーザーのプロフィール",
+                "en": "This user's profile",
+            }))
+            .get(&lang),
+        );
+    let c = CreateActionRow::Buttons(vec![b]);
+    let msg = CreateReply::new().embed(embed).components(vec![c]);
     ctx.send(msg).await?;
     Ok(())
 }

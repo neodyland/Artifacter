@@ -1,0 +1,16 @@
+[package]
+name = "read-img"
+version = "0.1.0"
+edition = "2021"
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[dependencies]
+anyhow = "1.0.70"
+enkanetwork-rs = { path = "../../enkanetwork-rs" }
+gen = { path = "../gen" }
+futures = "0.3.27"
+image = "0.24.5"
+regex = "1.7.1"
+tesseract = "0.13.0"
+tokio = { version = "1.26.0", features = ["full"] }

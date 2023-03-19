@@ -1,6 +1,6 @@
 use std::{collections::HashMap, num::TryFromIntError};
 
-use enkanetwork_rs::{Reliquary, Stats};
+use enkanetwork_rs::{Reliquary, Stats, StatsValue};
 use serde::Deserialize;
 
 #[derive(Deserialize)]
@@ -211,4 +211,22 @@ pub fn resolve_op(art: &Reliquary) -> Option<Vec<Vec<f64>>> {
 
 fn trim(s: &str) -> String {
     format!("{}.0", s)
+}
+
+pub fn is_valid_subop(s: &StatsValue) -> bool {
+    let sub = to_string(&s.0);
+    if sub.is_none() {
+        return false;
+    }
+    let sub = sub.unwrap();
+    let subop = Subop::new();
+    let sub = subop.get(&sub);
+    if sub.is_none() {
+        return false;
+    }
+    let sub = sub.unwrap();
+    if sub.is_empty() {
+        return false;
+    }
+    sub.get(&s.1.to_string()).map(|_| true).unwrap_or(false)
 }
