@@ -1,4 +1,4 @@
-use std::{collections::HashMap, env, sync::Arc};
+use std::{collections::HashMap, env, sync::Arc, time::Duration};
 
 use crate::util::{create_components, json, Locale};
 use enkanetwork_rs::{EnkaNetwork, IconData};
@@ -7,10 +7,13 @@ use poise::serenity_prelude::{
     ComponentInteractionDataKind, CreateAttachment, CreateEmbed, CreateEmbedFooter,
     EditInteractionResponse, Interaction,
 };
+use sea_orm::{ConnectOptions, Database, DatabaseConnection};
+use sea_orm_migration::MigratorTrait;
 use serenity::gateway::ActivityData;
 use tokio::sync::Mutex;
 
 mod commands;
+mod entity;
 mod logger;
 mod util;
 
@@ -21,6 +24,7 @@ pub struct Data {
     pub icons: IconData,
     pub cache: HashMap<u64, (ScoreCounter, u32, ImageFormat)>,
     pub looping: bool,
+    pub db: DatabaseConnection,
 }
 pub type Error = Box<dyn std::error::Error + Send + Sync>;
 pub type Context<'a> = poise::Context<'a, Arc<Mutex<Data>>, Error>;
@@ -317,17 +321,35 @@ fn main() -> anyhow::Result<()> {
 }
 
 async fn _main(api: EnkaNetwork) -> anyhow::Result<()> {
-    let token = env::var("DISCORD_TOKEN").expect("Expected a token in the environment");
+    let token = env::var("DISCORD_TOKEN").expect("Expected a discord_token in the environment");
+    let pg_uri = env::var("PG_URI").expect("Expected a pg_uri in the environment");
+    let mut opt = ConnectOptions::new(pg_uri);
+    opt.max_connections(100)
+        .min_connections(5)
+        .connect_timeout(Duration::from_secs(8))
+        .acquire_timeout(Duration::from_secs(8))
+        .idle_timeout(Duration::from_secs(8))
+        .max_lifetime(Duration::from_secs(8))
+        .sqlx_logging(false);
+    let db = Database::connect(opt).await?;
+    entity::Migrator::up(&db, None).await?;
     let icons = IconData::load(&api).await;
     let data = Data {
         api,
         icons,
         cache: HashMap::new(),
         looping: false,
+        db,
     };
     let frame = poise::Framework::new(
         poise::FrameworkOptions {
-            commands: vec![commands::build(), commands::read_img()],
+            commands: vec![
+                commands::build(),
+                commands::read_img(),
+                commands::link(),
+                commands::unlink(),
+                commands::profile(),
+            ],
             listener: |event, framework, user_data| {
                 Box::pin(event_event_handler(event, framework, user_data))
             },

@@ -14,6 +14,8 @@ tokio = { version = "1.26.0", features = ["full"] }
 log = "0.4.17"
 env_logger = "0.10.0"
 read-img = { path = "../lib/img" }
+serde = { version = "1.0.157", features = ["derive"] }
+sea-orm-migration = "0.11.1"
 
 [dependencies.poise]
 git = "https://github.com/serenity-rs/poise"
@@ -27,3 +29,8 @@ branch = "next"
 
 [dependencies.gen]
 path = "../lib/gen"
+
+[dependencies.sea-orm]
+version = "*"
+features = [ "sqlx-postgres", "runtime-actix-rustls", "macros" ]
+default-features = false
