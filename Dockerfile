@@ -1,9 +1,13 @@
 FROM rust:latest AS builder
 RUN apt-get update -y && apt-get install -y clang gcc g++ cmake tesseract-ocr libtesseract-dev
-COPY . /app
 WORKDIR /app
-RUN sh build.sh
-FROM ubuntu:latest AS runner
-COPY --from=builder /app/build /app
+COPY . .
+RUN git submodule update --init --recursive
+RUN rm -rf build
+RUN cargo build -r --bin artifacter
+RUN mkdir -p build/assets
+RUN cp target/release/artifacter build/art
+RUN cp -r assets/trained build/assets/trained
+FROM ubuntu:latest as img
 WORKDIR /app
-CMD ["./art"]
+COPY --from=builder /app/build/* .
