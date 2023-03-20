@@ -1,11 +1,12 @@
 use enkanetwork_rs::{EnkaNetwork, ReliquaryType, Stats, StatsValue};
 use gen::{
-    is_percent,
+    convert, is_percent,
     locale::{json, Locale},
     mini_score,
     types::is_valid_subop,
-    Lang, ScoreCounter,
+    ImageFormat, Lang, ScoreCounter,
 };
+use image::load_from_memory;
 use regex::Regex;
 use tesseract::Tesseract;
 
@@ -293,6 +294,9 @@ pub async fn read_image_trimed(
     api: &EnkaNetwork,
     lang: &str,
 ) -> Option<(Option<(String, String, String)>, Option<Rel>, Option<i32>)> {
+    let img = load_from_memory(&img).ok()?;
+    let img = img.grayscale();
+    let img = convert(img, ImageFormat::Png)?;
     let l = Lang::from(lang);
     let i = read_image(img, lang).await?;
     let mut s = String::new();
