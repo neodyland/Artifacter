@@ -1,9 +1,11 @@
 import asyncio
-import time;
+import time
+
 import artifacter_py
-loop = asyncio.new_event_loop()
-asyncio.set_event_loop(loop)
+
+
 UID = 827106332
+
 
 async def main():
     await artifacter_py.load()
