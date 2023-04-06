@@ -46,16 +46,7 @@ pub async fn profile(ctx: Context<'_>, user: serenity::all::User) -> Result<(), 
     ctx.defer().await?;
     let api = &data.api;
     let user = api.simple(uid).await?;
-    let ids = user.profile().show_character_list();
-    let characters = ids.iter().map(|id| user.character(*id)).collect::<Vec<_>>();
-    let characters = characters
-        .iter()
-        .filter_map(|c| c.as_ref())
-        .collect::<Vec<_>>();
-    let characters = characters
-        .iter()
-        .map(|c| c.to_owned().to_owned())
-        .collect::<Vec<_>>();
+    let characters = user.characters_vec();
     if characters.is_empty() {
         let msg = CreateReply::new().content(Locale::from(
             json!({"ja":"キャラクターが登録されていません。(もしくは非公開になっています)","en": "No character is set(Or it may be private)"})).get(&lang));
@@ -295,16 +286,7 @@ pub async fn build(
     ctx.defer().await?;
     let api = &data.api;
     let user = api.simple(uid).await?;
-    let ids = user.profile().show_character_list();
-    let characters = ids.iter().map(|id| user.character(*id)).collect::<Vec<_>>();
-    let characters = characters
-        .iter()
-        .filter_map(|c| c.as_ref())
-        .collect::<Vec<_>>();
-    let characters = characters
-        .iter()
-        .map(|c| c.to_owned().to_owned())
-        .collect::<Vec<_>>();
+    let characters = user.characters_vec();
     if characters.is_empty() {
         let msg = CreateReply::new().content(Locale::from(
             json!({"ja":"キャラクターが登録されていません。(もしくは非公開になっています)","en": "No character is set(Or it may be private)"})).get(&lang));

@@ -80,17 +80,7 @@ async fn event_event_handler(
                             let uid = uid.as_ref().unwrap();
                             let mut data = data.lock().await;
                             let user = data.api.simple(*uid).await?;
-                            let ids = user.profile().show_character_list();
-                            let characters =
-                                ids.iter().map(|id| user.character(*id)).collect::<Vec<_>>();
-                            let characters = characters
-                                .iter()
-                                .filter_map(|c| c.as_ref())
-                                .collect::<Vec<_>>();
-                            let characters = characters
-                                .iter()
-                                .map(|c| c.to_owned().to_owned())
-                                .collect::<Vec<_>>();
+                            let characters = user.characters_vec();
                             let mut current = data
                                 .cache
                                 .remove(&select_menu.message.id.get())
@@ -207,17 +197,7 @@ async fn event_event_handler(
                             let uid = uid.as_ref().unwrap();
                             let data = data.lock().await;
                             let user = data.api.simple(*uid).await?;
-                            let ids = user.profile().show_character_list();
-                            let characters =
-                                ids.iter().map(|id| user.character(*id)).collect::<Vec<_>>();
-                            let characters = characters
-                                .iter()
-                                .filter_map(|c| c.as_ref())
-                                .collect::<Vec<_>>();
-                            let characters = characters
-                                .iter()
-                                .map(|c| c.to_owned().to_owned())
-                                .collect::<Vec<_>>();
+                            let characters = user.characters_vec();
                             if characters.is_empty() {
                                 let msg = EditInteractionResponse::new().components(vec![]).embeds(vec![]).content(Locale::from(
                                     json!({"ja":"キャラクターが登録されていません。(もしくは非公開になっています)","en": "No character is set(Or it may be private)"})).get(&lang));

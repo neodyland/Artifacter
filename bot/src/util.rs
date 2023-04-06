@@ -9,7 +9,7 @@ pub use gen::locale::Locale;
 pub use serde_json::json;
 
 pub fn create_components(
-    characters: Vec<&Character>,
+    characters: Vec<Character>,
     api: &EnkaNetwork,
     lang: &Lang,
     uid: &i32,
