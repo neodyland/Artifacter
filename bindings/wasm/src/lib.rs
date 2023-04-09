@@ -61,7 +61,7 @@ pub async fn get_characters(uid: i32, lang: String) -> Result<JsValue, JsValue> 
                 .name(&enka, &lang.to_string())
                 .unwrap_or("Unknown"),
             x.level.clone(),
-            x.element.attack_name(store,&lang.to_string()),
+            x.element.resist_name(store,&lang.to_string()),
             general_purpose::STANDARD_NO_PAD.encode(ic.as_slice()),
         ))
     }
