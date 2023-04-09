@@ -48,7 +48,6 @@ pub async fn w_load() -> Result<JsValue, JsValue> {
 pub async fn get_characters(uid: i32, lang: String) -> Result<JsValue, JsValue> {
     let lang = Lang::from(lang.as_str());
     let enka = ENKA.get().ok_or(JsError::new("EnkaNetwork not loaded"))?;
-    let store = STORE.get().ok_or(JsError::new("Store not loaded"))?;
     let user = enka.simple(uid).await.map_err(|e| JsError::new(&e))?;
     let cv = user.characters_vec();
     let mut v = vec![];
@@ -61,7 +60,7 @@ pub async fn get_characters(uid: i32, lang: String) -> Result<JsValue, JsValue> 
                 .name(&enka, &lang.to_string())
                 .unwrap_or("Unknown"),
             x.level.clone(),
-            x.element.resist_name(store,&lang.to_string()),
+            x.element.fight_prop_name(),
             general_purpose::STANDARD_NO_PAD.encode(ic.as_slice()),
         ))
     }
