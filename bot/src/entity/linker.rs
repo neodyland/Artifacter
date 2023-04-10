@@ -51,6 +51,7 @@ impl MigrationTrait for Migration {
                             ColumnDef::new(Column::DiscordId)
                                 .float()
                                 .not_null()
+                                .primary_key()
                                 .default(1.0),
                         )
                         .to_owned(),
@@ -77,6 +78,7 @@ impl MigrationTrait for Migration {
                         ColumnDef::new(Column::DiscordId)
                             .float()
                             .not_null()
+                            .primary_key()
                             .default(1.0),
                     )
                     .to_owned(),
