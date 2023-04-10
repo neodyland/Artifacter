@@ -48,6 +48,43 @@ pub async fn w_load() -> Result<JsValue, JsValue> {
 
 /// get characters
 #[wasm_bindgen]
+pub async fn get_profile(uid: i32) -> Result<JsValue, JsValue> {
+    let enka = ENKA.get().ok_or(JsError::new("EnkaNetwork not loaded"))?;
+    let user = enka.simple(uid).await.map_err(|e| JsError::new(&e))?;
+    let v = (
+        user.profile().nickname(),
+        user.profile().signature(),
+        user.profile().achievement(),
+        user.profile().level(),
+        user.profile().world_level(),
+        user.profile().tower_floor_index(),
+        user.profile().tower_level_index(),
+        convert(
+            user.profile()
+                .name_card()
+                .image(enka)
+                .await
+                .map_err(|e| JsError::new(&e))?,
+            ImageFormat::Png,
+        )
+        .ok_or_else(|| JsError::new("Failed to convert image"))?,
+    );
+    let array = Array::new();
+    array.push(&JsValue::from(JsString::from(v.0.to_owned())));
+    array.push(&JsValue::from(JsString::from(v.1.to_owned())));
+    array.push(&JsValue::from(Number::from(v.2.to_owned())));
+    array.push(&JsValue::from(Number::from(v.3.to_owned())));
+    array.push(&JsValue::from(Number::from(v.4.to_owned())));
+    array.push(&JsValue::from(Number::from(v.5.to_owned())));
+    array.push(&JsValue::from(Number::from(v.6.to_owned())));
+    array.push(&JsValue::from(JsString::from(
+        general_purpose::STANDARD_NO_PAD.encode(v.7.as_slice()),
+    )));
+    Ok(array.into())
+}
+
+/// get characters
+#[wasm_bindgen]
 pub async fn get_characters(uid: i32, lang: String) -> Result<JsValue, JsValue> {
     let lang = Lang::from(lang.as_str());
     let enka = ENKA.get().ok_or(JsError::new("EnkaNetwork not loaded"))?;
