@@ -9,7 +9,7 @@ static ALLOC: wee_alloc::WeeAlloc = wee_alloc::WeeAlloc::INIT;
 
 use base64::{engine::general_purpose, Engine as _};
 use enkanetwork_rs::{CharacterId, EnkaNetwork, IconData, StoreValue};
-use gen::{generate as rs_generate, ImageFormat, Lang, ScoreCounter, convert};
+use gen::{convert, generate as rs_generate, ImageFormat, Lang, ScoreCounter};
 use once_cell::sync::OnceCell;
 use std::str::FromStr;
 
@@ -27,7 +27,10 @@ pub async fn w_load() -> Result<JsValue, JsValue> {
         .await
         .map_err(|e| JsError::new(&e.to_string()))?;
     let icon_data = enka.icon_data().await;
-    let store = enka.store().await.map_err(|e| JsError::new(&e.to_string()))?;
+    let store = enka
+        .store()
+        .await
+        .map_err(|e| JsError::new(&e.to_string()))?;
     let e = ENKA.set(enka);
     if e.is_err() {
         return Err(JsError::new("EnkaNetwork already loaded").into());
@@ -53,12 +56,13 @@ pub async fn get_characters(uid: i32, lang: String) -> Result<JsValue, JsValue> 
     let mut v = vec![];
     for x in cv {
         let ic = x.image_icon(&enka).await;
-        let ic = ic.map(|f| convert(f, ImageFormat::Png)).flatten().unwrap_or(vec![]);
+        let ic = ic
+            .map(|f| convert(f, ImageFormat::Png))
+            .flatten()
+            .unwrap_or(vec![]);
         v.push((
             x.id.0.clone(),
-            x
-                .name(&enka, &lang.to_string())
-                .unwrap_or("Unknown"),
+            x.name(&enka, &lang.to_string()).unwrap_or("Unknown"),
             x.level.clone(),
             x.element.fight_prop_name(),
             general_purpose::STANDARD_NO_PAD.encode(ic.as_slice()),

@@ -160,10 +160,11 @@ pub async fn link(
     };
     let r = new.insert(db).await;
     if r.is_err() {
+        let err = r.err().unwrap();
         let msg = CreateReply::new().content(
             Locale::from(json!({
-                "ja": "リンクに失敗しました。",
-                "en": "Failed to link.",
+                "ja": format!("リンクに失敗しました。{}",err),
+                "en": format!("Failed to link.{}",err),
             }))
             .get(&lang),
         );
@@ -212,10 +213,11 @@ pub async fn unlink(ctx: Context<'_>) -> Result<(), Error> {
             .exec(db)
             .await;
     if r.is_err() {
+        let err = r.err().unwrap();
         let msg = CreateReply::new().content(
             Locale::from(json!({
-                "ja": "リンクの解除に失敗しました。",
-                "en": "Failed to unlink.",
+                "ja": format!("リンクの解除に失敗しました。{}",err),
+                "en": format!("Failed to unlink.{}",err),
             }))
             .get(&lang),
         );
