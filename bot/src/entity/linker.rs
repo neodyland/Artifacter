@@ -49,7 +49,7 @@ impl MigrationTrait for Migration {
                         )
                         .col(
                             ColumnDef::new(Column::DiscordId)
-                                .float()
+                                .double()
                                 .not_null()
                                 .primary_key()
                                 .default(1.0),
@@ -76,7 +76,7 @@ impl MigrationTrait for Migration {
                     )
                     .add_column_if_not_exists(
                         ColumnDef::new(Column::DiscordId)
-                            .float()
+                            .double()
                             .not_null()
                             .primary_key()
                             .default(1.0),
