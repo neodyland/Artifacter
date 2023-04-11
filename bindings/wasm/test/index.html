@@ -7,13 +7,18 @@
     <script type="module">
         import wasm, * as W from "/artifacter_wasm.js";
         await wasm();
-        const { w_load, get_characters: get_characters_raw, generate: generate_raw } = W;
+        const { w_load, get_characters: get_characters_raw, generate: generate_raw, get_profile: get_profile_raw } = W;
         await w_load();
         function get_characters() {
             const uid = document.getElementById("uid").value;
             const lang = document.getElementById("lang").value;
             const characters = get_characters_raw(Number(uid),lang);
             return characters;
+        }
+        function get_profile(){
+            const uid = document.getElementById("uid").value;
+            const profile = get_profile_raw(Number(uid));
+            return profile;
         }
         function generate() {
             const uid = document.getElementById("uid").value;
@@ -31,9 +36,13 @@
             return image;
         }
         async function get() {
+            const profile = await get_profile();
             const characters = await get_characters();
             const ul = document.querySelector("ul");
             ul.innerHTML = "";
+            const li = document.createElement("li");
+            li.textContent = profile;
+            ul.appendChild(li);
             for (const character of characters) {
                 const li = document.createElement("li");
                 li.textContent = character;
