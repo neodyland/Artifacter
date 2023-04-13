@@ -95,10 +95,11 @@ pub async fn profile(ctx: Context<'_>, user: serenity::all::User) -> Result<(), 
                 true,
             ),
         ]);
-    let card = gen::convert(
-        user.profile().name_card().image(&api).await?,
-        ImageFormat::Png,
-    );
+    let namecard = user.profile().name_card_image(&api).await;
+    let card = match namecard {
+        Some(card) => gen::convert(card, ImageFormat::Png),
+        None => None,
+    };
     let attachment = if card.is_some() {
         Some(CreateAttachment::bytes(card.unwrap(), "name_card.png"))
     } else {
@@ -337,10 +338,10 @@ pub async fn build(
                 true,
             ),
         ]);
-    let card = gen::convert(
-        user.profile().name_card().image(&api).await?,
-        ImageFormat::Png,
-    );
+    let card = match user.profile().name_card_image(&api).await {
+        Some(card) => gen::convert(card, ImageFormat::Png),
+        None => None,
+    };
     let attachment = if card.is_some() {
         Some(CreateAttachment::bytes(card.unwrap(), "name_card.png"))
     } else {
