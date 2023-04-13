@@ -1,28 +1,25 @@
 import React from 'react';
+import { useRecoilState } from 'recoil';
 
-import { FormState } from '@/pages/generate';
+import { formState } from '@/utils/recoil/formState';
 
-type Props = {
-  formState: FormState;
-  setFormState: React.Dispatch<React.SetStateAction<FormState>>;
-};
-
-export const FormatType: React.FC<Props> = ({ formState, setFormState }) => {
+export const FormatType = () => {
+  const [formStateValue, setFormState] = useRecoilState(formState);
   return (
     <div className="w-full flex gap-4 font-genshin pb-3 text-sm">
       <button
         className={`py-4 w-full ring-white ring-1 ring-opacity-10 transition-colors duration-300 ease-in-out ${
-          formState.format === 'png' ? 'bg-white text-primary' : 'bg-secondary text-white'
+          formStateValue.format === 'png' ? 'bg-white text-primary' : 'bg-secondary text-white'
         } rounded-md`}
-        onClick={() => setFormState({ ...formState, format: 'png' })}
+        onClick={() => setFormState({ ...formStateValue, format: 'png' })}
       >
         PNG
       </button>
       <button
         className={`py-4 w-full ring-white ring-1 ring-opacity-10 transition-colors duration-300 ease-in-out ${
-          formState.format === 'jpeg' ? 'bg-white text-primary' : 'bg-secondary text-white'
+          formStateValue.format === 'jpeg' ? 'bg-white text-primary' : 'bg-secondary text-white'
         } rounded-md`}
-        onClick={() => setFormState({ ...formState, format: 'jpeg' })}
+        onClick={() => setFormState({ ...formStateValue, format: 'jpeg' })}
       >
         JPEG
       </button>

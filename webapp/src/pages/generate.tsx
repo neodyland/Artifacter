@@ -1,15 +1,15 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
+import { useRecoilState } from 'recoil';
 
-import wasm, * as W from '../assets/artifacter_wasm';
-
+import wasm, * as W from '@/assets/artifacter_wasm';
 import { CharactersSelect } from '@/components/CharacterSelect';
 import { ImageField } from '@/components/ImageField';
 import { Loading } from '@/components/Loading';
 import { SettingsPanel } from '@/components/SettingsPanel';
-import { useData } from '@/utils/hooks/useData';
-import { useGenerate } from '@/utils/hooks/useGenerate';
 import { useLocaleState } from '@/utils/locale';
+import { dataStore } from '@/utils/recoil/dataStore';
+import { formState } from '@/utils/recoil/formState';
 
 export type FormState = {
   uid: number;
@@ -27,20 +27,8 @@ export const GeneratePage: React.FC = () => {
   const uid = searchParams.get('uid');
 
   const [isLoading, setIsLoading] = useState(true);
-  const [formState, setFormState] = useState<FormState>({
-    uid: 0,
-    cid: 0,
-    lang: '',
-    format: 'png',
-    counter: 'Normal',
-  });
-
-  const { data, setData, setDataFromArray } = useData();
-  const { isLoading: generateLoading, generate } = useGenerate(data, setData);
-
-  useEffect(() => {
-    console.log(data);
-  }, [data]);
+  const [data, setData] = useRecoilState(dataStore);
+  const [formStateValue, setFormState] = useRecoilState(formState);
 
   useEffect(() => {
     if (isNaN(Number(uid)) || !uid || uid.length !== 9) {
@@ -53,16 +41,37 @@ export const GeneratePage: React.FC = () => {
         await wasm();
         const { w_load } = W;
         await w_load();
-        const lang = localeValue === 'ja' ? 'Ja' : 'En';
-        const _characters = await W.get_characters(Number(uid), lang);
-        console.log(lang, _characters);
+
+        const _lang = localeValue === 'ja' ? 'Ja' : 'En';
+        const _characters = await W.get_characters(Number(uid), _lang);
         const _profile = await W.get_profile(Number(uid));
-        setDataFromArray(_characters, _profile);
+        setData({
+          ...data,
+          characters: _characters.map((c) => ({
+            cid: c[0],
+            name: c[1],
+            level: c[2],
+            elementName: c[3],
+            imageDataUrl: c[4]
+              ? `data:image/png;base64,${c[4]}`
+              : 'https://upload-os-bbs.mihoyo.com/game_record/genshin/character_icon/UI_AvatarIcon_Hutao.png',
+          })),
+          profile: {
+            nickname: _profile[0],
+            signature: _profile[1],
+            achievement: _profile[2],
+            level: _profile[3],
+            worldLevel: _profile[4],
+            towerFloorIndex: _profile[5],
+            towerLevelIndex: _profile[6],
+            namecard: _profile[7],
+          },
+        });
         setFormState({
-          ...formState,
+          ...formStateValue,
           uid: Number(uid),
           cid: _characters[0][0],
-          lang: lang,
+          lang: _lang,
         });
         setIsLoading(false);
       })();
@@ -82,22 +91,13 @@ export const GeneratePage: React.FC = () => {
               <p className="font-primary text-sm text-gray-400 py-2">{data.profile.signature}</p>
             </div>
             <div className="col-span-2 row-span-1">
-              <CharactersSelect
-                characters={data.characters}
-                formState={formState}
-                setFormState={setFormState}
-              />
+              <CharactersSelect characters={data.characters} />
             </div>
             <div className="col-span-5 row-span-3 h-full w-full pr-10">
-              <ImageField imageDataUrl={data.generatedImageDataUrl} loading={generateLoading} />
+              <ImageField />
             </div>
             <div className="col-span-2 row-span-3 h-full">
-              <SettingsPanel
-                generate={generate}
-                generateLoading={generateLoading}
-                formState={formState}
-                setFormState={setFormState}
-              />
+              <SettingsPanel />
             </div>
           </div>
         </div>

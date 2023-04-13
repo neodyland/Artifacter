@@ -1,27 +1,20 @@
 import React from 'react';
+import { useRecoilState } from 'recoil';
 
-import { Button } from './Button';
+import * as W from '../assets/artifacter_wasm';
+
+import { DownloadButton, GenerateButton } from './Button';
 import { Divider } from './Divider';
 import { DropdownMenu } from './DropdownMenu';
 import { FormatType } from './FormatType';
 
-import { FormState } from '@/pages/generate';
 import { useLocale } from '@/utils/locale';
+import { formState } from '@/utils/recoil/formState';
 
-type Props = {
-  formState: FormState;
-  setFormState: React.Dispatch<React.SetStateAction<FormState>>;
-  generate: (cid: number, lang: string, format: string, counter: string) => Promise<boolean>;
-  generateLoading: boolean;
-};
-
-export const SettingsPanel: React.FC<Props> = ({
-  formState,
-  setFormState,
-  generate,
-  generateLoading,
-}) => {
+export const SettingsPanel: React.FC = () => {
   const locale = useLocale();
+  const [formStateValue, setFormState] = useRecoilState(formState);
+
   const langItems = [
     { label: '日本語', value: 'Ja' },
     { label: 'English', value: 'En' },
@@ -35,37 +28,27 @@ export const SettingsPanel: React.FC<Props> = ({
     { label: locale({ en: 'Charge', ja: 'チャージ型' }), value: 'Charge' },
   ];
 
-  const handleGenerate = async () => {
-    const { cid, lang, format, counter } = formState;
-    await generate(cid, lang, format, counter);
-    console.log('a');
-  };
-
   return (
     <div className="flex flex-col h-full gap-5">
       <DropdownMenu
         items={langItems}
-        value={formState.lang}
-        onChange={(value) =>
+        value={formStateValue.lang}
+        onChange={(value: string) =>
           setFormState({
-            ...formState,
-            lang: value,
+            ...formStateValue,
+            lang: value as W.Lang,
           })
         }
       />
       <DropdownMenu
         items={counterItems}
-        value={formState.counter}
-        onChange={(value) => setFormState({ ...formState, counter: value })}
+        value={formStateValue.counter}
+        onChange={(value) => setFormState({ ...formStateValue, counter: value as W.Counter })}
       />
-      <FormatType formState={formState} setFormState={setFormState} />
-      <Button onClick={handleGenerate} loading={generateLoading}>
-        {locale({ en: 'Generate', ja: '生成する' })}
-      </Button>
+      <FormatType />
+      <GenerateButton />
       <Divider />
-      <Button disabled onClick={() => console.log('clicked')}>
-        {locale({ en: 'Download', ja: 'ダウンロード' })}
-      </Button>
+      <DownloadButton />
     </div>
   );
 };

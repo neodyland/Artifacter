@@ -1,21 +1,21 @@
 import { motion, AnimatePresence } from 'framer-motion';
 import React, { useState } from 'react';
+import { useRecoilState } from 'recoil';
 
 import * as W from '../assets/artifacter_wasm';
 
 import { CharacterCard } from './CharacterCard';
 
-import { FormState } from '@/pages/generate';
-import { useClickEffect } from '@/utils/hooks/useClickEffect';
+import { formState } from '@/utils/recoil/formState';
+import { useClickEffect } from '@/utils/useClickEffect';
 
 type Props = {
   characters: W.Character[];
-  formState: FormState;
-  setFormState: React.Dispatch<React.SetStateAction<FormState>>;
 };
 
-export const CharactersSelect: React.FC<Props> = ({ characters, formState, setFormState }) => {
+export const CharactersSelect: React.FC<Props> = ({ characters }) => {
   const [isOpen, setIsOpen] = useState(false);
+  const [formStateValue, setFormState] = useRecoilState(formState);
 
   const dropdownRef = React.useRef<HTMLDivElement>(null);
 
@@ -23,7 +23,7 @@ export const CharactersSelect: React.FC<Props> = ({ characters, formState, setFo
 
   const toggleOpen = () => setIsOpen(!isOpen);
 
-  const selectedCharacter = characters.find((c) => c.cid === formState.cid) as W.Character;
+  const selectedCharacter = characters.find((c) => c.cid === formStateValue.cid) as W.Character;
 
   return (
     <div className="relative w-[calc(100%+2px)]" ref={dropdownRef}>
@@ -42,7 +42,7 @@ export const CharactersSelect: React.FC<Props> = ({ characters, formState, setFo
                 className="block px-4 py-2 text-sm hover:bg-white text-white hover:text-gray-900"
                 whileHover={{ scale: 1.03 }}
                 onClick={() => {
-                  setFormState({ ...formState, cid: c.cid });
+                  setFormState({ ...formStateValue, cid: c.cid });
                   setIsOpen(false);
                 }}
                 exit={{ opacity: 0 }}

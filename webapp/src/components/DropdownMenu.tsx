@@ -1,7 +1,7 @@
 import { motion, AnimatePresence } from 'framer-motion';
 import React, { useState } from 'react';
 
-import { useClickEffect } from '@/utils/hooks/useClickEffect';
+import { useClickEffect } from '@/utils/useClickEffect';
 
 type Props = {
   items: {

@@ -2,10 +2,8 @@ import { motion, useAnimation } from 'framer-motion';
 import React, { useState } from 'react';
 import { createSearchParams, useNavigate } from 'react-router-dom';
 
+import top from '@/assets/top.jpg';
 import { useLocale, useLocaleState } from '@/utils/locale';
-
-import top from '../assets/top.jpg';
-
 
 const shakeVariants = {
   shake: {

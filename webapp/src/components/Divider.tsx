@@ -1,4 +1,3 @@
-// divider
 import React from 'react';
 
 export const Divider: React.FC = () => {

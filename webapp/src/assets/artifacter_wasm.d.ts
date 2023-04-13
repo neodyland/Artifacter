@@ -20,6 +20,12 @@ type UserProfile = {
   namecard: string
 }
 
+type Lang = 'Ja' | 'En'
+
+type Format = 'png' | 'jpeg'
+
+type Counter = 'Normal' | 'Hp' | 'Def' | 'Mastery' | 'Charge'
+
 /**
 * Load
 * @returns {Promise<any>}
@@ -62,7 +68,7 @@ type ArrayCharacter = [number, string, number, string, string]
 * @param {string} lang
 * @returns {Promise<ArrayCharacter[]>}
 */
-export function get_characters(uid: number, lang: string): Promise<ArrayCharacter[]>;
+export function get_characters(uid: number, lang: Lang): Promise<ArrayCharacter[]>;
 /**
 * generater
 * @param {number} uid
@@ -72,7 +78,7 @@ export function get_characters(uid: number, lang: string): Promise<ArrayCharacte
 * @param {string} counter
 * @returns {Promise<any>}
 */
-export function generate(uid: number, cid: number, lang: string, format: string, counter: string): Promise<string>;
+export function generate(uid: number, cid: number, lang: Lang, format: Format, counter: Counter): Promise<string>;
 
 export type InitInput = RequestInfo | URL | Response | BufferSource | WebAssembly.Module;
 

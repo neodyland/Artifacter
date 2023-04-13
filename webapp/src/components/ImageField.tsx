@@ -1,13 +1,15 @@
 import React from 'react';
+import { useRecoilValue } from 'recoil';
 
 import { Loading } from './Loading';
 
-type Props = {
-  imageDataUrl?: string;
-  loading: boolean;
-};
+import { dataStore } from '@/utils/recoil/dataStore';
 
-export const ImageField: React.FC<Props> = ({ imageDataUrl, loading }) => {
+export const ImageField: React.FC = () => {
+  const { generatedImageDataUrl: imageDataUrl, generateLoading: loading } =
+    useRecoilValue(dataStore);
+  console.log('imageDataUrl', imageDataUrl);
+  console.log('loading', loading);
   return (
     <div
       className={`${
