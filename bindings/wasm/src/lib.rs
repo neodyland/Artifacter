@@ -51,6 +51,11 @@ pub async fn w_load() -> Result<JsValue, JsValue> {
 pub async fn get_profile(uid: i32) -> Result<JsValue, JsValue> {
     let enka = ENKA.get().ok_or(JsError::new("EnkaNetwork not loaded"))?;
     let user = enka.simple(uid).await.map_err(|e| JsError::new(&e))?;
+    let namecard = user
+        .profile()
+        .name_card_image(enka)
+        .await
+        .map(|f| convert(f, ImageFormat::Png));
     let v = (
         user.profile().nickname(),
         user.profile().signature(),
@@ -59,15 +64,7 @@ pub async fn get_profile(uid: i32) -> Result<JsValue, JsValue> {
         user.profile().world_level(),
         user.profile().tower_floor_index(),
         user.profile().tower_level_index(),
-        convert(
-            user.profile()
-                .name_card()
-                .image(enka)
-                .await
-                .map_err(|e| JsError::new(&e))?,
-            ImageFormat::Png,
-        )
-        .ok_or_else(|| JsError::new("Failed to convert image"))?,
+        namecard.flatten().unwrap_or(vec![]),
     );
     let array = Array::new();
     array.push(&JsValue::from(JsString::from(v.0.to_owned())));

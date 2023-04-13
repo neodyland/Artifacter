@@ -246,10 +246,10 @@ async fn event_event_handler(
                                         true,
                                     ),
                                 ]);
-                            let card = gen::convert(
-                                user.profile().name_card().image(&data.api).await?,
-                                ImageFormat::Png,
-                            );
+                            let card = match user.profile().name_card_image(&data.api).await {
+                                Some(card) => gen::convert(card, ImageFormat::Png),
+                                None => None,
+                            };
                             let attachment = if card.is_some() {
                                 Some(CreateAttachment::bytes(card.unwrap(), "name_card.png"))
                             } else {
