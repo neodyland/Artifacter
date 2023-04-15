@@ -42,7 +42,7 @@ export const GeneratePage: React.FC = () => {
         const { w_load } = W;
         await w_load();
 
-        const _lang = localeValue === 'ja' ? 'Ja' : 'En';
+        const _lang = localeValue;
         const _characters = await W.get_characters(Number(uid), _lang);
         const _profile = await W.get_profile(Number(uid));
         setData({

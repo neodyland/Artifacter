@@ -15,7 +15,7 @@ export const formState = atom<FormState>({
     default: {
         uid: 0,
         cid: 0,
-        lang: 'Ja',
+        lang: 'ja',
         format: 'png',
         counter: 'Normal',
     },

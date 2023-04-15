@@ -16,8 +16,8 @@ export const SettingsPanel: React.FC = () => {
   const [formStateValue, setFormState] = useRecoilState(formState);
 
   const langItems = [
-    { label: '日本語', value: 'Ja' },
-    { label: 'English', value: 'En' },
+    { label: '日本語', value: 'ja' },
+    { label: 'English', value: 'en' },
   ];
 
   const counterItems = [

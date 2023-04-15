@@ -20,7 +20,7 @@ type UserProfile = {
   namecard: string
 }
 
-type Lang = 'Ja' | 'En'
+type Lang = 'ja' | 'en'
 
 type Format = 'png' | 'jpeg'
 
