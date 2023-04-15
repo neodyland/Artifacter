@@ -24,8 +24,8 @@ export const SettingsPanel: React.FC = () => {
     { label: locale({ en: 'Normal', ja: '通常型' }), value: 'Normal' },
     { label: locale({ en: 'Hp', ja: 'HP型' }), value: 'Hp' },
     { label: locale({ en: 'Def', ja: '防御型' }), value: 'Def' },
-    { label: locale({ en: 'Mastery', ja: '熟知型' }), value: 'Mastery' },
-    { label: locale({ en: 'Charge', ja: 'チャージ型' }), value: 'Charge' },
+    { label: locale({ en: 'Mastery', ja: '熟知型' }), value: 'ElementalMastery' },
+    { label: locale({ en: 'Charge', ja: 'チャージ型' }), value: 'ChargeEfficiency' },
   ];
 
   return (
