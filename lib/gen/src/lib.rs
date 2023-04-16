@@ -357,7 +357,19 @@ pub async fn generate(
                 .iter()
                 .map(|x| {
                     x.iter()
-                        .map(|y| y.to_string())
+                    .enumerate()
+                    .map(|(i, y)| {
+                        let s = artifact.sub_stats[i];
+                        if s.is_none() {
+                            return "".to_string();
+                        };
+                        let s = s.unwrap();
+                        if is_percent(&s.0) {
+                            round_to_1_decimal_places(y.clone())
+                        } else {
+                            y.to_string()
+                        }
+                    })
                         .collect::<Vec<_>>()
                         .join("+")
                 })
@@ -381,7 +393,7 @@ pub async fn generate(
         artifact_scores += score;
         let rank_img = consts::get_grade_image(score, Some(artifact.position))?;
         image::imageops::overlay(&mut image, &rank_img, artifact_x + 50, 1015);
-        let score = round_to_1_decimal_places(score).to_string();
+        let score = round_to_1_decimal_places(score);
         let scale = Scale::uniform(40.0);
         let score_width = text_size(scale.into(), &font, &score).0;
         draw_text_mut(
@@ -409,7 +421,7 @@ pub async fn generate(
         let main = artifact.main_stats;
         let main_type = main.0.name(api, lang)?;
         let main_value = if is_percent(&main.0) {
-            format!("{}%", main.1)
+            format!("{}%", round_to_1_decimal_places(main.1))
         } else {
             main.1.to_string()
         };
@@ -472,7 +484,7 @@ pub async fn generate(
             };
             let sub_type = sub.0.name(api, lang)?;
             let sub_value = if is_percent(&sub.0) {
-                format!("{}%", sub.1)
+                format!("{}%", round_to_1_decimal_places(sub.1))
             } else {
                 sub.1.to_string()
             };
@@ -839,8 +851,12 @@ pub fn is_percent(stat: &Stats) -> bool {
     }
 }
 
-fn round_to_1_decimal_places(x: f64) -> f64 {
-    (x * 10.0).round() / 10.0
+fn round_to_1_decimal_places(x: f64) -> String {
+    let s = ((x * 10.0).round() / 10.0).to_string();
+    if !s.contains(".") {
+        return format!("{}.0", s);
+    }
+    s
 }
 
 pub fn mini_score(data: [Option<StatsValue>; 4], counter: &ScoreCounter) -> (f64, Vec<String>) {
