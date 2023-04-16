@@ -357,19 +357,19 @@ pub async fn generate(
                 .iter()
                 .map(|x| {
                     x.iter()
-                    .enumerate()
-                    .map(|(i, y)| {
-                        let s = artifact.sub_stats[i];
-                        if s.is_none() {
-                            return "".to_string();
-                        };
-                        let s = s.unwrap();
-                        if is_percent(&s.0) {
-                            round_to_1_decimal_places(y.clone())
-                        } else {
-                            y.to_string()
-                        }
-                    })
+                        .enumerate()
+                        .map(|(i, y)| {
+                            let s = artifact.sub_stats[i];
+                            if s.is_none() {
+                                return "".to_string();
+                            };
+                            let s = s.unwrap();
+                            if is_percent(&s.0) {
+                                round_to_1_decimal_places(y.clone())
+                            } else {
+                                y.to_string()
+                            }
+                        })
                         .collect::<Vec<_>>()
                         .join("+")
                 })
