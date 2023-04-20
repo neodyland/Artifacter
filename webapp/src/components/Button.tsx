@@ -3,7 +3,7 @@ import React, { useState } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import { useRecoilState, useRecoilValue } from 'recoil';
 
-import * as W from '@/assets/artifacter_wasm';
+import { prepare } from '@/api';
 import { Loading } from '@/components/Loading';
 import { useLocale } from '@/utils/locale';
 import { dataStore } from '@/utils/recoil/dataStore';
@@ -18,6 +18,7 @@ export const GenerateButton: React.FC = () => {
   const uid = searchParams.get('uid');
 
   const onClick = async () => {
+    const W = await prepare();
     setData({ ...data, generateLoading: true });
     const { cid, lang, format, counter } = formStateValue;
     const imageData = await W.generate(Number(uid), cid, lang, format, counter);

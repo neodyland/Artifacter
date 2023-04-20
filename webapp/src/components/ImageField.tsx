@@ -1,9 +1,9 @@
 import React from 'react';
 import { useRecoilValue } from 'recoil';
 
-import { Loading } from './Loading';
-
 import { dataStore } from '@/utils/recoil/dataStore';
+
+import { Loading } from './Loading';
 
 export const ImageField: React.FC = () => {
   const { generatedImageDataUrl: imageDataUrl, generateLoading: loading } =

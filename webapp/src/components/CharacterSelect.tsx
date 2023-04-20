@@ -2,12 +2,12 @@ import { motion, AnimatePresence } from 'framer-motion';
 import React, { useState } from 'react';
 import { useRecoilState } from 'recoil';
 
+import { formState } from '@/utils/recoil/formState';
+import { useClickEffect } from '@/utils/useClickEffect';
+
 import * as W from '../assets/artifacter_wasm';
 
 import { CharacterCard } from './CharacterCard';
-
-import { formState } from '@/utils/recoil/formState';
-import { useClickEffect } from '@/utils/useClickEffect';
 
 type Props = {
   characters: W.Character[];

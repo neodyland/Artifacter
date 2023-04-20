@@ -1,15 +1,15 @@
 import React from 'react';
 import { useRecoilState } from 'recoil';
 
+import { useLocale } from '@/utils/locale';
+import { formState } from '@/utils/recoil/formState';
+
 import * as W from '../assets/artifacter_wasm';
 
 import { DownloadButton, GenerateButton } from './Button';
 import { Divider } from './Divider';
 import { DropdownMenu } from './DropdownMenu';
 import { FormatType } from './FormatType';
-
-import { useLocale } from '@/utils/locale';
-import { formState } from '@/utils/recoil/formState';
 
 export const SettingsPanel: React.FC = () => {
   const locale = useLocale();

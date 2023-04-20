@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { useRecoilState } from 'recoil';
 
-import wasm, * as W from '@/assets/artifacter_wasm';
+import { prepare } from '@/api';
 import { CharactersSelect } from '@/components/CharacterSelect';
 import { ImageField } from '@/components/ImageField';
 import { Loading } from '@/components/Loading';
@@ -38,10 +38,7 @@ export const GeneratePage: React.FC = () => {
     } else {
       (async () => {
         setIsLoading(true);
-        await wasm();
-        const { w_load } = W;
-        await w_load();
-
+        const W = await prepare();
         const _lang = localeValue;
         const _characters = await W.get_characters(Number(uid), _lang);
         const _profile = await W.get_profile(Number(uid));
