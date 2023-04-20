@@ -48,7 +48,7 @@
       "windows": {
         "digestAlgorithm": "sha256",
         "wix": {
-          "language": ["en-US", "jp-JP"]
+          "language": ["en-US", "ja-JP"]
         }
       }
     },
