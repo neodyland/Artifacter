@@ -25,7 +25,8 @@ export default {
         notoSansJP: ['"Noto Sans JP"', 'sans-serif'],
       },
       backgroundImage: {
-        video:
+        'image-cover': 'linear-gradient(to bottom, transparent 0 50%, #040A27 100%)',
+        'image-cover-lg':
           'linear-gradient(to bottom, transparent 0 60%, #040A27 100%), linear-gradient(to left, transparent 0 60%, #040A27 100%), radial-gradient(at right top, transparent 60%, #040A27 100%), radial-gradient(at left top, transparent 60%, #040A27 100%), radial-gradient(at left bottom, transparent 60%, #040A27 100%), radial-gradient(at right bottom, transparent 60%, #040A27 100%)',
       },
     },

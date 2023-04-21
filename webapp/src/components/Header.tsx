@@ -1,12 +1,26 @@
+import { useMotionValueEvent, useScroll } from 'framer-motion';
+import { useState } from 'react';
+
 import artifacterLogo from '@/assets/artifacter-logo.svg';
 import { useLocaleState } from '@/utils/locale';
 
 export function Header() {
   const { localeValue, setLocaleState } = useLocaleState();
 
+  const { scrollY } = useScroll();
+  const [scrolled, setScrolled] = useState(false);
+
+  useMotionValueEvent(scrollY, 'change', (latest) => {
+    latest > 10 ? setScrolled(true) : setScrolled(false);
+  });
+
   return (
-    <header className="fixed inset-x-0 top-0 z-10 flex items-center justify-between px-4 text-white transition-[padding-top,padding-bottom] md:px-8 lg:px-20 2xl:px-[calc((100vw-1536px)/2+5rem)] py-4 md:py-8">
-      <div className="flex h-full gap-12">
+    <header
+      className={`flex justify-between fixed inset-x-0 top-0 z-10 w-full items-center px-4 text-white transition-[padding-top,padding-bottom] md:px-8 lg:px-20 2xl:px-[calc((100vw-1536px)/2+5rem)] ${
+        scrolled ? 'py-4 backdrop-blur-md bg-primary bg-opacity-70' : 'py-8'
+      }`}
+    >
+      <div className="flex h-full gap-12 w-full justify-between lg:justify-normal">
         <div>
           <a href="/" aria-label="logo">
             <img src={artifacterLogo} alt="logo" className="h-10 w-auto md:h-11" />
@@ -19,10 +33,8 @@ export function Header() {
         >
           {localeValue.charAt(0).toUpperCase() + localeValue.slice(1)}
         </button>
-
-        <nav className="hidden gap-12 lg:flex"></nav>
       </div>
-      <div className="-ml-8 hidden flex-col gap-2.5 sm:flex-row sm:justify-center lg:flex lg:justify-start">
+      <div className="-ml-8 w-full hidden lg:flex lg:justify-end">
         <a
           href="https://artifacter.neody.land"
           target="_blank"

@@ -8,12 +8,11 @@ import { Loading } from './Loading';
 export const ImageField: React.FC = () => {
   const { generatedImageDataUrl: imageDataUrl, generateLoading: loading } =
     useRecoilValue(dataStore);
-  console.log('imageDataUrl', imageDataUrl);
-  console.log('loading', loading);
+
   return (
     <div
       className={`${
-        !imageDataUrl || loading ? 'h-full w-full' : ''
+        !imageDataUrl || loading ? 'lg:h-full w-full h-44' : ''
       } relative rounded-md bg-secondary flex justify-center items-center ring-1 ring-white ring-opacity-10`}
     >
       {loading ? (
