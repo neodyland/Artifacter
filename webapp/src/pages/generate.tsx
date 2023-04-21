@@ -77,12 +77,12 @@ export const GeneratePage: React.FC = () => {
   }, [navigate, uid, localeValue]);
 
   return (
-    <div className="mx-auto min-h-screen max-w-screen-2xl px-4 md:px-8 lg:px-20 lg:pt-0">
+    <div className="mx-auto lg:h-screen min-h-screen max-w-screen-2xl px-4 md:px-8 lg:px-20 lg:pt-0">
       {isLoading ? (
         <Loading />
       ) : (
         <div className="text-white 2xl:pt-32 2xl:pb-32 pt-32 pb-8 h-full">
-          <div className="lg:grid lg:grid-cols-7 lg:grid-rows-4 flex flex-col items-center h-full w-full px-4 gap-5">
+          <div className="lg:grid lg:grid-cols-7 lg:grid-rows-4 flex flex-col items-center h-full w-full gap-5 lg:px-0 px-4">
             <div className="lg:col-span-5 lg:row-span-1 order-1 w-full">
               <h1 className="font-primary text-6xl font-bold">{data.profile.nickname}</h1>
               <p className="font-primary text-sm text-gray-400 py-2">{data.profile.signature}</p>

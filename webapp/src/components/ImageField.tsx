@@ -12,17 +12,15 @@ export const ImageField: React.FC = () => {
   return (
     <div
       className={`${
-        !imageDataUrl || loading ? 'lg:h-full w-full h-44' : ''
-      } relative rounded-md bg-secondary flex justify-center items-center ring-1 ring-white ring-opacity-10`}
+        !imageDataUrl || loading
+          ? 'lg:h-full w-full h-44 bg-secondary ring-1 ring-white ring-opacity-10'
+          : ''
+      } relative rounded-sm flex justify-center items-center h-full w-auto`}
     >
       {loading ? (
         <Loading size="md" />
       ) : imageDataUrl ? (
-        <img
-          src={imageDataUrl}
-          className="h-full w-full object-cover rounded-md"
-          alt="generated_image"
-        />
+        <img src={imageDataUrl} className="h-full w-auto rounded-md" alt="generated_image" />
       ) : (
         <svg
           xmlns="http://www.w3.org/2000/svg"
