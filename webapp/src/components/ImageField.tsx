@@ -1,9 +1,8 @@
 import React from 'react';
 import { useRecoilValue } from 'recoil';
 
+import { Loading } from '@/components/Loading';
 import { dataStore } from '@/utils/recoil/dataStore';
-
-import { Loading } from './Loading';
 
 export const ImageField: React.FC = () => {
   const { generatedImageDataUrl: imageDataUrl, generateLoading: loading } =
@@ -14,8 +13,8 @@ export const ImageField: React.FC = () => {
       className={`${
         !imageDataUrl || loading
           ? 'lg:h-full w-full h-44 bg-secondary ring-1 ring-white ring-opacity-10'
-          : ''
-      } relative rounded-sm flex justify-center items-center h-full w-auto`}
+          : 'h-full'
+      } relative rounded-sm flex justify-center items-center w-auto`}
     >
       {loading ? (
         <Loading size="md" />
