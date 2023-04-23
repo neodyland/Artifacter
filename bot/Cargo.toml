@@ -32,5 +32,5 @@ path = "../lib/gen"
 
 [dependencies.sea-orm]
 version = "*"
-features = [ "sqlx-postgres", "runtime-actix-rustls", "macros" ]
+features = [ "sqlx-postgres", "runtime-tokio-rustls", "macros" ]
 default-features = false
