@@ -355,15 +355,15 @@ pub async fn generate(
             let mut sub_y = 785;
             let o = o
                 .iter()
-                .map(|x| {
+                .enumerate()
+                .map(|(x,i)| {
+                    let s = artifact.sub_stats[i];
+                    if s.is_none() {
+                        return "".to_string();
+                    };
+                    let s = s.unwrap();
                     x.iter()
-                        .enumerate()
-                        .map(|(i, y)| {
-                            let s = artifact.sub_stats[i];
-                            if s.is_none() {
-                                return "".to_string();
-                            };
-                            let s = s.unwrap();
+                        .map(|y| {
                             if is_percent(&s.0) {
                                 round_to_1_decimal_places(y.clone())
                             } else {
