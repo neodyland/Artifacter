@@ -50,7 +50,7 @@ pub async fn w_load() -> Result<JsValue, JsValue> {
 #[wasm_bindgen]
 pub async fn get_profile(uid: i32) -> Result<JsValue, JsValue> {
     let enka = ENKA.get().ok_or(JsError::new("EnkaNetwork not loaded"))?;
-    let user = enka.simple(uid).await.map_err(|e| JsError::new(&e))?;
+    let (user, _) = enka.simple(uid).await.map_err(|e| JsError::new(&e))?;
     let namecard = user
         .profile()
         .name_card_image(enka)
@@ -85,7 +85,7 @@ pub async fn get_profile(uid: i32) -> Result<JsValue, JsValue> {
 pub async fn get_characters(uid: i32, lang: String) -> Result<JsValue, JsValue> {
     let lang = Lang::from(lang.as_str());
     let enka = ENKA.get().ok_or(JsError::new("EnkaNetwork not loaded"))?;
-    let user = enka.simple(uid).await.map_err(|e| JsError::new(&e))?;
+    let (user, _) = enka.simple(uid).await.map_err(|e| JsError::new(&e))?;
     let cv = user.characters_vec();
     let mut v = vec![];
     for x in cv {
@@ -132,7 +132,7 @@ pub async fn generate(
     let lang = Lang::from(lang.as_str());
     let enka = ENKA.get().ok_or(JsError::new("EnkaNetwork not loaded"))?;
     let icon_data = ICON_DATA.get().ok_or(JsError::new("IconData not loaded"))?;
-    let user = enka.simple(uid).await.map_err(|e| JsError::new(&e))?;
+    let (user, _) = enka.simple(uid).await.map_err(|e| JsError::new(&e))?;
     let character = user.character(CharacterId(cid));
     if character.is_none() {
         return Err(JsError::new("Character not found").into());

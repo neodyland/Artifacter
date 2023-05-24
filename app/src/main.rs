@@ -66,7 +66,7 @@ pub async fn load(enka: EnkaNetwork) -> Option<()> {
 #[tauri::command]
 async fn get_profile(uid: i32) -> Result<Vec<Td>, String> {
     let enka = ENKA.get().ok_or("EnkaNetwork not loaded".to_string())?;
-    let user = enka.simple(uid).await?;
+    let (user, _) = enka.simple(uid).await?;
     let namecard = user
         .profile()
         .name_card_image(enka)
@@ -101,7 +101,7 @@ async fn get_profile(uid: i32) -> Result<Vec<Td>, String> {
 async fn get_characters(uid: i32, lang: String) -> Result<Vec<Vec<Td>>, String> {
     let lang = Lang::from(lang.as_str());
     let enka = ENKA.get().ok_or("EnkaNetwork not loaded".to_string())?;
-    let user = enka.simple(uid).await?;
+    let (user, _) = enka.simple(uid).await?;
     let cv = user.characters_vec();
     let mut v = vec![];
     for x in cv {
@@ -148,7 +148,7 @@ async fn generate(
     let lang = Lang::from(lang.as_str());
     let enka = ENKA.get().ok_or("EnkaNetwork not loaded".to_string())?;
     let icon_data = ICON_DATA.get().ok_or("IconData not loaded".to_string())?;
-    let user = enka.simple(uid).await?;
+    let (user, _) = enka.simple(uid).await?;
     let character = user.character(CharacterId(cid));
     if character.is_none() {
         return Err("Character not found".to_string());

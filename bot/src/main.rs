@@ -1,4 +1,9 @@
-use std::{collections::HashMap, env, sync::Arc, time::Duration};
+use std::{
+    collections::HashMap,
+    env,
+    sync::Arc,
+    time::{Duration, UNIX_EPOCH},
+};
 
 use crate::util::{create_components, json, Locale};
 use enkanetwork_rs::{EnkaNetwork, IconData};
@@ -9,7 +14,7 @@ use poise::serenity_prelude::{
 };
 use sea_orm::{ConnectOptions, Database, DatabaseConnection};
 use sea_orm_migration::MigratorTrait;
-use serenity::gateway::ActivityData;
+use serenity::{gateway::ActivityData, model::Timestamp};
 use tokio::sync::Mutex;
 
 mod commands;
@@ -79,7 +84,7 @@ async fn event_event_handler(
                             }
                             let uid = uid.as_ref().unwrap();
                             let mut data = data.lock().await;
-                            let user = data.api.simple(*uid).await?;
+                            let (user, down) = data.api.simple(*uid).await?;
                             let characters = user.characters_vec();
                             let mut current = data
                                 .cache
@@ -167,9 +172,13 @@ async fn event_event_handler(
                                     )}))
                                     .get(&lang),
                                 )
-                                .description(Locale::from(get_score_calc(&current.0)).get(&lang))
+                                .description(format!("{}{}",Locale::from(get_score_calc(&current.0)).get(&lang),if down {
+                                    let cached = Locale::from(json!({"ja":"\nキャッシュから取得","en": "\nCached data"}));
+                                    cached.get(&lang).to_string()
+                                } else {"".to_string()}))
                                 .attachment(&filename)
                                 .footer(footer)
+                                .timestamp(Timestamp::from_unix_timestamp(user.lastupdate().duration_since(UNIX_EPOCH).unwrap().as_secs() as i64).unwrap())
                                 .color(convert_rgb(character.element.color_rgb()));
                             let at = CreateAttachment::bytes(img, filename);
                             let res = EditInteractionResponse::new()
@@ -196,7 +205,7 @@ async fn event_event_handler(
                             }
                             let uid = uid.as_ref().unwrap();
                             let data = data.lock().await;
-                            let user = data.api.simple(*uid).await?;
+                            let (user, down) = data.api.simple(*uid).await?;
                             let characters = user.characters_vec();
                             if characters.is_empty() {
                                 let msg = EditInteractionResponse::new().components(vec![]).embeds(vec![]).content(Locale::from(
@@ -214,8 +223,12 @@ async fn event_event_handler(
                                 ))
                                 .footer(footer)
                                 .color(convert_rgb([0x00, 0xff, 0x00]))
-                                .description(user.profile().signature())
+                                .description(format!("{}{}",user.profile().signature(),if down {
+                                    let cached = Locale::from(json!({"ja":"\nキャッシュから取得","en": "\nCached data"}));
+                                    cached.get(&lang).to_string()
+                                } else {"".to_string()}))
                                 .image("attachment://name_card.png")
+                                .timestamp(Timestamp::from_unix_timestamp(user.lastupdate().duration_since(UNIX_EPOCH).unwrap().as_secs() as i64).unwrap())
                                 .fields(vec![
                                     (
                                         Locale::from(json!(

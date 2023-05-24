@@ -34,7 +34,7 @@ pub async fn handler(
             .body(Body::from("User Not Found"))
             .unwrap();
     }
-    let user = user.unwrap();
+    let (user, _) = user.unwrap();
     let character = user.character(CharacterId(params.cid));
     if character.is_none() {
         return Response::builder()

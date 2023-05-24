@@ -51,7 +51,7 @@ fn get_characters(py: Python, uid: i32) -> PyResult<&PyAny> {
         let enka = ENKA.get().ok_or(pyo3::exceptions::PyException::new_err(
             "EnkaNetwork not loaded",
         ))?;
-        let user = enka
+        let (user, _) = enka
             .simple(uid)
             .await
             .map_err(|e| pyo3::exceptions::PyException::new_err(e))?;
@@ -89,7 +89,7 @@ fn generate(
             .ok_or(pyo3::exceptions::PyException::new_err(
                 "IconData not loaded",
             ))?;
-        let user = enka
+        let (user, _) = enka
             .simple(uid)
             .await
             .map_err(|e| pyo3::exceptions::PyException::new_err(e))?;

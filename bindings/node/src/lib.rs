@@ -51,7 +51,7 @@ pub async fn get_characters(uid: i32) -> Result<Vec<u32>> {
     let enka = ENKA
         .get()
         .ok_or(Error::new(Status::GenericFailure, "EnkaNetwork not loaded"))?;
-    let user = enka
+    let (user, _) = enka
         .simple(uid)
         .await
         .map_err(|e| Error::new(Status::GenericFailure, e))?;
@@ -80,7 +80,7 @@ pub async fn generate(
     let icon_data = ICON_DATA
         .get()
         .ok_or(Error::new(Status::GenericFailure, "IconData not loaded"))?;
-    let user = enka
+    let (user, _) = enka
         .simple(uid)
         .await
         .map_err(|e| Error::new(Status::GenericFailure, e))?;

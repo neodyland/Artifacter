@@ -19,7 +19,7 @@ async fn _main(api: EnkaNetwork) -> anyhow::Result<()> {
         println!("Error: {}", user.err().unwrap());
         return Ok(());
     }
-    let user = user.unwrap();
+    let (user, _) = user.unwrap();
     let charas = user.profile().show_character_list();
     let character_id = charas.get(0);
     if character_id.is_none() {

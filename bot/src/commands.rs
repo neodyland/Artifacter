@@ -10,6 +10,8 @@ use poise::{
 use read_img::read_image_trimed;
 use sea_orm::{ActiveModelTrait, EntityTrait, Set};
 use serde_json::json;
+use serenity::model::Timestamp;
+use std::time::UNIX_EPOCH;
 
 use crate::{
     util::{convert_rgb, create_components},
@@ -45,7 +47,7 @@ pub async fn profile(ctx: Context<'_>, user: serenity::all::User) -> Result<(), 
     let uid = current.genshin_id;
     ctx.defer().await?;
     let api = &data.api;
-    let user = api.simple(uid).await?;
+    let (user, down) = api.simple(uid).await?;
     let characters = user.characters_vec();
     if characters.is_empty() {
         let msg = CreateReply::new().content(Locale::from(
@@ -63,8 +65,27 @@ pub async fn profile(ctx: Context<'_>, user: serenity::all::User) -> Result<(), 
         ))
         .footer(footer)
         .color(convert_rgb([0x00, 0xff, 0x00]))
-        .description(user.profile().signature())
+        .description(format!(
+            "{}{}",
+            user.profile().signature(),
+            if down {
+                let cached =
+                    Locale::from(json!({"ja":"\nキャッシュから取得","en": "\nCached data"}));
+                cached.get(&lang).to_string()
+            } else {
+                "".to_string()
+            }
+        ))
         .image("attachment://name_card.png")
+        .timestamp(
+            Timestamp::from_unix_timestamp(
+                user.lastupdate()
+                    .duration_since(UNIX_EPOCH)
+                    .unwrap()
+                    .as_secs() as i64,
+            )
+            .unwrap(),
+        )
         .fields(vec![
             (
                 Locale::from(json!(
@@ -288,7 +309,7 @@ pub async fn build(
     }
     ctx.defer().await?;
     let api = &data.api;
-    let user = api.simple(uid).await?;
+    let (user, down) = api.simple(uid).await?;
     let characters = user.characters_vec();
     if characters.is_empty() {
         let msg = CreateReply::new().content(Locale::from(
@@ -306,8 +327,27 @@ pub async fn build(
         ))
         .footer(footer)
         .color(convert_rgb([0x00, 0xff, 0x00]))
-        .description(user.profile().signature())
+        .description(format!(
+            "{}{}",
+            user.profile().signature(),
+            if down {
+                let cached =
+                    Locale::from(json!({"ja":"\nキャッシュから取得","en": "\nCached data"}));
+                cached.get(&lang).to_string()
+            } else {
+                "".to_string()
+            }
+        ))
         .image("attachment://name_card.png")
+        .timestamp(
+            Timestamp::from_unix_timestamp(
+                user.lastupdate()
+                    .duration_since(UNIX_EPOCH)
+                    .unwrap()
+                    .as_secs() as i64,
+            )
+            .unwrap(),
+        )
         .fields(vec![
             (
                 Locale::from(json!(

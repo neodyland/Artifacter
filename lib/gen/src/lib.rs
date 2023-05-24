@@ -356,7 +356,7 @@ pub async fn generate(
             let o = o
                 .iter()
                 .enumerate()
-                .map(|(i,x)| {
+                .map(|(i, x)| {
                     let s = artifact.sub_stats[i];
                     if s.is_none() {
                         return "".to_string();
