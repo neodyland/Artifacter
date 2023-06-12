@@ -7,7 +7,7 @@ on:
 
 jobs:
   build_and_push:
-    runs-on: ubuntu
+    runs-on: ubuntu-latest
     env:
       IMAGE_NAME: artifacter
     steps:
