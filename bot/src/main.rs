@@ -353,7 +353,7 @@ async fn _main(api: EnkaNetwork) -> anyhow::Result<()> {
                 let cmd = poise::builtins::create_application_commands(
                     framework.options().commands.as_slice(),
                 );
-                serenity::all::Command::set_global_application_commands(&ctx.http, cmd).await?;
+                serenity::all::Command::set_global_commands(&ctx.http, cmd).await?;
                 Ok(Arc::new(Mutex::new(data)))
             })
         },
