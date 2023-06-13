@@ -1,5 +1,7 @@
-FROM rust:latest AS builder
+FROM debian:latest AS builder
 RUN apt-get update -y && apt-get install -y cmake tesseract-ocr libtesseract-dev clang gcc g++
+RUN curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh
+RUN source $HOME/.cargo/env
 WORKDIR /build
 COPY . .
 RUN git submodule update --init --recursive
