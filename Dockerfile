@@ -11,5 +11,5 @@ RUN cp -r assets/trained build/assets/trained
 FROM ubuntu:latest AS runtime
 WORKDIR /app
 COPY --from=builder /build/build .
-RUN apt-get update -y && apt-get install -y tesseract-ocr libtesseract-dev libssl-dev
+RUN apt-get update -y && apt-get install -y tesseract-ocr libtesseract-dev libssl-dev openssl
 CMD ["./art"]
