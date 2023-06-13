@@ -1,5 +1,5 @@
 FROM debian:latest AS builder
-RUN apt-get update -y && apt-get install -y cmake tesseract-ocr libtesseract-dev clang gcc g++
+RUN apt-get update -y && apt-get install -y cmake tesseract-ocr libtesseract-dev clang gcc g++ git
 RUN curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh
 WORKDIR /build
 COPY . .
