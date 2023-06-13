@@ -11,4 +11,5 @@ RUN cp -r assets/trained build/assets/trained
 FROM debian:buster-slim AS runtime
 WORKDIR /app
 COPY --from=builder /build/build .
+RUN apt-get update -y && apt-gget install -y tesseract-ocr libtesseract-dev
 CMD ["./art"]
