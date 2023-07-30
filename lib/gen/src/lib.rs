@@ -81,7 +81,7 @@ pub enum ScoreCounter {
 impl ScoreCounter {
     fn en(&self) -> &str {
         match self {
-            ScoreCounter::Normal => "Normal",
+            ScoreCounter::Normal => "Attack",
             ScoreCounter::Hp => "Hp",
             ScoreCounter::Def => "Def",
             ScoreCounter::ElementalMastery => "Mastery",
@@ -90,7 +90,7 @@ impl ScoreCounter {
     }
     fn ja(&self) -> &str {
         match self {
-            ScoreCounter::Normal => "通常型",
+            ScoreCounter::Normal => "攻撃型",
             ScoreCounter::Hp => "HP型",
             ScoreCounter::Def => "防御型",
             ScoreCounter::ElementalMastery => "熟知型",
