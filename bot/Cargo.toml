@@ -31,6 +31,6 @@ branch = "next"
 path = "../lib/gen"
 
 [dependencies.sea-orm]
-version = "*"
+version = "0.11.3"
 features = [ "sqlx-postgres", "runtime-tokio-rustls", "macros" ]
 default-features = false
