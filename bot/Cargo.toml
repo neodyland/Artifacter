@@ -19,7 +19,8 @@ sea-orm-migration = "0.11.1"
 
 [dependencies.poise]
 git = "https://github.com/serenity-rs/poise"
-branch = "serenity-next"
+# branch = "serenity-next"
+rev = "88c10cc92f45071a7234dbdc98633ead1e16d732"
 
 [dependencies.serenity]
 default-features = false
