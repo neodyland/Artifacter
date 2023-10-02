@@ -29,7 +29,7 @@ pub fn create_components(
     }
     let chara = CreateSelectMenu::new("character", CreateSelectMenuKind::String { options })
         .placeholder(
-            Locale::from(json!({"ja":"キャラクターを選択してください","en": "The character"}))
+            Locale::from(json!({"ja":"キャラクターを選択してください","en": "Character"}))
                 .get(lang),
         )
         .max_values(1)
@@ -40,7 +40,7 @@ pub fn create_components(
         CreateSelectMenuKind::String {
             options: vec![
                 (
-                    Locale::from(json!({"ja":"通常","en": "Normal"})).get(lang),
+                    Locale::from(json!({"ja":"攻撃型","en": "Attack"})).get(lang),
                     "normal",
                 ),
                 (
@@ -68,7 +68,7 @@ pub fn create_components(
     .max_values(1)
     .min_values(1)
     .placeholder(
-        Locale::from(json!({"ja":"計算方法を選択してください","en": "The way to calculate"}))
+        Locale::from(json!({"ja":"計算方法を選択してください","en": "Calculation"}))
             .get(lang),
     );
     let score = CreateActionRow::SelectMenu(score);
