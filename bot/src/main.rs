@@ -46,7 +46,7 @@ async fn event_event_handler(
         } => {
             log::info!("{} is connected!", data_about_bot.user.name);
             let ctx = Arc::new(ctx.to_owned());
-            if data.lock().await.looping == false {
+            if !data.lock().await.looping {
                 data.lock().await.looping = true;
                 tokio::spawn(async move {
                     loop {
@@ -118,7 +118,7 @@ async fn event_event_handler(
                                     return Ok(());
                                 }
                                 let character = character.unwrap().to_owned().to_owned();
-                                current.1 = character.id.0.clone();
+                                current.1 = character.id.0;
                                 let def = gen::get_default(&character.id.0);
                                 current.0 = def;
                                 data.cache
@@ -183,7 +183,7 @@ async fn event_event_handler(
                             let at = CreateAttachment::bytes(img, filename);
                             let res = EditInteractionResponse::new()
                                 .new_attachment(at)
-                                .components(create_components(characters, &data.api, &lang, &uid))
+                                .components(create_components(characters, &data.api, &lang, uid))
                                 .embed(e);
                             select_menu.edit_response(&ctx.http, res).await?;
                         }
@@ -269,7 +269,7 @@ async fn event_event_handler(
                                 None
                             };
                             let mut builder = EditInteractionResponse::default()
-                                .components(create_components(characters, &data.api, &lang, &uid))
+                                .components(create_components(characters, &data.api, &lang, uid))
                                 .embed(embed);
                             if attachment.is_some() {
                                 builder = builder.new_attachment(attachment.unwrap());

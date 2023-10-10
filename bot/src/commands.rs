@@ -2,7 +2,7 @@ use crate::entity::linker;
 use gen::{locale::Locale, ImageFormat, Lang};
 use poise::{
     serenity_prelude::{
-        ButtonStyle, CreateActionRow, CreateAttachment, CreateButton, CreateEmbed,
+        CreateAttachment, CreateEmbed,
         CreateEmbedFooter,
     },
     CreateReply,
@@ -115,7 +115,7 @@ pub async fn profile(ctx: Context<'_>, user: serenity::all::User) -> Result<(), 
                 true,
             ),
         ]);
-    let namecard = user.profile().name_card_image(&api).await;
+    let namecard = user.profile().name_card_image(api).await;
     let card = match namecard {
         Some(card) => gen::convert(card, ImageFormat::Png),
         None => None,
@@ -377,7 +377,7 @@ pub async fn build(
                 true,
             ),
         ]);
-    let card = match user.profile().name_card_image(&api).await {
+    let card = match user.profile().name_card_image(api).await {
         Some(card) => gen::convert(card, ImageFormat::Png),
         None => None,
     };

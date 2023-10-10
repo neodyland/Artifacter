@@ -23,21 +23,19 @@ pub use default::get_default;
 use serde::Deserialize;
 
 #[derive(Debug, Clone, Deserialize)]
+#[derive(Default)]
 pub enum ImageFormat {
+    #[default]
     Png,
     Jpeg,
     Pixel,
 }
 
-impl Default for ImageFormat {
-    fn default() -> Self {
-        ImageFormat::Png
-    }
-}
 
-impl Into<Option<ImageOutputFormat>> for ImageFormat {
-    fn into(self) -> Option<ImageOutputFormat> {
-        match self {
+
+impl From<ImageFormat> for Option<ImageOutputFormat> {
+    fn from(val: ImageFormat) -> Self {
+        match val {
             ImageFormat::Png => Some(ImageOutputFormat::Png),
             ImageFormat::Jpeg => Some(ImageOutputFormat::Jpeg(20)),
             ImageFormat::Pixel => None,
@@ -70,7 +68,9 @@ impl FromStr for ImageFormat {
 }
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Deserialize)]
+#[derive(Default)]
 pub enum ScoreCounter {
+    #[default]
     Normal,
     Hp,
     Def,
@@ -126,23 +126,17 @@ impl FromStr for ScoreCounter {
     }
 }
 
-impl Default for ScoreCounter {
-    fn default() -> Self {
-        ScoreCounter::Normal
-    }
-}
+
 
 #[derive(Debug, Deserialize)]
+#[derive(Default)]
 pub enum Lang {
     En,
+    #[default]
     Ja,
 }
 
-impl Default for Lang {
-    fn default() -> Self {
-        Lang::Ja
-    }
-}
+
 
 impl ToString for Lang {
     fn to_string(&self) -> String {
@@ -188,20 +182,20 @@ pub async fn generate(
         imageops::overlay(&mut image, &character_image, 150, 50);
     }
     let character_name = data.name(api, lang).ok()?;
-    let character_level = format!("Lv.{},{}", data.level, data.friendship().to_string());
+    let character_level = format!("Lv.{},{}", data.level, data.friendship());
     let white = image::Rgba([255, 255, 255, 255]);
     draw_text_mut(
         &mut image,
-        white.clone(),
+        white,
         30,
         20,
         Scale::uniform(60.0),
         &font,
-        &character_name,
+        character_name,
     );
     draw_text_mut(
         &mut image,
-        white.clone(),
+        white,
         35,
         80,
         Scale::uniform(32.0),
@@ -224,7 +218,7 @@ pub async fn generate(
         let color = if lv + ex == 13 || (lv == 10 && first) {
             image::Rgba([0, 255, 255, 255])
         } else {
-            white.clone()
+            white
         };
         draw_text_mut(
             &mut image,
@@ -278,7 +272,7 @@ pub async fn generate(
     let ascension = format!("R{}", weapon.refinement + 1);
     draw_text_mut(
         &mut image,
-        white.clone(),
+        white,
         1435,
         45,
         scale,
@@ -290,16 +284,16 @@ pub async fn generate(
     let scale = Scale::uniform(30.0);
     draw_text_mut(
         &mut image,
-        white.clone(),
+        white,
         1600,
         45,
         scale,
         &font,
-        &weapon_name,
+        weapon_name,
     );
     draw_text_mut(
         &mut image,
-        white.clone(),
+        white,
         1600,
         85,
         scale,
@@ -314,7 +308,7 @@ pub async fn generate(
     }
     draw_text_mut(
         &mut image,
-        white.clone(),
+        white,
         1630,
         125,
         scale,
@@ -336,7 +330,7 @@ pub async fn generate(
         }
         draw_text_mut(
             &mut image,
-            white.clone(),
+            white,
             1630,
             160,
             scale,
@@ -365,7 +359,7 @@ pub async fn generate(
                     x.iter()
                         .map(|y| {
                             if is_percent(&s.0) {
-                                round_to_1_decimal_places(y.clone())
+                                round_to_1_decimal_places(*y)
                             } else {
                                 y.to_string()
                             }
@@ -376,11 +370,11 @@ pub async fn generate(
                 .collect::<Vec<_>>();
             let scale = Scale::uniform(15.0);
             for x in o {
-                let width = text_size(scale.into(), &font, &x).0;
-                sub_y = sub_y + 52;
+                let width = text_size(scale, &font, &x).0;
+                sub_y += 52;
                 draw_text_mut(
                     &mut image,
-                    gray.clone(),
+                    gray,
                     artifact_x as i32 + 340 - width,
                     sub_y,
                     scale,
@@ -395,10 +389,10 @@ pub async fn generate(
         image::imageops::overlay(&mut image, &rank_img, artifact_x + 50, 1015);
         let score = round_to_1_decimal_places(score);
         let scale = Scale::uniform(40.0);
-        let score_width = text_size(scale.into(), &font, &score).0;
+        let score_width = text_size(scale, &font, &score).0;
         draw_text_mut(
             &mut image,
-            white.clone(),
+            white,
             artifact_x as i32 - score_width + 350,
             1015,
             scale,
@@ -410,7 +404,7 @@ pub async fn generate(
             .resize_exact(256, 256, image::imageops::Triangle)
             .into_rgba8();
         img.pixels_mut().for_each(|p| {
-            let p3 = p.0[3].clone();
+            let p3 = p.0[3];
             if p3 > 100 {
                 p.0[3] -= 100;
             } else if p3 > 20 {
@@ -430,21 +424,21 @@ pub async fn generate(
             p.0 = [255, 255, 255, p.0[3]];
         }
         let scale = Scale::uniform(30.0);
-        let main_type_width = text_size(scale, &font, &main_type).0;
+        let main_type_width = text_size(scale, &font, main_type).0;
         draw_text_mut(
             &mut image,
-            white.clone(),
+            white,
             artifact_x as i32 + 340 - main_type_width,
             660,
             scale,
             &font,
-            &main_type,
+            main_type,
         );
         let scale = Scale::uniform(60.0);
         let main_value_width = text_size(scale, &font, &main_value).0;
         draw_text_mut(
             &mut image,
-            white.clone(),
+            white,
             artifact_x as i32 + 340 - main_value_width,
             690,
             scale,
@@ -462,7 +456,7 @@ pub async fn generate(
         let level_width = text_size(scale, &font, &level).0;
         draw_text_mut(
             &mut image,
-            white.clone(),
+            white,
             artifact_x as i32 + 340 - level_width,
             750,
             scale,
@@ -478,9 +472,9 @@ pub async fn generate(
             }
             let sub = sub.unwrap();
             let color = if used.contains(&sub.0.id().to_string()) {
-                white.clone()
+                white
             } else {
-                gray.clone()
+                gray
             };
             let sub_type = sub.0.name(api, lang)?;
             let sub_value = if is_percent(&sub.0) {
@@ -493,32 +487,32 @@ pub async fn generate(
                 p.0 = [255, 255, 255, p.0[3]];
             }
             let scale = Scale::uniform(30.0);
-            let sub_type_width = text_size(scale, &font, &sub_type).0;
+            let sub_type_width = text_size(scale, &font, sub_type).0;
             if sub_type_width <= 200 {
                 draw_text_mut(
                     &mut image,
-                    color.clone(),
+                    color,
                     artifact_x as i32 + 60,
                     sub_y,
                     scale,
                     &font,
-                    &sub_type,
+                    sub_type,
                 );
             } else {
                 draw_text_mut(
                     &mut image,
-                    color.clone(),
+                    color,
                     artifact_x as i32 + 60,
                     sub_y + 7,
                     Scale::uniform(20.0),
                     &font,
-                    &sub_type,
+                    sub_type,
                 );
             }
             let sub_value_width = text_size(scale, &font, &sub_value).0;
             draw_text_mut(
                 &mut image,
-                color.clone(),
+                color,
                 artifact_x as i32 + 340 - sub_value_width,
                 sub_y,
                 scale,
@@ -536,12 +530,12 @@ pub async fn generate(
         "en": "Total Score",
         "ja": "総合スコア",
     }))
-    .get(&raw_lang)
+    .get(raw_lang)
     .to_string();
     let scale = Scale::uniform(30.0);
     draw_text_mut(
         &mut image,
-        white.clone(),
+        white,
         1440,
         350,
         scale,
@@ -550,13 +544,13 @@ pub async fn generate(
     );
     let text = round_to_1_decimal_places(artifact_scores).to_string();
     let scale = Scale::uniform(90.0);
-    let (text_w, text_h) = text_size(scale.into(), &font, &text);
+    let (text_w, text_h) = text_size(scale, &font, &text);
     draw_text_mut(
         &mut image,
-        white.clone(),
+        white,
         1630 - text_w / 2,
         450 - text_h / 2,
-        scale.into(),
+        scale,
         &font,
         &text,
     );
@@ -621,7 +615,7 @@ pub async fn generate(
         let status_width = text_size(scale, &font, &status).0;
         draw_text_mut(
             &mut image,
-            white.clone(),
+            white,
             1350 - status_width,
             status_y,
             scale,
@@ -630,22 +624,22 @@ pub async fn generate(
         );
         draw_text_mut(
             &mut image,
-            white.clone(),
+            white,
             845,
             status_y,
             scale,
             &font,
-            &code,
+            code,
         );
         status_y += 70;
     }
-    status_y = status_y - 70;
+    status_y -= 70;
     let img = data.element.image(icons, 2.5)?;
     image::imageops::overlay(&mut image, &img, 790, status_y.into());
 
     let sets = data
         .reliquarys()
-        .into_iter()
+        .iter()
         .map(|x| x.set_name(api, lang))
         .collect::<Vec<Option<&str>>>();
     let mut set = HashMap::<String, u32>::new();
@@ -693,7 +687,7 @@ pub async fn generate(
     let first_key_color = if largest_set_key > 3 {
         Rgba([0, 255, 255, 255])
     } else {
-        white.clone()
+        white
     };
     if second_set_name.is_none() {
         let set_width = text_size(scale, &font, &set_name).0;
@@ -702,7 +696,7 @@ pub async fn generate(
             let set_width = text_size(scale, &font, &set_name).0;
             draw_text_mut(
                 &mut image,
-                first_key_color.clone(),
+                first_key_color,
                 1640 - set_width / 2,
                 265,
                 scale,
@@ -722,7 +716,7 @@ pub async fn generate(
         }
         draw_text_mut(
             &mut image,
-            white.clone(),
+            white,
             1820,
             260,
             scale,
@@ -740,7 +734,7 @@ pub async fn generate(
         };
         draw_text_mut(
             &mut image,
-            white.clone(),
+            white,
             1820,
             235,
             scale,
@@ -749,7 +743,7 @@ pub async fn generate(
         );
         draw_text_mut(
             &mut image,
-            white.clone(),
+            white,
             1820,
             280,
             scale,
@@ -767,7 +761,7 @@ pub async fn generate(
             };
             draw_text_mut(
                 &mut image,
-                white.clone(),
+                white,
                 1640 - set_width / 2,
                 240,
                 scale,
@@ -776,7 +770,7 @@ pub async fn generate(
             );
             draw_text_mut(
                 &mut image,
-                white.clone(),
+                white,
                 1640 - set_width / 2,
                 285,
                 scale,
@@ -786,7 +780,7 @@ pub async fn generate(
         } else {
             draw_text_mut(
                 &mut image,
-                white.clone(),
+                white,
                 1640 - set_width / 2,
                 235,
                 scale,
@@ -795,7 +789,7 @@ pub async fn generate(
             );
             draw_text_mut(
                 &mut image,
-                white.clone(),
+                white,
                 1640 - set_width / 2,
                 280,
                 scale,
@@ -805,15 +799,15 @@ pub async fn generate(
         }
     }
 
-    let kind = counter.to_string_locale(&lang);
+    let kind = counter.to_string_locale(lang);
     let scale = Scale::uniform(35.0);
-    let (kind_w, _) = text_size(scale.into(), &font, &kind);
+    let (kind_w, _) = text_size(scale, &font, &kind);
     draw_text_mut(
         &mut image,
-        white.clone(),
+        white,
         1870 - kind_w,
         580,
-        scale.into(),
+        scale,
         &font,
         &kind,
     );
@@ -853,7 +847,7 @@ pub fn is_percent(stat: &Stats) -> bool {
 
 fn round_to_1_decimal_places(x: f64) -> String {
     let s = ((x * 10.0).round() / 10.0).to_string();
-    if !s.contains(".") {
+    if !s.contains('.') {
         return format!("{}.0", s);
     }
     s

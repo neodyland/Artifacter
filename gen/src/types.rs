@@ -130,7 +130,7 @@ pub fn resolve_op(art: &Reliquary) -> Option<Vec<Vec<f64>>> {
         if c > count {
             count = 0;
         } else {
-            count = count - c;
+            count -= c;
         }
         if dupe.is_none() {
             dupes.push(vec![]);
@@ -181,18 +181,17 @@ pub fn resolve_op(art: &Reliquary) -> Option<Vec<Vec<f64>>> {
             if i64::try_from(count).ok()? - i64::try_from(x).ok()? < 0 {
                 continue;
             }
-            let last_count = last_counts
+            let last_count = *last_counts
                 .get(&dp.try_into().unwrap())
-                .unwrap_or(&0)
-                .clone();
+                .unwrap_or(&0);
             if count + last_count < x {
                 continue;
             }
             last_counts.insert(dp as u64, x);
             count = count + last_count - x;
-            dupe_count_result[dp] = dupe_count_result[dp] + 1;
+            dupe_count_result[dp] += 1;
         }
-        i = i - 1;
+        i -= 1;
     }
     for i in 0..dupes.len() {
         if dupes[i].is_empty() {

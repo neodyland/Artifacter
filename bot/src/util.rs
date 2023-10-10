@@ -23,7 +23,7 @@ pub fn create_components(
         }
         let name = name.as_ref().unwrap().to_owned();
         options.push(
-            CreateSelectMenuOption::new(name.clone(), format!("{}", &character.id.0))
+            CreateSelectMenuOption::new(name, format!("{}", &character.id.0))
                 .description(format!("{}Lv", character.level)),
         )
     }
@@ -38,8 +38,7 @@ pub fn create_components(
     let score = CreateSelectMenu::new(
         "score",
         CreateSelectMenuKind::String {
-            options: vec![
-                (
+            options: [(
                     Locale::from(json!({"ja":"攻撃型","en": "Attack"})).get(lang),
                     "normal",
                 ),
@@ -58,8 +57,7 @@ pub fn create_components(
                 (
                     Locale::from(json!({"ja":"チャージ型","en": "Charge"})).get(lang),
                     "charge",
-                ),
-            ]
+                )]
             .iter()
             .map(|x| CreateSelectMenuOption::new(x.0, x.1))
             .collect(),
@@ -75,7 +73,7 @@ pub fn create_components(
     let format = CreateSelectMenu::new(
         "format",
         CreateSelectMenuKind::String {
-            options: vec![("PNG", "png"), ("JPEG", "jpeg")]
+            options: [("PNG", "png"), ("JPEG", "jpeg")]
                 .iter()
                 .map(|x| CreateSelectMenuOption::new(x.0, x.1))
                 .collect(),

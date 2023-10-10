@@ -29,7 +29,7 @@ pub struct Migration;
 #[async_trait::async_trait]
 impl MigrationTrait for Migration {
     async fn up(&self, manager: &SchemaManager) -> Result<(), DbErr> {
-        if manager.has_table(Entity.table_name()).await? == false {
+        if !(manager.has_table(Entity.table_name()).await?) {
             manager
                 .create_table(
                     sea_query::Table::create()
