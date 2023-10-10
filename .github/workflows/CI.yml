@@ -24,10 +24,10 @@ jobs:
             target
           key: ${{ runner.os }}-cargo-${{ hashFiles('**/Cargo.lock') }}
       - name: Build cross platform
-        uses: neodyland/rust-ci@1dc4cc48c54ed137b6e2a838d890db3f53591be4
+        uses: neodyland/rust-ci@3404b8d95b19d04c482586ddcfd7b0f02bf07ff0
         with:
           package: artifacter
-          install-rustup: true
+          install-rustup: false
           install-openssl: true
       - name: Set up QEMU
         uses: docker/setup-qemu-action@v2
