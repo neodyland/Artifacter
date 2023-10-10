@@ -11,3 +11,6 @@ rustで書かれているため、メモリの消費が段違いに少ないで�
 頻繁に更新されているデータを取得してくることで、自動更新されています。
 # Webサイト
 https://artifacter.neody.land/
+
+# Openssl source
+https://packages.debian.org/buster/arm64/libssl-dev/download

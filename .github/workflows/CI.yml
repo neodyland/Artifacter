@@ -31,6 +31,7 @@ jobs:
           rm -rf libssl-dev_1.1.1n-0+deb10u6_arm64.deb && \
           mkdir -p target && \
           mv usr target/usr && \
+          cp target/usr/include/aarch64-linux-gnu/openssl/opensslconf.h target/usr/include && \
           export AARCH64_UNKNOWN_LINUX_GNU_OPENSSL_DIR="$(pwd)/target/usr/" && \
           export AARCH64_UNKNOWN_LINUX_GNU_OPENSSL_LIB_DIR="$(pwd)/target/usr/lib/aarch64-linux-gnu/" && \
           echo "::set-output name=AARCH64_UNKNOWN_LINUX_GNU_OPENSSL_DIR::$AARCH64_UNKNOWN_LINUX_GNU_OPENSSL_DIR" && \
