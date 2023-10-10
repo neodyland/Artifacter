@@ -27,7 +27,7 @@ jobs:
         uses: neodyland/rust-ci@1dc4cc48c54ed137b6e2a838d890db3f53591be4
         with:
           package: artifacter
-          install-rustup: false
+          install-rustup: true
           install-openssl: true
       - name: Set up QEMU
         uses: docker/setup-qemu-action@v2
