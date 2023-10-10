@@ -31,12 +31,17 @@ jobs:
           mkdir -p target && \
           mv usr target/usr && \
           export AARCH64_UNKNOWN_LINUX_GNU_OPENSSL_DIR="$(pwd)/target/usr/" && \
-          export AARCH64_UNKNOWN_LINUX_GNU_OPENSSL_LIB_DIR="$(pwd)/target/usr/lib/x86_64-linux-gnu/"
+          export AARCH64_UNKNOWN_LINUX_GNU_OPENSSL_LIB_DIR="$(pwd)/target/usr/lib/x86_64-linux-gnu/" && \
+          echo "::set-output name=AARCH64_UNKNOWN_LINUX_GNU_OPENSSL_DIR::$AARCH64_UNKNOWN_LINUX_GNU_OPENSSL_DIR" && \
+          echo "::set-output name=AARCH64_UNKNOWN_LINUX_GNU_OPENSSL_LIB_DIR::$AARCH64_UNKNOWN_LINUX_GNU_OPENSSL_LIB_DIR"
       - name: Build cross platform
         uses: neodyland/rust-ci@a08c2e949f5774fa65e321840a3666c71e230ef2
         with:
           package: artifacter
           install-rustup: false
+        env:
+          AARCH64_UNKNOWN_LINUX_GNU_OPENSSL_DIR: ${{ steps.action1.outputs.AARCH64_UNKNOWN_LINUX_GNU_OPENSSL_DIR }}
+          AARCH64_UNKNOWN_LINUX_GNU_OPENSSL_LIB_DIR: ${{ steps.action1.outputs.AARCH64_UNKNOWN_LINUX_GNU_OPENSSL_LIB_DIR }}
       - name: Set up QEMU
         uses: docker/setup-qemu-action@v2
       - name: Set up Docker Buildx
