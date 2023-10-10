@@ -24,7 +24,7 @@ jobs:
             target
           key: ${{ runner.os }}-cargo-${{ hashFiles('**/Cargo.lock') }}
       - name: Build cross platform
-        uses: neodyland/rust-ci@19b7df87bc1a1544626496da033902ca19723919
+        uses: neodyland/rust-ci@288bdf57603457e8d7d6283e31f977377748b9b8
         with:
           package: artifacter
           install-rustup: false
