@@ -338,7 +338,6 @@ async fn _main(api: EnkaNetwork) -> anyhow::Result<()> {
         poise::FrameworkOptions {
             commands: vec![
                 commands::build(),
-                commands::read_img(),
                 commands::link(),
                 commands::unlink(),
                 commands::profile(),

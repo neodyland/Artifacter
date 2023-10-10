@@ -7,7 +7,6 @@ use poise::{
     },
     CreateReply,
 };
-use read_img::read_image_trimed;
 use sea_orm::{ActiveModelTrait, EntityTrait, Set};
 use serde_json::json;
 use serenity::model::Timestamp;
@@ -394,110 +393,5 @@ pub async fn build(
         builder = builder.attachment(attachment.unwrap());
     }
     ctx.send(builder).await?;
-    Ok(())
-}
-
-/// get artifact score from image
-#[poise::command(
-    context_menu_command = "Read Image",
-    description_localized("ja", "画像から情報を取得します")
-)]
-pub async fn read_img(
-    ctx: Context<'_>,
-    #[description = "image"]
-    #[description_localized("ja", "画像")]
-    msg: serenity::all::Message,
-) -> Result<(), Error> {
-    let locale = ctx.locale().unwrap_or("ja");
-    let lang = Lang::from(locale);
-    ctx.defer().await?;
-    let data = ctx.data();
-    let api = &data.lock().await.api;
-    let image = msg.attachments.first();
-    if image.is_none() {
-        let msg = CreateReply::new().content(
-            Locale::from(json!({
-                "ja": "画像が添付されていません。",
-                "en": "No image attached.",
-            }))
-            .get(&lang),
-        );
-        ctx.send(msg).await?;
-        return Ok(());
-    }
-    let image = image.unwrap();
-    if image.width.is_none() || image.content_type.is_none() {
-        let msg = CreateReply::new().content(
-            Locale::from(json!({
-                "ja": "画像が添付されていません。",
-                "en": "No image attached.",
-            }))
-            .get(&lang),
-        );
-        ctx.send(msg).await?;
-        return Ok(());
-    }
-    if image.content_type.as_ref().unwrap() != "image/png"
-        && image.content_type.as_ref().unwrap() != "image/jpeg"
-    {
-        let msg = CreateReply::new().content(
-            Locale::from(json!({
-                "ja": "画像の形式がpng|jpegではありません。",
-                "en": "Image format is not png|jpeg.",
-            }))
-            .get(&lang),
-        );
-        ctx.send(msg).await?;
-        return Ok(());
-    }
-    let image = image.download().await;
-    if image.is_err() {
-        let msg = CreateReply::new().content(
-            Locale::from(json!({
-                "ja": "画像のダウンロードに失敗しました。",
-                "en": "Failed to download image.",
-            }))
-            .get(&lang),
-        );
-        ctx.send(msg).await?;
-        return Ok(());
-    }
-    let image = image.unwrap();
-    let image = read_image_trimed(image, api, &lang.to_string()).await;
-    if image.is_none() {
-        let msg = CreateReply::new().content(
-            Locale::from(json!({
-                "ja": "画像から情報が読み取れませんでした。",
-                "en": "Failed to read image.",
-            }))
-            .get(&lang),
-        );
-        ctx.send(msg).await?;
-        return Ok(());
-    }
-    let image = image.unwrap();
-    let footer = CreateEmbedFooter::new(format!("{}", image.2.unwrap_or(0)));
-    let embed = CreateEmbed::default()
-        .title(Locale::from(json!({"ja": "読み取り結果", "en": "Result"})).get(&lang))
-        .field(image.0.clone().map(|e| e.0).unwrap_or(
-            Locale::from(json!({"ja": "聖遺物", "en": "Relic"})).get(&lang).to_string()
-        ), image.0.clone().map(|e| e.1).unwrap_or(Locale::from(json!({"ja": "聖遺物の情報は見つかりませんでした", "en": "No relic information found"})).get(&lang).to_string()), true)
-        .field(Locale::from(json!({"ja": "スコア", "en": "Score"})).get(&lang).to_string(),
-        image.0.clone().map(|e| e.2).unwrap_or(Locale::from(json!({"ja": "聖遺物の情報は見つかりませんでした", "en": "No relic information found"})).get(&lang).to_string())
-        ,true)
-        .footer(footer)
-        .color(convert_rgb([0x00, 0xff, 0x00]));
-    let b = CreateButton::new("build")
-        .style(ButtonStyle::Primary)
-        .label(
-            Locale::from(json!({
-                "ja": "このユーザーのプロフィール",
-                "en": "This user's profile",
-            }))
-            .get(&lang),
-        );
-    let c = CreateActionRow::Buttons(vec![b]);
-    let msg = CreateReply::new().embed(embed).components(vec![c]);
-    ctx.send(msg).await?;
     Ok(())
 }

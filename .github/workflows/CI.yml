@@ -11,8 +11,21 @@ jobs:
     env:
       IMAGE_NAME: artifacter
     steps:
-      - name: checkout
+      - name: Checkout
         uses: actions/checkout@v3
+      - name: Cache
+       uses: actions/cache@v2
+        with:
+          path: |
+            ~/.cargo/registry
+            ~/.cargo/git
+            target
+          key: ${{ runner.os }}-cargo-${{ hashFiles('**/Cargo.lock') }}
+      - name: Build cross platform
+        uses: neodyland/rust-ci@a08c2e949f5774fa65e321840a3666c71e230ef2
+        with:
+          package: bot
+          install-rustup: false
       - name: Set up QEMU
         uses: docker/setup-qemu-action@v2
       - name: Set up Docker Buildx
