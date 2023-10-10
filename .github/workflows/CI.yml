@@ -28,6 +28,7 @@ jobs:
           curl -O http://security.debian.org/debian-security/pool/updates/main/o/openssl/libssl-dev_1.1.1n-0+deb10u6_arm64.deb && \
           ar p libssl-dev_1.1.1n-0+deb10u6_arm64.deb  data.tar.xz | tar Jxvf - && \
           rm -rf libssl-dev_1.1.1n-0+deb10u6_arm64.deb && \
+          mkdir -p target && \
           mv usr target/usr && \
           export AARCH64_UNKNOWN_LINUX_GNU_OPENSSL_DIR="$(pwd)/target/usr/" && \
           export AARCH64_UNKNOWN_LINUX_GNU_OPENSSL_LIB_DIR="$(pwd)/target/usr/lib/x86_64-linux-gnu/"
