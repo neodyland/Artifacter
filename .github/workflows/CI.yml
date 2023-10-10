@@ -24,6 +24,7 @@ jobs:
             target
           key: ${{ runner.os }}-cargo-${{ hashFiles('**/Cargo.lock') }}
       - name: Install cross openssl
+        id: openssl
         run: |
           curl -O http://security.debian.org/debian-security/pool/updates/main/o/openssl/libssl-dev_1.1.1n-0+deb10u6_arm64.deb && \
           ar p libssl-dev_1.1.1n-0+deb10u6_arm64.deb  data.tar.xz | tar Jxvf - && \
@@ -40,8 +41,8 @@ jobs:
           package: artifacter
           install-rustup: false
         env:
-          AARCH64_UNKNOWN_LINUX_GNU_OPENSSL_DIR: ${{ steps.action1.outputs.AARCH64_UNKNOWN_LINUX_GNU_OPENSSL_DIR }}
-          AARCH64_UNKNOWN_LINUX_GNU_OPENSSL_LIB_DIR: ${{ steps.action1.outputs.AARCH64_UNKNOWN_LINUX_GNU_OPENSSL_LIB_DIR }}
+          AARCH64_UNKNOWN_LINUX_GNU_OPENSSL_DIR: ${{ steps.openssl.outputs.AARCH64_UNKNOWN_LINUX_GNU_OPENSSL_DIR }}
+          AARCH64_UNKNOWN_LINUX_GNU_OPENSSL_LIB_DIR: ${{ steps.openssl.outputs.AARCH64_UNKNOWN_LINUX_GNU_OPENSSL_LIB_DIR }}
       - name: Set up QEMU
         uses: docker/setup-qemu-action@v2
       - name: Set up Docker Buildx
