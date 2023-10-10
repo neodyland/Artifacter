@@ -1,6 +1,5 @@
 cache/
 target/
-Cargo.lock
 .env
 build/
 .venv/

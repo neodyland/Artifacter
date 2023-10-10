@@ -23,27 +23,12 @@ jobs:
             ~/.cargo/git
             target
           key: ${{ runner.os }}-cargo-${{ hashFiles('**/Cargo.lock') }}
-      - name: Install cross openssl
-        id: openssl
-        run: |
-          curl -O http://security.debian.org/debian-security/pool/updates/main/o/openssl/libssl-dev_1.1.1n-0+deb10u6_arm64.deb && \
-          ar p libssl-dev_1.1.1n-0+deb10u6_arm64.deb  data.tar.xz | tar Jxvf - && \
-          rm -rf libssl-dev_1.1.1n-0+deb10u6_arm64.deb && \
-          mkdir -p target && \
-          mv usr target/usr && \
-          cp target/usr/include/aarch64-linux-gnu/openssl/opensslconf.h target/usr/include/openssl && \
-          export AARCH64_UNKNOWN_LINUX_GNU_OPENSSL_DIR="$(pwd)/target/usr/" && \
-          export AARCH64_UNKNOWN_LINUX_GNU_OPENSSL_LIB_DIR="$(pwd)/target/usr/lib/aarch64-linux-gnu/" && \
-          echo "::set-output name=AARCH64_UNKNOWN_LINUX_GNU_OPENSSL_DIR::$AARCH64_UNKNOWN_LINUX_GNU_OPENSSL_DIR" && \
-          echo "::set-output name=AARCH64_UNKNOWN_LINUX_GNU_OPENSSL_LIB_DIR::$AARCH64_UNKNOWN_LINUX_GNU_OPENSSL_LIB_DIR"
       - name: Build cross platform
-        uses: neodyland/rust-ci@a08c2e949f5774fa65e321840a3666c71e230ef2
+        uses: neodyland/rust-ci@65d18188699df1d66d4ccde4d47a66609d22d7a9
         with:
           package: artifacter
           install-rustup: false
-        env:
-          AARCH64_UNKNOWN_LINUX_GNU_OPENSSL_DIR: ${{ steps.openssl.outputs.AARCH64_UNKNOWN_LINUX_GNU_OPENSSL_DIR }}
-          AARCH64_UNKNOWN_LINUX_GNU_OPENSSL_LIB_DIR: ${{ steps.openssl.outputs.AARCH64_UNKNOWN_LINUX_GNU_OPENSSL_LIB_DIR }}
+          install-openssl: true
       - name: Set up QEMU
         uses: docker/setup-qemu-action@v2
       - name: Set up Docker Buildx
