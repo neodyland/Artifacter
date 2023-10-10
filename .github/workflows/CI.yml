@@ -24,7 +24,7 @@ jobs:
       - name: Build cross platform
         uses: neodyland/rust-ci@a08c2e949f5774fa65e321840a3666c71e230ef2
         with:
-          package: bot
+          package: artifacter
           install-rustup: false
       - name: Set up QEMU
         uses: docker/setup-qemu-action@v2
