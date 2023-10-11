@@ -13,24 +13,14 @@ jobs:
         uses: actions/checkout@v4
         with:
           submodules: true
-      - name: Cache
-        uses: actions/cache@v3
-        with:
-          path: |
-            ~/.cargo/bin/
-            ~/.cargo/registry/index/
-            ~/.cargo/registry/cache/
-            ~/.cargo/git/db/
-            target/
-          key: ${{ runner.os }}-cargo-${{ hashFiles('**/Cargo.lock') }}
-          restore-keys: |
-            ${{ runner.os }}-cargo-
       - name: Build cross platform
-        uses: neodyland/rust-ci@55b05586b8a6a50f3b2fa854a136114d1751ff0c
+        uses: neodyland/rust-ci@02c1740c882fe625da04706218bc63df7ac9ae71
         with:
           package: artifacter
           install-rustup: false
           install-openssl: true
+          cache: true
+          cache-key: ${{ hashFiles('**/Cargo.lock') }}
       - name: Set up QEMU
         uses: docker/setup-qemu-action@v2
       - name: Set up Docker Buildx
