@@ -14,13 +14,12 @@ jobs:
         with:
           submodules: true
       - name: Build cross platform
-        uses: neodyland/rust-ci@02c1740c882fe625da04706218bc63df7ac9ae71
+        uses: neodyland/rust-ci@76133073197ed0ecf608f2a58a8fdadff089fc54
         with:
           package: artifacter
           install-rustup: false
           install-openssl: true
           cache: true
-          cache-key: ${{ hashFiles('**/Cargo.lock') }}
       - name: Set up QEMU
         uses: docker/setup-qemu-action@v2
       - name: Set up Docker Buildx
