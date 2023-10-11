@@ -26,7 +26,7 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-cargo-
       - name: Build cross platform
-        uses: neodyland/rust-ci@76dd46d5b6b1068fafb70c318b666adb7372f55d
+        uses: neodyland/rust-ci@55b05586b8a6a50f3b2fa854a136114d1751ff0c
         with:
           package: artifacter
           install-rustup: false
