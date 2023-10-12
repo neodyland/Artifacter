@@ -1,9 +1,9 @@
 FROM rust:latest
 COPY .out /out
-RUN dpkgArch="$(dpkg --print-architecture)"; \
-        case "$apkArch" in \
-            amd64) cp /out/x86-64/artifacter /art ;; \
-            arm64) cp /out/aarch64/artifacter /art ;; \
-        esac;
+RUN if [ "$(arch)" = "x86_64" ]; then \
+        cp -r /out/x86-64/artifacter /art; \
+    else \
+        cp -r /out/aarch64/artifacter /art; \
+    fi
 RUN rm -rf /out
-CMD ["./art"]
+CMD ["/art"]
