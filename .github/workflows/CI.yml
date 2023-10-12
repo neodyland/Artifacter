@@ -14,7 +14,7 @@ jobs:
         with:
           submodules: true
       - name: Build cross platform
-        uses: neodyland/rust-ci@96a6f82bb647959342534262ec51ff5ce030e552
+        uses: neodyland/rust-ci@e16725b7d7e2cad63c9b4316017d73bf2f5cf518
         with:
           package: artifacter
           install-rustup: false
