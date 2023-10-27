@@ -59,9 +59,9 @@ impl Api {
             ("lang".to_string(), lang.unwrap_or_else(|| "en".to_string())),
         ];
         if let Some(score) = score {
-            params.push(("score".to_string(), score));
+            params.push(("counter".to_string(), score));
         }
         let (buf, h) = self.request("generate".to_string(), params).await?;
-        Ok((buf, h.get("x-score-counter").unwrap().to_str()?.to_string()))
+        Ok((buf, h.get("X-Score-Counter").unwrap().to_str()?.to_string().to_lowercase()))
     }
 }

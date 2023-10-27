@@ -21,7 +21,7 @@
     "general.generated": "{{name}}のステータス",
     "calculationMethod.attack": "攻撃型",
     "calculationMethod.defense": "防御型",
-    "calculationMethod.hp": "体力型",
+    "calculationMethod.hp": "HP型",
     "calculationMethod.elementalMastery": "熟知型",
     "calculationMethod.energyRecharge": "チャージ型",
     "calculationFormula.attack": "会心率 × 2 + 会心ダメージ + 攻撃力(%)",
