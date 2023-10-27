@@ -2,6 +2,5 @@ cache/
 target/
 .env
 build/
-.venv/
 dist/
 test.png

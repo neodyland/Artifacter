@@ -1,0 +1,12 @@
+[package]
+name = "gen"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+enka-api = { path = "../enka-api" }
+serde_json = { workspace = true }
+serde = { workspace = true }
+image = "0.24.7"
+rusttype = "0.9.3"
+imageproc = "0.23.0"

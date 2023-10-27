@@ -1,7 +1,9 @@
 use std::{collections::HashMap, num::TryFromIntError};
 
-use enkanetwork_rs::{Reliquary, Stats, StatsValue};
 use serde::Deserialize;
+
+use crate::constants::{DUPE, SUBOP};
+use enka_api::character::{Reliquary, Stats, StatsValue};
 
 #[derive(Deserialize)]
 pub struct Dupe {
@@ -19,7 +21,7 @@ pub struct Dupe {
 
 impl Dupe {
     pub fn new() -> Self {
-        serde_json::from_str(include_str!("../../assets/dupe.json")).unwrap()
+        serde_json::from_str(DUPE).unwrap()
     }
     pub fn get(&self, s: &str) -> Option<HashMap<String, Vec<Vec<f64>>>> {
         Some(match s {
@@ -54,7 +56,7 @@ pub struct Subop {
 
 impl Subop {
     pub fn new() -> Self {
-        serde_json::from_str(include_str!("../../assets/subop.json")).unwrap()
+        serde_json::from_str(SUBOP).unwrap()
     }
     pub fn get(&self, s: &str) -> Option<HashMap<String, Vec<f64>>> {
         Some(match s {
@@ -181,9 +183,7 @@ pub fn resolve_op(art: &Reliquary) -> Option<Vec<Vec<f64>>> {
             if i64::try_from(count).ok()? - i64::try_from(x).ok()? < 0 {
                 continue;
             }
-            let last_count = *last_counts
-                .get(&dp.try_into().unwrap())
-                .unwrap_or(&0);
+            let last_count = *last_counts.get(&dp.try_into().unwrap()).unwrap_or(&0);
             if count + last_count < x {
                 continue;
             }

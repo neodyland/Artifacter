@@ -1,6 +1,6 @@
 use serde_json::Value;
 
-use crate::Lang;
+use crate::gen::Lang;
 
 pub use serde_json::json;
 

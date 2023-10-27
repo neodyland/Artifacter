@@ -8,4 +8,5 @@ RUN if [ "$(arch)" = "x86_64" ]; then \
 RUN rm -rf /out
 FROM googlefan25/tiny-rust:latest
 COPY --from=builder /build/artifacter /art
+COPY --from=builder /build/api /api
 CMD ["/art"]

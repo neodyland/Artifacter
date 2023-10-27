@@ -1,0 +1,516 @@
+{
+  "aether": {
+    "filename_icon": "UI_AvatarIcon_PlayerBoy",
+    "filename_iconCard": "UI_AvatarIcon_PlayerBoy_Card",
+    "filename_sideIcon": "UI_AvatarIcon_Side_PlayerBoy"
+  },
+  "albedo": {
+    "filename_icon": "UI_AvatarIcon_Albedo",
+    "filename_iconCard": "UI_AvatarIcon_Albedo_Card",
+    "filename_sideIcon": "UI_AvatarIcon_Side_Albedo",
+    "filename_gachaSplash": "UI_Gacha_AvatarImg_Albedo",
+    "filename_gachaSlice": "UI_Gacha_AvatarIcon_Albedo"
+  },
+  "amber": {
+    "filename_icon": "UI_AvatarIcon_Ambor",
+    "filename_iconCard": "UI_AvatarIcon_Ambor_Card",
+    "filename_sideIcon": "UI_AvatarIcon_Side_Ambor",
+    "filename_gachaSplash": "UI_Gacha_AvatarImg_Ambor",
+    "filename_gachaSlice": "UI_Gacha_AvatarIcon_Ambor"
+  },
+  "barbara": {
+    "filename_icon": "UI_AvatarIcon_Barbara",
+    "filename_iconCard": "UI_AvatarIcon_Barbara_Card",
+    "filename_sideIcon": "UI_AvatarIcon_Side_Barbara",
+    "filename_gachaSplash": "UI_Gacha_AvatarImg_Barbara",
+    "filename_gachaSlice": "UI_Gacha_AvatarIcon_Barbara"
+  },
+  "beidou": {
+    "filename_icon": "UI_AvatarIcon_Beidou",
+    "filename_iconCard": "UI_AvatarIcon_Beidou_Card",
+    "filename_sideIcon": "UI_AvatarIcon_Side_Beidou",
+    "filename_gachaSplash": "UI_Gacha_AvatarImg_Beidou",
+    "filename_gachaSlice": "UI_Gacha_AvatarIcon_Beidou"
+  },
+  "bennett": {
+    "filename_icon": "UI_AvatarIcon_Bennett",
+    "filename_iconCard": "UI_AvatarIcon_Bennett_Card",
+    "filename_sideIcon": "UI_AvatarIcon_Side_Bennett",
+    "filename_gachaSplash": "UI_Gacha_AvatarImg_Bennett",
+    "filename_gachaSlice": "UI_Gacha_AvatarIcon_Bennett"
+  },
+  "chongyun": {
+    "filename_icon": "UI_AvatarIcon_Chongyun",
+    "filename_iconCard": "UI_AvatarIcon_Chongyun_Card",
+    "filename_sideIcon": "UI_AvatarIcon_Side_Chongyun",
+    "filename_gachaSplash": "UI_Gacha_AvatarImg_Chongyun",
+    "filename_gachaSlice": "UI_Gacha_AvatarIcon_Chongyun"
+  },
+  "diluc": {
+    "filename_icon": "UI_AvatarIcon_Diluc",
+    "filename_iconCard": "UI_AvatarIcon_Diluc_Card",
+    "filename_sideIcon": "UI_AvatarIcon_Side_Diluc",
+    "filename_gachaSplash": "UI_Gacha_AvatarImg_Diluc",
+    "filename_gachaSlice": "UI_Gacha_AvatarIcon_Diluc"
+  },
+  "diona": {
+    "filename_icon": "UI_AvatarIcon_Diona",
+    "filename_iconCard": "UI_AvatarIcon_Diona_Card",
+    "filename_sideIcon": "UI_AvatarIcon_Side_Diona",
+    "filename_gachaSplash": "UI_Gacha_AvatarImg_Diona",
+    "filename_gachaSlice": "UI_Gacha_AvatarIcon_Diona"
+  },
+  "fischl": {
+    "filename_icon": "UI_AvatarIcon_Fischl",
+    "filename_iconCard": "UI_AvatarIcon_Fischl_Card",
+    "filename_sideIcon": "UI_AvatarIcon_Side_Fischl",
+    "filename_gachaSplash": "UI_Gacha_AvatarImg_Fischl",
+    "filename_gachaSlice": "UI_Gacha_AvatarIcon_Fischl"
+  },
+  "ganyu": {
+    "filename_icon": "UI_AvatarIcon_Ganyu",
+    "filename_iconCard": "UI_AvatarIcon_Ganyu_Card",
+    "filename_sideIcon": "UI_AvatarIcon_Side_Ganyu",
+    "filename_gachaSplash": "UI_Gacha_AvatarImg_Ganyu",
+    "filename_gachaSlice": "UI_Gacha_AvatarIcon_Ganyu"
+  },
+  "hutao": {
+    "filename_icon": "UI_AvatarIcon_Hutao",
+    "filename_iconCard": "UI_AvatarIcon_Hutao_Card",
+    "filename_sideIcon": "UI_AvatarIcon_Side_Hutao",
+    "filename_gachaSplash": "UI_Gacha_AvatarImg_Hutao",
+    "filename_gachaSlice": "UI_Gacha_AvatarIcon_Hutao"
+  },
+  "jean": {
+    "filename_icon": "UI_AvatarIcon_Qin",
+    "filename_iconCard": "UI_AvatarIcon_Qin_Card",
+    "filename_sideIcon": "UI_AvatarIcon_Side_Qin",
+    "filename_gachaSplash": "UI_Gacha_AvatarImg_Qin",
+    "filename_gachaSlice": "UI_Gacha_AvatarIcon_Qin"
+  },
+  "kaeya": {
+    "filename_icon": "UI_AvatarIcon_Kaeya",
+    "filename_iconCard": "UI_AvatarIcon_Kaeya_Card",
+    "filename_sideIcon": "UI_AvatarIcon_Side_Kaeya",
+    "filename_gachaSplash": "UI_Gacha_AvatarImg_Kaeya",
+    "filename_gachaSlice": "UI_Gacha_AvatarIcon_Kaeya"
+  },
+  "keqing": {
+    "filename_icon": "UI_AvatarIcon_Keqing",
+    "filename_iconCard": "UI_AvatarIcon_Keqing_Card",
+    "filename_sideIcon": "UI_AvatarIcon_Side_Keqing",
+    "filename_gachaSplash": "UI_Gacha_AvatarImg_Keqing",
+    "filename_gachaSlice": "UI_Gacha_AvatarIcon_Keqing"
+  },
+  "klee": {
+    "filename_icon": "UI_AvatarIcon_Klee",
+    "filename_iconCard": "UI_AvatarIcon_Klee_Card",
+    "filename_sideIcon": "UI_AvatarIcon_Side_Klee",
+    "filename_gachaSplash": "UI_Gacha_AvatarImg_Klee",
+    "filename_gachaSlice": "UI_Gacha_AvatarIcon_Klee"
+  },
+  "lisa": {
+    "filename_icon": "UI_AvatarIcon_Lisa",
+    "filename_iconCard": "UI_AvatarIcon_Lisa_Card",
+    "filename_sideIcon": "UI_AvatarIcon_Side_Lisa",
+    "filename_gachaSplash": "UI_Gacha_AvatarImg_Lisa",
+    "filename_gachaSlice": "UI_Gacha_AvatarIcon_Lisa"
+  },
+  "lumine": {
+    "filename_icon": "UI_AvatarIcon_PlayerGirl",
+    "filename_iconCard": "UI_AvatarIcon_PlayerGirl_Card",
+    "filename_sideIcon": "UI_AvatarIcon_Side_PlayerGirl"
+  },
+  "mona": {
+    "filename_icon": "UI_AvatarIcon_Mona",
+    "filename_iconCard": "UI_AvatarIcon_Mona_Card",
+    "filename_sideIcon": "UI_AvatarIcon_Side_Mona",
+    "filename_gachaSplash": "UI_Gacha_AvatarImg_Mona",
+    "filename_gachaSlice": "UI_Gacha_AvatarIcon_Mona"
+  },
+  "ningguang": {
+    "filename_icon": "UI_AvatarIcon_Ningguang",
+    "filename_iconCard": "UI_AvatarIcon_Ningguang_Card",
+    "filename_sideIcon": "UI_AvatarIcon_Side_Ningguang",
+    "filename_gachaSplash": "UI_Gacha_AvatarImg_Ningguang",
+    "filename_gachaSlice": "UI_Gacha_AvatarIcon_Ningguang"
+  },
+  "noelle": {
+    "filename_icon": "UI_AvatarIcon_Noel",
+    "filename_iconCard": "UI_AvatarIcon_Noel_Card",
+    "filename_sideIcon": "UI_AvatarIcon_Side_Noel",
+    "filename_gachaSplash": "UI_Gacha_AvatarImg_Noel",
+    "filename_gachaSlice": "UI_Gacha_AvatarIcon_Noel"
+  },
+  "qiqi": {
+    "filename_icon": "UI_AvatarIcon_Qiqi",
+    "filename_iconCard": "UI_AvatarIcon_Qiqi_Card",
+    "filename_sideIcon": "UI_AvatarIcon_Side_Qiqi",
+    "filename_gachaSplash": "UI_Gacha_AvatarImg_Qiqi",
+    "filename_gachaSlice": "UI_Gacha_AvatarIcon_Qiqi"
+  },
+  "razor": {
+    "filename_icon": "UI_AvatarIcon_Razor",
+    "filename_iconCard": "UI_AvatarIcon_Razor_Card",
+    "filename_sideIcon": "UI_AvatarIcon_Side_Razor",
+    "filename_gachaSplash": "UI_Gacha_AvatarImg_Razor",
+    "filename_gachaSlice": "UI_Gacha_AvatarIcon_Razor"
+  },
+  "rosaria": {
+    "filename_icon": "UI_AvatarIcon_Rosaria",
+    "filename_iconCard": "UI_AvatarIcon_Rosaria_Card",
+    "filename_sideIcon": "UI_AvatarIcon_Side_Rosaria",
+    "filename_gachaSplash": "UI_Gacha_AvatarImg_Rosaria",
+    "filename_gachaSlice": "UI_Gacha_AvatarIcon_Rosaria"
+  },
+  "sucrose": {
+    "filename_icon": "UI_AvatarIcon_Sucrose",
+    "filename_iconCard": "UI_AvatarIcon_Sucrose_Card",
+    "filename_sideIcon": "UI_AvatarIcon_Side_Sucrose",
+    "filename_gachaSplash": "UI_Gacha_AvatarImg_Sucrose",
+    "filename_gachaSlice": "UI_Gacha_AvatarIcon_Sucrose"
+  },
+  "tartaglia": {
+    "filename_icon": "UI_AvatarIcon_Tartaglia",
+    "filename_iconCard": "UI_AvatarIcon_Tartaglia_Card",
+    "filename_sideIcon": "UI_AvatarIcon_Side_Tartaglia",
+    "filename_gachaSplash": "UI_Gacha_AvatarImg_Tartaglia",
+    "filename_gachaSlice": "UI_Gacha_AvatarIcon_Tartaglia"
+  },
+  "venti": {
+    "filename_icon": "UI_AvatarIcon_Venti",
+    "filename_iconCard": "UI_AvatarIcon_Venti_Card",
+    "filename_sideIcon": "UI_AvatarIcon_Side_Venti",
+    "filename_gachaSplash": "UI_Gacha_AvatarImg_Venti",
+    "filename_gachaSlice": "UI_Gacha_AvatarIcon_Venti"
+  },
+  "xiangling": {
+    "filename_icon": "UI_AvatarIcon_Xiangling",
+    "filename_iconCard": "UI_AvatarIcon_Xiangling_Card",
+    "filename_sideIcon": "UI_AvatarIcon_Side_Xiangling",
+    "filename_gachaSplash": "UI_Gacha_AvatarImg_Xiangling",
+    "filename_gachaSlice": "UI_Gacha_AvatarIcon_Xiangling"
+  },
+  "xiao": {
+    "filename_icon": "UI_AvatarIcon_Xiao",
+    "filename_iconCard": "UI_AvatarIcon_Xiao_Card",
+    "filename_sideIcon": "UI_AvatarIcon_Side_Xiao",
+    "filename_gachaSplash": "UI_Gacha_AvatarImg_Xiao",
+    "filename_gachaSlice": "UI_Gacha_AvatarIcon_Xiao"
+  },
+  "xingqiu": {
+    "filename_icon": "UI_AvatarIcon_Xingqiu",
+    "filename_iconCard": "UI_AvatarIcon_Xingqiu_Card",
+    "filename_sideIcon": "UI_AvatarIcon_Side_Xingqiu",
+    "filename_gachaSplash": "UI_Gacha_AvatarImg_Xingqiu",
+    "filename_gachaSlice": "UI_Gacha_AvatarIcon_Xingqiu"
+  },
+  "xinyan": {
+    "filename_icon": "UI_AvatarIcon_Xinyan",
+    "filename_iconCard": "UI_AvatarIcon_Xinyan_Card",
+    "filename_sideIcon": "UI_AvatarIcon_Side_Xinyan",
+    "filename_gachaSplash": "UI_Gacha_AvatarImg_Xinyan",
+    "filename_gachaSlice": "UI_Gacha_AvatarIcon_Xinyan"
+  },
+  "zhongli": {
+    "filename_icon": "UI_AvatarIcon_Zhongli",
+    "filename_iconCard": "UI_AvatarIcon_Zhongli_Card",
+    "filename_sideIcon": "UI_AvatarIcon_Side_Zhongli",
+    "filename_gachaSplash": "UI_Gacha_AvatarImg_Zhongli",
+    "filename_gachaSlice": "UI_Gacha_AvatarIcon_Zhongli"
+  },
+  "yanfei": {
+    "filename_icon": "UI_AvatarIcon_Feiyan",
+    "filename_iconCard": "UI_AvatarIcon_Feiyan_Card",
+    "filename_sideIcon": "UI_AvatarIcon_Side_Feiyan",
+    "filename_gachaSplash": "UI_Gacha_AvatarImg_Feiyan",
+    "filename_gachaSlice": "UI_Gacha_AvatarIcon_Feiyan"
+  },
+  "eula": {
+    "filename_icon": "UI_AvatarIcon_Eula",
+    "filename_iconCard": "UI_AvatarIcon_Eula_Card",
+    "filename_sideIcon": "UI_AvatarIcon_Side_Eula",
+    "filename_gachaSplash": "UI_Gacha_AvatarImg_Eula",
+    "filename_gachaSlice": "UI_Gacha_AvatarIcon_Eula"
+  },
+  "kaedeharakazuha": {
+    "filename_icon": "UI_AvatarIcon_Kazuha",
+    "filename_iconCard": "UI_AvatarIcon_Kazuha_Card",
+    "filename_sideIcon": "UI_AvatarIcon_Side_Kazuha",
+    "filename_gachaSplash": "UI_Gacha_AvatarImg_Kazuha",
+    "filename_gachaSlice": "UI_Gacha_AvatarIcon_Kazuha"
+  },
+  "yoimiya": {
+    "filename_icon": "UI_AvatarIcon_Yoimiya",
+    "filename_iconCard": "UI_AvatarIcon_Yoimiya_Card",
+    "filename_sideIcon": "UI_AvatarIcon_Side_Yoimiya",
+    "filename_gachaSplash": "UI_Gacha_AvatarImg_Yoimiya",
+    "filename_gachaSlice": "UI_Gacha_AvatarIcon_Yoimiya"
+  },
+  "sayu": {
+    "filename_icon": "UI_AvatarIcon_Sayu",
+    "filename_iconCard": "UI_AvatarIcon_Sayu_Card",
+    "filename_sideIcon": "UI_AvatarIcon_Side_Sayu",
+    "filename_gachaSplash": "UI_Gacha_AvatarImg_Sayu",
+    "filename_gachaSlice": "UI_Gacha_AvatarIcon_Sayu"
+  },
+  "kamisatoayaka": {
+    "filename_icon": "UI_AvatarIcon_Ayaka",
+    "filename_iconCard": "UI_AvatarIcon_Ayaka_Card",
+    "filename_sideIcon": "UI_AvatarIcon_Side_Ayaka",
+    "filename_gachaSplash": "UI_Gacha_AvatarImg_Ayaka",
+    "filename_gachaSlice": "UI_Gacha_AvatarIcon_Ayaka"
+  },
+  "aloy": {
+    "filename_icon": "UI_AvatarIcon_Aloy",
+    "filename_iconCard": "UI_AvatarIcon_Aloy_Card",
+    "filename_sideIcon": "UI_AvatarIcon_Side_Aloy",
+    "filename_gachaSplash": "UI_Gacha_AvatarImg_Aloy",
+    "filename_gachaSlice": "UI_Gacha_AvatarIcon_Aloy"
+  },
+  "raidenshogun": {
+    "filename_icon": "UI_AvatarIcon_Shougun",
+    "filename_iconCard": "UI_AvatarIcon_Shougun_Card",
+    "filename_sideIcon": "UI_AvatarIcon_Side_Shougun",
+    "filename_gachaSplash": "UI_Gacha_AvatarImg_Shougun",
+    "filename_gachaSlice": "UI_Gacha_AvatarIcon_Shougun"
+  },
+  "kujousara": {
+    "filename_icon": "UI_AvatarIcon_Sara",
+    "filename_iconCard": "UI_AvatarIcon_Sara_Card",
+    "filename_sideIcon": "UI_AvatarIcon_Side_Sara",
+    "filename_gachaSplash": "UI_Gacha_AvatarImg_Sara",
+    "filename_gachaSlice": "UI_Gacha_AvatarIcon_Sara"
+  },
+  "sangonomiyakokomi": {
+    "filename_icon": "UI_AvatarIcon_Kokomi",
+    "filename_iconCard": "UI_AvatarIcon_Kokomi_Card",
+    "filename_sideIcon": "UI_AvatarIcon_Side_Kokomi",
+    "filename_gachaSplash": "UI_Gacha_AvatarImg_Kokomi",
+    "filename_gachaSlice": "UI_Gacha_AvatarIcon_Kokomi"
+  },
+  "thoma": {
+    "filename_icon": "UI_AvatarIcon_Tohma",
+    "filename_iconCard": "UI_AvatarIcon_Tohma_Card",
+    "filename_sideIcon": "UI_AvatarIcon_Side_Tohma",
+    "filename_gachaSplash": "UI_Gacha_AvatarImg_Tohma",
+    "filename_gachaSlice": "UI_Gacha_AvatarIcon_Tohma"
+  },
+  "gorou": {
+    "filename_icon": "UI_AvatarIcon_Gorou",
+    "filename_iconCard": "UI_AvatarIcon_Gorou_Card",
+    "filename_sideIcon": "UI_AvatarIcon_Side_Gorou",
+    "filename_gachaSplash": "UI_Gacha_AvatarImg_Gorou",
+    "filename_gachaSlice": "UI_Gacha_AvatarIcon_Gorou"
+  },
+  "aratakiitto": {
+    "filename_icon": "UI_AvatarIcon_Itto",
+    "filename_iconCard": "UI_AvatarIcon_Itto_Card",
+    "filename_sideIcon": "UI_AvatarIcon_Side_Itto",
+    "filename_gachaSplash": "UI_Gacha_AvatarImg_Itto",
+    "filename_gachaSlice": "UI_Gacha_AvatarIcon_Itto"
+  },
+  "shenhe": {
+    "filename_icon": "UI_AvatarIcon_Shenhe",
+    "filename_iconCard": "UI_AvatarIcon_Shenhe_Card",
+    "filename_sideIcon": "UI_AvatarIcon_Side_Shenhe",
+    "filename_gachaSplash": "UI_Gacha_AvatarImg_Shenhe",
+    "filename_gachaSlice": "UI_Gacha_AvatarIcon_Shenhe"
+  },
+  "yunjin": {
+    "filename_icon": "UI_AvatarIcon_Yunjin",
+    "filename_iconCard": "UI_AvatarIcon_Yunjin_Card",
+    "filename_sideIcon": "UI_AvatarIcon_Side_Yunjin",
+    "filename_gachaSplash": "UI_Gacha_AvatarImg_Yunjin",
+    "filename_gachaSlice": "UI_Gacha_AvatarIcon_Yunjin"
+  },
+  "yaemiko": {
+    "filename_icon": "UI_AvatarIcon_Yae",
+    "filename_iconCard": "UI_AvatarIcon_Yae_Card",
+    "filename_sideIcon": "UI_AvatarIcon_Side_Yae",
+    "filename_gachaSplash": "UI_Gacha_AvatarImg_Yae",
+    "filename_gachaSlice": "UI_Gacha_AvatarIcon_Yae"
+  },
+  "kamisatoayato": {
+    "filename_icon": "UI_AvatarIcon_Ayato",
+    "filename_iconCard": "UI_AvatarIcon_Ayato_Card",
+    "filename_sideIcon": "UI_AvatarIcon_Side_Ayato",
+    "filename_gachaSplash": "UI_Gacha_AvatarImg_Ayato",
+    "filename_gachaSlice": "UI_Gacha_AvatarIcon_Ayato"
+  },
+  "yelan": {
+    "filename_icon": "UI_AvatarIcon_Yelan",
+    "filename_iconCard": "UI_AvatarIcon_Yelan_Card",
+    "filename_sideIcon": "UI_AvatarIcon_Side_Yelan",
+    "filename_gachaSplash": "UI_Gacha_AvatarImg_Yelan",
+    "filename_gachaSlice": "UI_Gacha_AvatarIcon_Yelan"
+  },
+  "kukishinobu": {
+    "filename_icon": "UI_AvatarIcon_Shinobu",
+    "filename_iconCard": "UI_AvatarIcon_Shinobu_Card",
+    "filename_sideIcon": "UI_AvatarIcon_Side_Shinobu",
+    "filename_gachaSplash": "UI_Gacha_AvatarImg_Shinobu",
+    "filename_gachaSlice": "UI_Gacha_AvatarIcon_Shinobu"
+  },
+  "shikanoinheizou": {
+    "filename_icon": "UI_AvatarIcon_Heizo",
+    "filename_iconCard": "UI_AvatarIcon_Heizo_Card",
+    "filename_sideIcon": "UI_AvatarIcon_Side_Heizo",
+    "filename_gachaSplash": "UI_Gacha_AvatarImg_Heizo",
+    "filename_gachaSlice": "UI_Gacha_AvatarIcon_Heizo"
+  },
+  "collei": {
+    "filename_icon": "UI_AvatarIcon_Collei",
+    "filename_iconCard": "UI_AvatarIcon_Collei_Card",
+    "filename_sideIcon": "UI_AvatarIcon_Side_Collei",
+    "filename_gachaSplash": "UI_Gacha_AvatarImg_Collei",
+    "filename_gachaSlice": "UI_Gacha_AvatarIcon_Collei"
+  },
+  "dori": {
+    "filename_icon": "UI_AvatarIcon_Dori",
+    "filename_iconCard": "UI_AvatarIcon_Dori_Card",
+    "filename_sideIcon": "UI_AvatarIcon_Side_Dori",
+    "filename_gachaSplash": "UI_Gacha_AvatarImg_Dori",
+    "filename_gachaSlice": "UI_Gacha_AvatarIcon_Dori"
+  },
+  "tighnari": {
+    "filename_icon": "UI_AvatarIcon_Tighnari",
+    "filename_iconCard": "UI_AvatarIcon_Tighnari_Card",
+    "filename_sideIcon": "UI_AvatarIcon_Side_Tighnari",
+    "filename_gachaSplash": "UI_Gacha_AvatarImg_Tighnari",
+    "filename_gachaSlice": "UI_Gacha_AvatarIcon_Tighnari"
+  },
+  "nilou": {
+    "filename_icon": "UI_AvatarIcon_Nilou",
+    "filename_iconCard": "UI_AvatarIcon_Nilou_Card",
+    "filename_sideIcon": "UI_AvatarIcon_Side_Nilou",
+    "filename_gachaSplash": "UI_Gacha_AvatarImg_Nilou",
+    "filename_gachaSlice": "UI_Gacha_AvatarIcon_Nilou"
+  },
+  "cyno": {
+    "filename_icon": "UI_AvatarIcon_Cyno",
+    "filename_iconCard": "UI_AvatarIcon_Cyno_Card",
+    "filename_sideIcon": "UI_AvatarIcon_Side_Cyno",
+    "filename_gachaSplash": "UI_Gacha_AvatarImg_Cyno",
+    "filename_gachaSlice": "UI_Gacha_AvatarIcon_Cyno"
+  },
+  "candace": {
+    "filename_icon": "UI_AvatarIcon_Candace",
+    "filename_iconCard": "UI_AvatarIcon_Candace_Card",
+    "filename_sideIcon": "UI_AvatarIcon_Side_Candace",
+    "filename_gachaSplash": "UI_Gacha_AvatarImg_Candace",
+    "filename_gachaSlice": "UI_Gacha_AvatarIcon_Candace"
+  },
+  "nahida": {
+    "filename_icon": "UI_AvatarIcon_Nahida",
+    "filename_iconCard": "UI_AvatarIcon_Nahida_Card",
+    "filename_sideIcon": "UI_AvatarIcon_Side_Nahida",
+    "filename_gachaSplash": "UI_Gacha_AvatarImg_Nahida",
+    "filename_gachaSlice": "UI_Gacha_AvatarIcon_Nahida"
+  },
+  "layla": {
+    "filename_icon": "UI_AvatarIcon_Layla",
+    "filename_iconCard": "UI_AvatarIcon_Layla_Card",
+    "filename_sideIcon": "UI_AvatarIcon_Side_Layla",
+    "filename_gachaSplash": "UI_Gacha_AvatarImg_Layla",
+    "filename_gachaSlice": "UI_Gacha_AvatarIcon_Layla"
+  },
+  "wanderer": {
+    "filename_icon": "UI_AvatarIcon_Wanderer",
+    "filename_iconCard": "UI_AvatarIcon_Wanderer_Card",
+    "filename_sideIcon": "UI_AvatarIcon_Side_Wanderer",
+    "filename_gachaSplash": "UI_Gacha_AvatarImg_Wanderer",
+    "filename_gachaSlice": "UI_Gacha_AvatarIcon_Wanderer"
+  },
+  "faruzan": {
+    "filename_icon": "UI_AvatarIcon_Faruzan",
+    "filename_iconCard": "UI_AvatarIcon_Faruzan_Card",
+    "filename_sideIcon": "UI_AvatarIcon_Side_Faruzan",
+    "filename_gachaSplash": "UI_Gacha_AvatarImg_Faruzan",
+    "filename_gachaSlice": "UI_Gacha_AvatarIcon_Faruzan"
+  },
+  "yaoyao": {
+    "filename_icon": "UI_AvatarIcon_Yaoyao",
+    "filename_iconCard": "UI_AvatarIcon_Yaoyao_Card",
+    "filename_sideIcon": "UI_AvatarIcon_Side_Yaoyao",
+    "filename_gachaSplash": "UI_Gacha_AvatarImg_Yaoyao",
+    "filename_gachaSlice": "UI_Gacha_AvatarIcon_Yaoyao"
+  },
+  "alhaitham": {
+    "filename_icon": "UI_AvatarIcon_Alhatham",
+    "filename_iconCard": "UI_AvatarIcon_Alhatham_Card",
+    "filename_sideIcon": "UI_AvatarIcon_Side_Alhatham",
+    "filename_gachaSplash": "UI_Gacha_AvatarImg_Alhatham",
+    "filename_gachaSlice": "UI_Gacha_AvatarIcon_Alhatham"
+  },
+  "dehya": {
+    "filename_icon": "UI_AvatarIcon_Dehya",
+    "filename_iconCard": "UI_AvatarIcon_Dehya_Card",
+    "filename_sideIcon": "UI_AvatarIcon_Side_Dehya",
+    "filename_gachaSplash": "UI_Gacha_AvatarImg_Dehya",
+    "filename_gachaSlice": "UI_Gacha_AvatarIcon_Dehya"
+  },
+  "mika": {
+    "filename_icon": "UI_AvatarIcon_Mika",
+    "filename_iconCard": "UI_AvatarIcon_Mika_Card",
+    "filename_sideIcon": "UI_AvatarIcon_Side_Mika",
+    "filename_gachaSplash": "UI_Gacha_AvatarImg_Mika",
+    "filename_gachaSlice": "UI_Gacha_AvatarIcon_Mika"
+  },
+  "baizhu": {
+    "filename_icon": "UI_AvatarIcon_Baizhuer",
+    "filename_iconCard": "UI_AvatarIcon_Baizhuer_Card",
+    "filename_sideIcon": "UI_AvatarIcon_Side_Baizhuer",
+    "filename_gachaSplash": "UI_Gacha_AvatarImg_Baizhuer",
+    "filename_gachaSlice": "UI_Gacha_AvatarIcon_Baizhuer"
+  },
+  "kaveh": {
+    "filename_icon": "UI_AvatarIcon_Kaveh",
+    "filename_iconCard": "UI_AvatarIcon_Kaveh_Card",
+    "filename_sideIcon": "UI_AvatarIcon_Side_Kaveh",
+    "filename_gachaSplash": "UI_Gacha_AvatarImg_Kaveh",
+    "filename_gachaSlice": "UI_Gacha_AvatarIcon_Kaveh"
+  },
+  "kirara": {
+    "filename_icon": "UI_AvatarIcon_Momoka",
+    "filename_iconCard": "UI_AvatarIcon_Momoka_Card",
+    "filename_sideIcon": "UI_AvatarIcon_Side_Momoka",
+    "filename_gachaSplash": "UI_Gacha_AvatarImg_Momoka",
+    "filename_gachaSlice": "UI_Gacha_AvatarIcon_Momoka"
+  },
+  "freminet": {
+    "filename_icon": "UI_AvatarIcon_Freminet",
+    "filename_iconCard": "UI_AvatarIcon_Freminet_Card",
+    "filename_sideIcon": "UI_AvatarIcon_Side_Freminet",
+    "filename_gachaSplash": "UI_Gacha_AvatarImg_Freminet",
+    "filename_gachaSlice": "UI_Gacha_AvatarIcon_Freminet"
+  },
+  "lyney": {
+    "filename_icon": "UI_AvatarIcon_Liney",
+    "filename_iconCard": "UI_AvatarIcon_Liney_Card",
+    "filename_sideIcon": "UI_AvatarIcon_Side_Liney",
+    "filename_gachaSplash": "UI_Gacha_AvatarImg_Liney",
+    "filename_gachaSlice": "UI_Gacha_AvatarIcon_Liney"
+  },
+  "lynette": {
+    "filename_icon": "UI_AvatarIcon_Linette",
+    "filename_iconCard": "UI_AvatarIcon_Linette_Card",
+    "filename_sideIcon": "UI_AvatarIcon_Side_Linette",
+    "filename_gachaSplash": "UI_Gacha_AvatarImg_Linette",
+    "filename_gachaSlice": "UI_Gacha_AvatarIcon_Linette"
+  },
+  "neuvillette": {
+    "filename_icon": "UI_AvatarIcon_Neuvillette",
+    "filename_iconCard": "UI_AvatarIcon_Neuvillette_Card",
+    "filename_sideIcon": "UI_AvatarIcon_Side_Neuvillette",
+    "filename_gachaSplash": "UI_Gacha_AvatarImg_Neuvillette",
+    "filename_gachaSlice": "UI_Gacha_AvatarIcon_Neuvillette"
+  },
+  "wriothesley": {
+    "filename_icon": "UI_AvatarIcon_Wriothesley",
+    "filename_iconCard": "UI_AvatarIcon_Wriothesley_Card",
+    "filename_sideIcon": "UI_AvatarIcon_Side_Wriothesley",
+    "filename_gachaSplash": "UI_Gacha_AvatarImg_Wriothesley",
+    "filename_gachaSlice": "UI_Gacha_AvatarIcon_Wriothesley"
+  }
+}

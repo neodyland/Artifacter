@@ -1,3 +1,4 @@
 {
-  "typescript.tsdk": "./webapp/node_modules/typescript/lib"
+  "typescript.tsdk": "./webapp/node_modules/typescript/lib",
+  "rust-analyzer.showUnlinkedFileNotification": false
 }

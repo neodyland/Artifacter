@@ -1,4 +1,4 @@
-use crate::ScoreCounter;
+use crate::gen::ScoreCounter;
 
 pub fn get_default(cid: &u32) -> ScoreCounter {
     match cid {

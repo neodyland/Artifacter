@@ -1,3 +1,14 @@
 [workspace]
-members = ["bot","gen"]
+members = ["lib/*","bin/*"]
 resolver = "2"
+
+[workspace.dependencies]
+serde_json = "1.0.107"
+
+[workspace.dependencies.reqwest]
+version  = "0.11.22"
+features = ["rustls-tls-webpki-roots"]
+
+[workspace.dependencies.serde]
+version = "1.0.190"
+features = ["derive"]

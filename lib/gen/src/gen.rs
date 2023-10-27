@@ -5,8 +5,13 @@ use std::{
     str::FromStr,
 };
 
-use enkanetwork_rs::{
-    Character, CharacterId, Element, EnkaNetwork, IconData, Reliquary, Stats, StatsValue,
+use enka_api::{
+    api::Api,
+    character::Reliquary,
+    character::{Character, CharacterId},
+    character::{Stats, StatsValue},
+    element::Element,
+    icon::IconData,
 };
 use image::{
     imageops::{self, resize},
@@ -15,23 +20,21 @@ use image::{
 use imageproc::drawing::{draw_text_mut, text_size};
 use rusttype::{Font, Scale};
 
-mod consts;
-mod default;
-pub mod locale;
-pub mod types;
-pub use default::get_default;
+pub use crate::default::get_default;
 use serde::Deserialize;
 
-#[derive(Debug, Clone, Deserialize)]
-#[derive(Default)]
+use crate::{
+    constants::{self, FONT},
+    dupe, locale,
+};
+
+#[derive(Debug, Clone, Deserialize, Default)]
 pub enum ImageFormat {
     #[default]
     Png,
     Jpeg,
     Pixel,
 }
-
-
 
 impl From<ImageFormat> for Option<ImageOutputFormat> {
     fn from(val: ImageFormat) -> Self {
@@ -67,8 +70,7 @@ impl FromStr for ImageFormat {
     }
 }
 
-#[derive(Debug, Clone, Copy, PartialEq, Eq, Deserialize)]
-#[derive(Default)]
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Deserialize, Default)]
 pub enum ScoreCounter {
     #[default]
     Normal,
@@ -126,17 +128,12 @@ impl FromStr for ScoreCounter {
     }
 }
 
-
-
-#[derive(Debug, Deserialize)]
-#[derive(Default)]
+#[derive(Debug, Deserialize, Default)]
 pub enum Lang {
     En,
     #[default]
     Ja,
 }
-
-
 
 impl ToString for Lang {
     fn to_string(&self) -> String {
@@ -162,16 +159,16 @@ impl From<&str> for Lang {
 
 pub async fn generate(
     data: Character,
-    api: &EnkaNetwork,
+    api: &Api,
     raw_lang: &Lang,
     icons: &IconData,
     counter: ScoreCounter,
     format: ImageFormat,
 ) -> Option<Vec<u8>> {
     let lang = &raw_lang.to_string();
-    let font = include_bytes!("../../assets/font.ttf");
+    let font = FONT;
     let font = Font::try_from_bytes(font)?;
-    let mut image = consts::get_base_image(&data.element)?;
+    let mut image = constants::get_base_image(&data.element)?;
     let character_image = data.image_gacha_splash(api).await?;
     if is_not_mains(data.id) {
         let character_image =
@@ -233,7 +230,7 @@ pub async fn generate(
         first = false;
     }
 
-    let clocks = data.consts();
+    let clocks = data.talents();
     let mut clock_y = 100;
     for clock in clocks {
         let img = clock.image(api).await.ok()?;
@@ -267,54 +264,22 @@ pub async fn generate(
     let weapon_img = weapon.image_icon(api).await.ok()?;
     let weapon_img = weapon_img.resize_exact(129, 128, image::imageops::Triangle);
     image::imageops::overlay(&mut image, &weapon_img, 1430, 50);
-    let weapon_rarity_img = consts::get_rarity_image(weapon.rarity)?;
+    let weapon_rarity_img = constants::get_rarity_image(weapon.rarity)?;
     image::imageops::overlay(&mut image, &weapon_rarity_img, 1422, 173);
     let ascension = format!("R{}", weapon.refinement + 1);
-    draw_text_mut(
-        &mut image,
-        white,
-        1435,
-        45,
-        scale,
-        &font,
-        &ascension,
-    );
+    draw_text_mut(&mut image, white, 1435, 45, scale, &font, &ascension);
     let weapon_level = format!("Lv.{}", weapon.level);
     let weapon_name = weapon.name(api, lang)?;
     let scale = Scale::uniform(30.0);
-    draw_text_mut(
-        &mut image,
-        white,
-        1600,
-        45,
-        scale,
-        &font,
-        weapon_name,
-    );
-    draw_text_mut(
-        &mut image,
-        white,
-        1600,
-        85,
-        scale,
-        &font,
-        &weapon_level,
-    );
+    draw_text_mut(&mut image, white, 1600, 45, scale, &font, weapon_name);
+    draw_text_mut(&mut image, white, 1600, 85, scale, &font, &weapon_level);
     let scale = Scale::uniform(25.0);
     let weapon_damage = format!("ATK:{}", weapon.base_attack);
     let mut damage_image = icons.image("FIGHT_PROP_ATTACK.svg", 1.8)?;
     for p in damage_image.pixels_mut() {
         p.0 = [255, 255, 255, p.0[3]];
     }
-    draw_text_mut(
-        &mut image,
-        white,
-        1630,
-        125,
-        scale,
-        &font,
-        &weapon_damage,
-    );
+    draw_text_mut(&mut image, white, 1630, 125, scale, &font, &weapon_damage);
     image::imageops::overlay(&mut image, &damage_image, 1600, 125);
     if weapon.stats.is_some() {
         let stats = weapon.stats.unwrap();
@@ -328,15 +293,7 @@ pub async fn generate(
         for p in weapon_sub_image.pixels_mut() {
             p.0 = [255, 255, 255, p.0[3]];
         }
-        draw_text_mut(
-            &mut image,
-            white,
-            1630,
-            160,
-            scale,
-            &font,
-            &weapon_sub,
-        );
+        draw_text_mut(&mut image, white, 1630, 160, scale, &font, &weapon_sub);
         image::imageops::overlay(&mut image, &weapon_sub_image, 1600, 160);
     }
 
@@ -345,7 +302,7 @@ pub async fn generate(
     let mut artifact_scores = 0.0;
     for artifact in artifacts {
         let gray = image::Rgba([240, 240, 240, 200]);
-        if let Some(o) = types::resolve_op(artifact) {
+        if let Some(o) = dupe::resolve_op(artifact) {
             let mut sub_y = 785;
             let o = o
                 .iter()
@@ -385,7 +342,7 @@ pub async fn generate(
         };
         let (score, used) = get_score(artifact, &counter);
         artifact_scores += score;
-        let rank_img = consts::get_grade_image(score, Some(artifact.position))?;
+        let rank_img = constants::get_grade_image(score, Some(artifact.position))?;
         image::imageops::overlay(&mut image, &rank_img, artifact_x + 50, 1015);
         let score = round_to_1_decimal_places(score);
         let scale = Scale::uniform(40.0);
@@ -524,7 +481,7 @@ pub async fn generate(
         }
         artifact_x += 373;
     }
-    let rank_img = consts::get_grade_image(artifact_scores, None)?;
+    let rank_img = constants::get_grade_image(artifact_scores, None)?;
     image::imageops::overlay(&mut image, &rank_img, 1810, 355);
     let total_score = locale::Locale::from(locale::json!({
         "en": "Total Score",
@@ -533,15 +490,7 @@ pub async fn generate(
     .get(raw_lang)
     .to_string();
     let scale = Scale::uniform(30.0);
-    draw_text_mut(
-        &mut image,
-        white,
-        1440,
-        350,
-        scale,
-        &font,
-        &total_score,
-    );
+    draw_text_mut(&mut image, white, 1440, 350, scale, &font, &total_score);
     let text = round_to_1_decimal_places(artifact_scores).to_string();
     let scale = Scale::uniform(90.0);
     let (text_w, text_h) = text_size(scale, &font, &text);
@@ -622,15 +571,7 @@ pub async fn generate(
             &font,
             &status,
         );
-        draw_text_mut(
-            &mut image,
-            white,
-            845,
-            status_y,
-            scale,
-            &font,
-            code,
-        );
+        draw_text_mut(&mut image, white, 845, status_y, scale, &font, code);
         status_y += 70;
     }
     status_y -= 70;
@@ -802,15 +743,7 @@ pub async fn generate(
     let kind = counter.to_string_locale(lang);
     let scale = Scale::uniform(35.0);
     let (kind_w, _) = text_size(scale, &font, &kind);
-    draw_text_mut(
-        &mut image,
-        white,
-        1870 - kind_w,
-        580,
-        scale,
-        &font,
-        &kind,
-    );
+    draw_text_mut(&mut image, white, 1870 - kind_w, 580, scale, &font, &kind);
     convert(image, format)
 }
 
