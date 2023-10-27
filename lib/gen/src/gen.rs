@@ -119,10 +119,19 @@ impl FromStr for ScoreCounter {
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         match s {
             "Normal" => Ok(ScoreCounter::Normal),
+            "Attack" => Ok(ScoreCounter::Normal),
             "Hp" => Ok(ScoreCounter::Hp),
             "Def" => Ok(ScoreCounter::Def),
             "ElementalMastery" => Ok(ScoreCounter::ElementalMastery),
             "ChargeEfficiency" => Ok(ScoreCounter::ChargeEfficiency),
+            "normal" => Ok(ScoreCounter::Normal),
+            "attack" => Ok(ScoreCounter::Normal),
+            "hp" => Ok(ScoreCounter::Hp),
+            "def" => Ok(ScoreCounter::Def),
+            "elementalmastery" => Ok(ScoreCounter::ElementalMastery),
+            "mastery" => Ok(ScoreCounter::ElementalMastery),
+            "chargeefficiency" => Ok(ScoreCounter::ChargeEfficiency),
+            "charge" => Ok(ScoreCounter::ChargeEfficiency),
             _ => Err(format!("{} is not ScoreCounter", s)),
         }
     }

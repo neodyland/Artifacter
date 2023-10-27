@@ -9,7 +9,7 @@ use axum::{
 use base64::{engine::general_purpose, Engine as _};
 use gen::{
     enka_api::{api::Api, character::CharacterId, icon::IconData, DynamicImage},
-    gen::{convert, generate as gen, get_default, ImageFormat, Lang},
+    gen::{convert, generate as gen, get_default, ImageFormat, Lang, ScoreCounter},
 };
 use serde::{Deserialize, Serialize};
 use tower_http::cors::{AllowOrigin, CorsLayer};
@@ -174,7 +174,11 @@ async fn generate(Query(q): Query<GenerateQuery>, State(s): State<AppState>) -> 
         Ok(f) => f,
         Err(_) => return (StatusCode::BAD_REQUEST, "Invalid image format").into_response(),
     };
-    let counter = get_default(&q.cid);
+    let counter = if let Some(c) = q.counter {
+        ScoreCounter::from_str(&c).unwrap_or_else(|_| get_default(&q.cid))
+    } else {
+        get_default(&q.cid)
+    };
     if !api.store.locale_list().contains(&&lang) {
         return (StatusCode::BAD_REQUEST, "Invalid language").into_response();
     }
