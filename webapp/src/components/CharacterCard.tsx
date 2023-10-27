@@ -1,12 +1,10 @@
 import { motion, useAnimation } from 'framer-motion';
 import React, { useEffect } from 'react';
-
-import * as W from '../assets/artifacter_wasm';
-
+import { API } from '@/api';
 type ColorNames = 'pyro' | 'electro' | 'hydro' | 'dendro' | 'anemo' | 'geo' | 'cryo';
 
 type Props = {
-  character: W.Character;
+  character: API.Character;
   onClick: () => void;
 };
 
@@ -82,7 +80,7 @@ export const CharacterCard: React.FC<Props> = ({ character, onClick }) => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [character]);
 
-  const colorName = elementColors(character.elementName) as ColorNames;
+  const colorName = elementColors(character.element) as ColorNames;
 
   return (
     <button type="button" className="w-[calc(100%-2px)]" onClick={onClick}>
@@ -90,7 +88,7 @@ export const CharacterCard: React.FC<Props> = ({ character, onClick }) => {
         className={`flex items-center ${bgColorVariants[colorName]} rounded-lg px-4 w-full h-24 transition-all duration-500 ease-in-out`}
       >
         <motion.div className="relative h-full w-auto" animate={opacityAnimationControls}>
-          <img src={character.imageDataUrl} alt="your_image" className="z-0 h-full w-auto" />
+          <img src={character.imageURL} alt="your_image" className="z-0 h-full w-auto" />
           <div
             className={`absolute inset-0 bg-gradient-to-r from-transparent ${toColorVariants[colorName]} z-10 h-full w-full`}
           />

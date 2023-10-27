@@ -1,13 +1,13 @@
 import React from 'react';
 import { useRecoilState } from 'recoil';
 
-import * as W from '@/assets/artifacter_wasm';
 import { DownloadButton, GenerateButton } from '@/components/Button';
 import { Divider } from '@/components/Divider';
 import { DropdownMenu } from '@/components/DropdownMenu';
 import { FormatType } from '@/components/FormatType';
 import { useLocale } from '@/utils/locale';
 import { formState } from '@/utils/recoil/formState';
+import { API } from '@/api';
 
 export const SettingsPanel: React.FC = () => {
   const locale = useLocale();
@@ -34,14 +34,14 @@ export const SettingsPanel: React.FC = () => {
         onChange={(value: string) =>
           setFormState({
             ...formStateValue,
-            lang: value as W.Lang,
+            lang: value as API.Lang,
           })
         }
       />
       <DropdownMenu
         items={counterItems}
         value={formStateValue.counter}
-        onChange={(value) => setFormState({ ...formStateValue, counter: value as W.Counter })}
+        onChange={(value) => setFormState({ ...formStateValue, counter: value as API.Counter })}
       />
       <FormatType />
       <GenerateButton />

@@ -61,7 +61,7 @@ impl FromStr for ImageFormat {
     type Err = String;
 
     fn from_str(s: &str) -> Result<Self, Self::Err> {
-        match s {
+        match s.to_lowercase().as_str() {
             "png" => Ok(ImageFormat::Png),
             "jpeg" => Ok(ImageFormat::Jpeg),
             "pixel" => Ok(ImageFormat::Pixel),

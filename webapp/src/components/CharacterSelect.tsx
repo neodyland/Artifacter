@@ -1,16 +1,15 @@
 import { motion, AnimatePresence } from 'framer-motion';
 import React, { useState } from 'react';
 import { useRecoilState } from 'recoil';
+import { API } from '@/api';
 
 import { formState } from '@/utils/recoil/formState';
 import { useClickEffect } from '@/utils/useClickEffect';
 
-import * as W from '../assets/artifacter_wasm';
-
 import { CharacterCard } from './CharacterCard';
 
 type Props = {
-  characters: W.Character[];
+  characters: API.Character[];
 };
 
 export const CharactersSelect: React.FC<Props> = ({ characters }) => {
@@ -23,7 +22,7 @@ export const CharactersSelect: React.FC<Props> = ({ characters }) => {
 
   const toggleOpen = () => setIsOpen(!isOpen);
 
-  const selectedCharacter = characters.find((c) => c.cid === formStateValue.cid) as W.Character;
+  const selectedCharacter = characters.find((c) => c.id === formStateValue.cid) as API.Character;
 
   return (
     <div className="relative w-[calc(100%+2px)]" ref={dropdownRef}>
@@ -38,11 +37,11 @@ export const CharactersSelect: React.FC<Props> = ({ characters }) => {
           >
             {characters.map((c) => (
               <motion.li
-                key={c.cid}
+                key={c.id}
                 className="block px-4 py-2 text-sm hover:bg-white text-white hover:text-gray-900"
                 whileHover={{ scale: 1.03 }}
                 onClick={() => {
-                  setFormState({ ...formStateValue, cid: c.cid });
+                  setFormState({ ...formStateValue, cid: c.id });
                   setIsOpen(false);
                 }}
                 exit={{ opacity: 0 }}

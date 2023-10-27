@@ -28,6 +28,7 @@ pub struct UserCharacter {
     pub ascension: u8,
     pub level: u8,
     pub element: String,
+    pub element_name: String,
     pub xp: u32,
     pub name: String,
     pub icon: String,

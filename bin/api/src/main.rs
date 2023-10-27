@@ -91,6 +91,7 @@ async fn profile(Query(q): Query<ProfileQuery>, State(s): State<AppState>) -> im
                 characters.push(UserCharacter {
                     ascension: c.ascension_level(),
                     level: c.level,
+                    element_name: c.element.fight_prop_name().to_string(),
                     element: c.element.fight_prop_name().to_string(),
                     xp: c.xp,
                     name: match c.name(&api, lang.clone()) {

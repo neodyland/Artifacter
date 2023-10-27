@@ -3,11 +3,11 @@ import React, { useState } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import { useRecoilState, useRecoilValue } from 'recoil';
 
-import { prepare } from '@/api';
 import { Loading } from '@/components/Loading';
 import { useLocale } from '@/utils/locale';
 import { dataStore } from '@/utils/recoil/dataStore';
 import { formState } from '@/utils/recoil/formState';
+import { generate } from '@/api';
 
 export const GenerateButton: React.FC = () => {
   const [data, setData] = useRecoilState(dataStore);
@@ -18,11 +18,9 @@ export const GenerateButton: React.FC = () => {
   const uid = searchParams.get('uid');
 
   const onClick = async () => {
-    const W = await prepare();
     setData({ ...data, generateLoading: true });
     const { cid, lang, format, counter } = formStateValue;
-    const imageData = await W.generate(Number(uid), cid, lang, format, counter);
-    const imageDataUrl = `data:image/${format};base64,${imageData}`;
+    const imageDataUrl = await generate(Number(uid), cid, lang, format, counter);
     setData({
       ...data,
       generatedImageDataUrl: imageDataUrl as `data:image/${string};base64,${string}`,

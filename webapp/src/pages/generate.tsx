@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { useRecoilState } from 'recoil';
 
-import { prepare } from '@/api';
+import { getProfile } from '@/api';
 import { CharactersSelect } from '@/components/CharacterSelect';
 import { ImageField } from '@/components/ImageField';
 import { Loading } from '@/components/Loading';
@@ -38,36 +38,32 @@ export const GeneratePage: React.FC = () => {
     } else {
       (async () => {
         setIsLoading(true);
-        const W = await prepare();
         const _lang = localeValue;
-        const _characters = await W.get_characters(Number(uid), _lang);
-        const _profile = await W.get_profile(Number(uid));
+        const profile = await getProfile(Number(uid), _lang);
         setData({
           ...data,
-          characters: _characters.map((c) => ({
-            cid: c[0],
-            name: c[1],
-            level: c[2],
-            elementName: c[3],
-            imageDataUrl: c[4]
-              ? `data:image/png;base64,${c[4]}`
-              : 'https://upload-os-bbs.mihoyo.com/game_record/genshin/character_icon/UI_AvatarIcon_Hutao.png',
+          characters: profile.characters.map((c) => ({
+            id: c.id,
+            name: c.name,
+            level: c.level,
+            element: c.element_name,
+            imageURL: `data:image/png;base64,${c.icon}`,
           })),
           profile: {
-            nickname: _profile[0],
-            signature: _profile[1],
-            achievement: _profile[2],
-            level: _profile[3],
-            worldLevel: _profile[4],
-            towerFloorIndex: _profile[5],
-            towerLevelIndex: _profile[6],
-            namecard: _profile[7],
+            name: profile.name,
+            description: profile.description,
+            achievement: profile.achievement,
+            level: profile.level,
+            worldLevel: profile.world_level,
+            towerFloorIndex: profile.floor,
+            towerLevelIndex: profile.level,
+            namecard: profile.name_card,
           },
         });
         setFormState({
           ...formStateValue,
           uid: Number(uid),
-          cid: _characters[0][0],
+          cid: profile.characters[0].id,
           lang: _lang,
         });
         setIsLoading(false);
@@ -84,8 +80,8 @@ export const GeneratePage: React.FC = () => {
         <div className="text-white 2xl:pt-32 2xl:pb-32 pt-32 pb-8 h-full">
           <div className="lg:grid lg:grid-cols-7 lg:grid-rows-4 flex flex-col items-center h-full w-full gap-5 lg:px-0 px-4">
             <div className="lg:col-span-5 lg:row-span-1 order-1 w-full">
-              <h1 className="font-primary text-6xl font-bold">{data.profile.nickname}</h1>
-              <p className="font-primary text-sm text-gray-400 py-2">{data.profile.signature}</p>
+              <h1 className="font-primary text-6xl font-bold">{data.profile.name}</h1>
+              <p className="font-primary text-sm text-gray-400 py-2">{data.profile.description}</p>
             </div>
             <div className="lg:col-span-2 lg:row-span-1 order-2 w-full lg:order-2">
               <CharactersSelect characters={data.characters} />
