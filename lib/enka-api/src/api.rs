@@ -28,6 +28,7 @@ impl Api {
         }
     }
     async fn request(&self, uri: &str) -> Result<Vec<u8>, ReqwestError> {
+        log::info!("requesting {}", uri);
         let request = self.client.get(uri);
         let body = request.send().await?;
         let body = body.error_for_status()?;

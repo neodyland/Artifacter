@@ -3,11 +3,15 @@ use std::env;
 use poise::serenity_prelude as serenity;
 use state::State;
 
+mod api;
+mod cache;
 mod commands;
+mod component;
 mod db;
 mod events;
 mod logger;
 mod state;
+mod util;
 
 #[tokio::main]
 async fn main() {

@@ -2,22 +2,31 @@ use std::sync::{atomic::AtomicBool, Arc};
 
 use tokio::sync::Mutex;
 
-use crate::db::{connect, PgPool};
+use crate::{
+    api::Api,
+    cache::Cache,
+    db::{connect, PgPool},
+};
 
+#[derive(Clone)]
 pub struct State {
-    pub db: Arc<Mutex<PgPool>>,
-    pub started: AtomicBool,
+    pub db: PgPool,
+    pub started: Arc<AtomicBool>,
+    pub api: Api,
+    pub cache: Arc<Mutex<Cache>>,
 }
 
 impl State {
     pub async fn new() -> Self {
         let db = connect().await;
         Self {
-            db: Arc::new(Mutex::new(db)),
-            started: AtomicBool::new(false),
+            db,
+            started: Arc::new(AtomicBool::new(false)),
+            api: Api::new(),
+            cache: Arc::new(Mutex::new(Cache::new())),
         }
     }
 }
 
 pub type Error = Box<dyn std::error::Error + Send + Sync>;
-pub type Context<'a> = poise::Context<'a, Arc<Mutex<State>>, Error>;
+pub type Context<'a> = poise::Context<'a, State, Error>;

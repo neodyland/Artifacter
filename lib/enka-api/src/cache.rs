@@ -33,7 +33,8 @@ impl Cache {
         &self,
         path: impl AsRef<str>,
     ) -> std::io::Result<(Vec<u8>, SystemTime)> {
-        let mut f = File::open(path.as_ref()).await?;
+        let path = Path::new(CACHE_DIR).join(path.as_ref());
+        let mut f = File::open(path).await?;
         let meta = f.metadata().await?;
         let modtime = meta.modified()?;
         let mut buf = Vec::with_capacity(meta.len() as usize);

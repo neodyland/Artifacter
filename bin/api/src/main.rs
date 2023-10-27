@@ -1,5 +1,6 @@
-use std::{env, str::FromStr, sync::Arc};
+use std::{env, str::FromStr, sync::Arc, time::UNIX_EPOCH};
 
+use apitype::{GenerateQuery, ProfileQuery, User, UserCharacter};
 use axum::{
     extract::{Query, State},
     http::{HeaderMap, StatusCode},
@@ -7,11 +8,13 @@ use axum::{
     routing, Json, Router,
 };
 use base64::{engine::general_purpose, Engine as _};
+use env_logger::Builder;
 use gen::{
     enka_api::{api::Api, character::CharacterId, icon::IconData, DynamicImage},
     gen::{convert, generate as gen, get_default, ImageFormat, Lang, ScoreCounter},
 };
-use serde::{Deserialize, Serialize};
+use log::LevelFilter;
+use tokio::time::Instant;
 use tower_http::cors::{AllowOrigin, CorsLayer};
 
 #[derive(Clone)]
@@ -32,6 +35,16 @@ impl AppState {
 
 #[tokio::main]
 async fn main() {
+    dotenv::dotenv().ok();
+    let level = env::var("LOG_LEVEL")
+        .unwrap_or("INFO".to_string())
+        .parse()
+        .unwrap();
+    Builder::new()
+        .filter_level(LevelFilter::Warn)
+        .filter_module("api", level)
+        .filter_module("enka_api", level)
+        .init();
     let app = Router::new()
         .route("/profile", routing::get(profile))
         .route("/generate", routing::get(generate))
@@ -45,39 +58,6 @@ async fn main() {
         .serve(app.into_make_service())
         .await
         .unwrap();
-}
-
-#[derive(Deserialize)]
-pub struct ProfileQuery {
-    pub uid: i32,
-    pub lang: Option<String>,
-    pub image_format: Option<String>,
-}
-
-#[derive(Serialize)]
-pub struct User {
-    pub world_level: u8,
-    pub level: u8,
-    pub tower_floor_index: u8,
-    pub tower_level_index: u8,
-    pub uid: i32,
-    pub achievement: u32,
-    pub name: String,
-    pub description: String,
-    pub name_card: Option<String>,
-    pub from_cache: bool,
-    pub characters: Vec<UserCharacter>,
-}
-
-#[derive(Serialize)]
-pub struct UserCharacter {
-    pub ascension: u8,
-    pub level: u8,
-    pub element: String,
-    pub xp: u32,
-    pub name: String,
-    pub icon: String,
-    pub id: u32,
 }
 
 fn trim_image(img: Option<DynamicImage>, format: &str) -> Option<String> {
@@ -95,6 +75,7 @@ fn trim_image(img: Option<DynamicImage>, format: &str) -> Option<String> {
 }
 
 async fn profile(Query(q): Query<ProfileQuery>, State(s): State<AppState>) -> impl IntoResponse {
+    log::info!("Profile request {:?}", q);
     let api = s.api;
     let lang = q.lang.unwrap_or("en".to_string());
     let format = q.image_format.unwrap_or("png".to_string());
@@ -147,6 +128,7 @@ async fn profile(Query(q): Query<ProfileQuery>, State(s): State<AppState>) -> im
                 name_card: trim_image(profile.name_card_image(&api).await, &format),
                 from_cache,
                 characters,
+                lastupdate: usr.lastupdate.duration_since(UNIX_EPOCH).unwrap().as_secs(),
             };
             (StatusCode::OK, Json(usr)).into_response()
         }
@@ -157,17 +139,9 @@ async fn profile(Query(q): Query<ProfileQuery>, State(s): State<AppState>) -> im
             .into_response(),
     }
 }
-
-#[derive(Deserialize)]
-pub struct GenerateQuery {
-    pub uid: i32,
-    pub lang: Option<String>,
-    pub image_format: Option<String>,
-    pub cid: u32,
-    pub counter: Option<String>,
-}
-
 async fn generate(Query(q): Query<GenerateQuery>, State(s): State<AppState>) -> impl IntoResponse {
+    log::info!("Generate request {:?}", q);
+    let now = Instant::now();
     let api = s.api;
     let lang = q.lang.unwrap_or("en".to_string());
     let format = match ImageFormat::from_str(&q.image_format.unwrap_or("png".to_string())) {
@@ -209,12 +183,14 @@ async fn generate(Query(q): Query<GenerateQuery>, State(s): State<AppState>) -> 
         Some(img) => {
             let mut headers = HeaderMap::new();
             headers.insert("X-From-Cache", from_cache.to_string().parse().unwrap());
+            headers.insert("X-Score-Counter", counter.to_string().parse().unwrap());
             let mime = match format {
                 ImageFormat::Png => "image/png",
                 ImageFormat::Jpeg => "image/jpeg",
                 _ => "image/raw",
             };
             headers.insert("Content-Type", mime.parse().unwrap());
+            log::info!("Generated image in {}ms", now.elapsed().as_millis());
             (StatusCode::OK, headers, img).into_response()
         }
         None => (
