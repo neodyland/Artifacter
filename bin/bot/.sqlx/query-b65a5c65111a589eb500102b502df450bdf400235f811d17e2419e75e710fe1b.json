@@ -1,0 +1,15 @@
+{
+  "db_name": "PostgreSQL",
+  "query": "INSERT INTO linker (discord_id, genshin_id) VALUES ($1, $2) ON CONFLICT (discord_id) DO UPDATE SET genshin_id = $2",
+  "describe": {
+    "columns": [],
+    "parameters": {
+      "Left": [
+        "Text",
+        "Text"
+      ]
+    },
+    "nullable": []
+  },
+  "hash": "b65a5c65111a589eb500102b502df450bdf400235f811d17e2419e75e710fe1b"
+}

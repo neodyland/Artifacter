@@ -24,40 +24,12 @@ mod util;
 
 use util::{convert_rgb, get_score_calc};
 
-pub struct Data {
-    pub api: EnkaNetwork,
-    pub icons: IconData,
-    pub cache: HashMap<u64, (ScoreCounter, u32, ImageFormat)>,
-    pub looping: bool,
-    pub db: DatabaseConnection,
-}
-pub type Error = Box<dyn std::error::Error + Send + Sync>;
-pub type Context<'a> = poise::Context<'a, Arc<Mutex<Data>>, Error>;
-
 async fn event_event_handler(
     event: &serenity::all::FullEvent,
     _framework: poise::FrameworkContext<'_, Arc<Mutex<Data>>, Error>,
     data: &Arc<Mutex<Data>>,
 ) -> Result<(), Error> {
     match event {
-        serenity::all::FullEvent::Ready {
-            ctx,
-            data_about_bot,
-        } => {
-            log::info!("{} is connected!", data_about_bot.user.name);
-            let ctx = Arc::new(ctx.to_owned());
-            if !data.lock().await.looping {
-                data.lock().await.looping = true;
-                tokio::spawn(async move {
-                    loop {
-                        let activity =
-                            ActivityData::playing(&format!("{} guilds", ctx.cache.guild_count()));
-                        ctx.set_activity(Some(activity));
-                        tokio::time::sleep(std::time::Duration::from_secs(20)).await;
-                    }
-                });
-            }
-        }
         serenity::all::FullEvent::InteractionCreate { ctx, interaction } => {
             if let Interaction::Component(select_menu) = interaction {
                 let custom_id = select_menu.data.custom_id.clone();
@@ -298,74 +270,5 @@ async fn event_event_handler(
         _ => {}
     }
 
-    Ok(())
-}
-
-fn main() -> anyhow::Result<()> {
-    logger::logger_init();
-    dotenv::dotenv().ok();
-    let api = EnkaNetwork::new()?;
-    tokio::runtime::Builder::new_multi_thread()
-        .worker_threads(10)
-        .enable_all()
-        .build()?
-        .block_on(_main(api))?;
-    Ok(())
-}
-
-async fn _main(api: EnkaNetwork) -> anyhow::Result<()> {
-    let token = env::var("DISCORD_TOKEN").expect("Expected a discord_token in the environment");
-    let pg_uri = env::var("PG_URI").expect("Expected a pg_uri in the environment");
-    let mut opt = ConnectOptions::new(pg_uri);
-    opt.max_connections(100)
-        .min_connections(5)
-        .connect_timeout(Duration::from_secs(8))
-        .acquire_timeout(Duration::from_secs(8))
-        .idle_timeout(Duration::from_secs(8))
-        .max_lifetime(Duration::from_secs(8))
-        .sqlx_logging(false);
-    let db = Database::connect(opt).await?;
-    entity::Migrator::up(&db, None).await?;
-    let icons = IconData::load(&api).await;
-    let data = Data {
-        api,
-        icons,
-        cache: HashMap::new(),
-        looping: false,
-        db,
-    };
-    let frame = poise::Framework::new(
-        poise::FrameworkOptions {
-            commands: vec![
-                commands::build(),
-                commands::link(),
-                commands::unlink(),
-                commands::profile(),
-            ],
-            listener: |event, framework, user_data| {
-                Box::pin(event_event_handler(event, framework, user_data))
-            },
-            ..Default::default()
-        },
-        |ctx, _ready, framework| {
-            Box::pin(async move {
-                let cmd = poise::builtins::create_application_commands(
-                    framework.options().commands.as_slice(),
-                );
-                serenity::all::Command::set_global_commands(&ctx.http, cmd).await?;
-                Ok(Arc::new(Mutex::new(data)))
-            })
-        },
-    );
-    let mut client = serenity::Client::builder(token, serenity::all::GatewayIntents::GUILDS)
-        .framework(frame)
-        .cache_settings(|f| {
-            f.cache_users = false;
-            f.max_messages = 0;
-            f
-        })
-        .await?;
-
-    client.start_autosharded().await?;
     Ok(())
 }
