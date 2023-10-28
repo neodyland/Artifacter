@@ -25,7 +25,10 @@ impl Cache {
             match k.as_str() {
                 "format" => value.format = v,
                 "score" => value.score = Some(v),
-                "character" => value.character = Some(v),
+                "character" => {
+                    value.character = Some(v);
+                    value.score = None;
+                }
                 _ => {}
             };
         }
