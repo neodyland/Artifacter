@@ -1,4 +1,5 @@
 cache/
+hsr-cache/
 target/
 .env
 build/

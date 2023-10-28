@@ -77,7 +77,7 @@ fn trim_image(img: Option<DynamicImage>, format: &str) -> Option<String> {
 async fn profile(Query(q): Query<ProfileQuery>, State(s): State<AppState>) -> impl IntoResponse {
     log::info!("Profile request {:?}", q);
     let api = s.api;
-    let lang = q.lang.unwrap_or("en".to_string());
+    let lang = Lang::from(q.lang.unwrap_or("en".to_string()).as_str()).to_string();
     let format = q.image_format.unwrap_or("png".to_string());
     if !api.store.locale_list().contains(&&lang) {
         return (StatusCode::BAD_REQUEST, "Invalid language").into_response();
@@ -144,7 +144,7 @@ async fn generate(Query(q): Query<GenerateQuery>, State(s): State<AppState>) -> 
     log::info!("Generate request {:?}", q);
     let now = Instant::now();
     let api = s.api;
-    let lang = q.lang.unwrap_or("en".to_string());
+    let lang = Lang::from(q.lang.unwrap_or("en".to_string()).as_str()).to_string();
     let format = match ImageFormat::from_str(&q.image_format.unwrap_or("png".to_string())) {
         Ok(f) => f,
         Err(_) => return (StatusCode::BAD_REQUEST, "Invalid image format").into_response(),

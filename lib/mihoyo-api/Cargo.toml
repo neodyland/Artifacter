@@ -1,0 +1,16 @@
+[package]
+name = "mihoyo-api"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+serde_json = { workspace = true }
+serde = { workspace = true }
+log = { workspace = true }
+reqwest = { workspace = true }
+image = { workspace = true }
+filetime = "0.2.22"
+
+[dependencies.tokio]
+version = "1.33.0"
+features = ["fs"]
