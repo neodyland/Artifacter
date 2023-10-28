@@ -1,4 +1,4 @@
-use apitype::{User, UserCharacter};
+use apitype::genshin::{User, UserCharacter};
 use base64::{engine::general_purpose, Engine as _};
 use localization::t;
 use poise::serenity_prelude as serenity;

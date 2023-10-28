@@ -1,6 +1,6 @@
 use std::env;
 
-use apitype::User;
+use apitype::genshin::User;
 use reqwest::{header::HeaderMap, Client};
 
 #[derive(Clone)]

@@ -1,6 +1,6 @@
 use std::{env, str::FromStr, sync::Arc, time::UNIX_EPOCH};
 
-use apitype::{GenerateQuery, ProfileQuery, User, UserCharacter};
+use apitype::genshin::{GenerateQuery, ProfileQuery, User, UserCharacter};
 use axum::{
     extract::{Query, State},
     http::{HeaderMap, StatusCode},

@@ -97,7 +97,7 @@ pub fn get_default(cid: &u32) -> ScoreCounter {
         // Yelan
         10000060 => ScoreCounter::Hp,
         // Kirara
-        10000061 => ScoreCounter::Hp
+        10000061 => ScoreCounter::Hp,
         // Aloy
         10000062 => ScoreCounter::Normal,
         // Shenhe
@@ -147,9 +147,9 @@ pub fn get_default(cid: &u32) -> ScoreCounter {
         // Freminet
         10000085 => ScoreCounter::ElementalMastery,
         // Wriothesley
-        10000086 => ScoreCounter::Hp
+        10000086 => ScoreCounter::Hp,
         // Neuvilette
-        10000087 => ScoreCounter::Hp
+        10000087 => ScoreCounter::Hp,
         _ => ScoreCounter::Normal,
     }
 }
