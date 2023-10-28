@@ -108,3 +108,38 @@ pub fn get_scores_for_part(part: Option<ReliquaryType>) -> Scores {
         },
     }
 }
+const ELECTRIC: &[u8; 6968] = include_bytes!("../../../assets/clock/electric.png");
+const ELECTRIC_LOCKED: &[u8; 7797] = include_bytes!("../../../assets/clock/electric_locked.png");
+const FIRE: &[u8; 6599] = include_bytes!("../../../assets/clock/fire.png");
+const FIRE_LOCKED: &[u8; 7447] = include_bytes!("../../../assets/clock/fire_locked.png");
+const GRASS: &[u8; 6941] = include_bytes!("../../../assets/clock/grass.png");
+const GRASS_LOCKED: &[u8; 7591] = include_bytes!("../../../assets/clock/grass_locked.png");
+const ICE: &[u8; 6953] = include_bytes!("../../../assets/clock/ice.png");
+const ICE_LOCKED: &[u8; 7761] = include_bytes!("../../../assets/clock/ice_locked.png");
+const ROCK: &[u8; 6898] = include_bytes!("../../../assets/clock/rock.png");
+const ROCK_LOCKED: &[u8; 7627] = include_bytes!("../../../assets/clock/rock_locked.png");
+const WATER: &[u8; 6726] = include_bytes!("../../../assets/clock/water.png");
+const WATER_LOCKED: &[u8; 7544] = include_bytes!("../../../assets/clock/water_locked.png");
+const WIND: &[u8; 6071] = include_bytes!("../../../assets/clock/wind.png");
+const WIND_LOCKED: &[u8; 7737] = include_bytes!("../../../assets/clock/wind_locked.png");
+
+pub fn get_clock_image(f: impl AsRef<str>, locked: bool) -> Option<DynamicImage> {
+    image::load_from_memory(match (f.as_ref().to_lowercase(), locked) {
+        (f, true) if f == "electric" || f == "elec" => ELECTRIC_LOCKED,
+        (f, true) if f == "fire" => FIRE_LOCKED,
+        (f, true) if f == "grass" => GRASS_LOCKED,
+        (f, true) if f == "ice" => ICE_LOCKED,
+        (f, true) if f == "rock" => ROCK_LOCKED,
+        (f, true) if f == "water" => WATER_LOCKED,
+        (f, true) if f == "wind" => WIND_LOCKED,
+        (f, false) if f == "electric" || f == "elec" => ELECTRIC,
+        (f, false) if f == "fire" => FIRE,
+        (f, false) if f == "grass" => GRASS,
+        (f, false) if f == "ice" => ICE,
+        (f, false) if f == "rock" => ROCK,
+        (f, false) if f == "water" => WATER,
+        (f, false) if f == "wind" => WIND,
+        _ => return None,
+    })
+    .ok()
+}

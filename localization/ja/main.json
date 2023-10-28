@@ -19,6 +19,8 @@
     "general.linked": "ユーザーidをリンクしました。",
     "general.parseFailed": "解析に失敗しました。",
     "general.generated": "{{name}}のステータス",
+    "general.webapp": "Web版",
+    "general.close": "閉じる",
     "calculationMethod.attack": "攻撃型",
     "calculationMethod.defense": "防御型",
     "calculationMethod.hp": "HP型",

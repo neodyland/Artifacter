@@ -19,6 +19,8 @@
     "general.linked": "Successfully linked your UID.",
     "general.parseFailed": "Failed to parse data.",
     "general.generated": "Stats of {{name}}",
+    "general.webapp": "Web Version",
+    "general.close": "Close",
     "calculationMethod.attack": "ATK Calculation",
     "calculationMethod.defense": "DEF Calculation",
     "calculationMethod.hp": "HP Calculation",

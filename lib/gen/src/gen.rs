@@ -24,7 +24,7 @@ pub use crate::default::get_default;
 use serde::Deserialize;
 
 use crate::{
-    constants::{self, FONT},
+    constants::{self, get_clock_image, FONT},
     dupe, locale,
 };
 
@@ -242,30 +242,15 @@ pub async fn generate(
     let clocks = data.talents();
     let mut clock_y = 100;
     for clock in clocks {
-        let img = clock.image(api).await.ok()?;
-        let mut img = img.into_rgba8();
-        let mut base_img = DynamicImage::new_rgba8(60, 60).into_rgba8();
-        if let Some(c) = icons.image("Const.svg", 5.0) {
-            image::imageops::overlay(&mut base_img, &c, 0, 0);
+        let locked_image = get_clock_image(data.element.fight_prop_name(), !clock.is_unlock())?;
+        let mut locked_image = resize(&locked_image, 70, 70, image::imageops::Triangle);
+        if clock.is_unlock() {
+            let img = clock.image(api).await.ok()?;
+            let img = img.into_rgba8();
+            let img = resize(&img, 35, 35, image::imageops::Triangle);
+            image::imageops::overlay(&mut locked_image, &img, 16, 15);
         }
-        let unique_color = data.element.color_rgb();
-        if !clock.is_unlock() {
-            for p in img.pixels_mut() {
-                p.0 = [100, 100, 100, p.0[3]];
-            }
-        } else {
-            for p in img.pixels_mut() {
-                if p.0[0] == 255 && p.0[1] == 255 && p.0[2] == 255 {
-                    p.0 = [255, 255, 255, p.0[3]];
-                    p[0] = unique_color[0];
-                    p[1] = unique_color[1];
-                    p[2] = unique_color[2];
-                }
-            }
-        }
-        let img = resize(&img, 40, 40, image::imageops::Triangle);
-        image::imageops::overlay(&mut base_img, &img, 15, 15);
-        image::imageops::overlay(&mut image, &base_img, 680, clock_y as i64);
+        image::imageops::overlay(&mut image, &locked_image, 680, clock_y as i64);
         clock_y += 80;
     }
 

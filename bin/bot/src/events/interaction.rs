@@ -128,19 +128,17 @@ pub async fn handler(
                     }
                     select_menu.edit_response(&ctx.http, builder).await?;
                 }
-                /* if custom_id == "end" {
-                    let e = select_menu.message.embeds.first();
-                    if e.is_none() {
-                        return Ok(());
+                /*if custom_id == "end" {
+                    let msg = &select_menu.message;
+                    if let Some(e) = msg.embeds.first() {
+                        let e = CreateEmbed::from(e.to_owned());
+                        let res = CreateInteractionResponseMessage::new()
+                            .embed(e)
+                            .components(vec![])
+                            .files(vec![]);
+                        let res = CreateInteractionResponse::UpdateMessage(res);
+                        select_menu.create_response(&ctx.http, res).await?;
                     }
-                    let e = e.unwrap();
-                    let e = CreateEmbed::from(e.to_owned());
-                    let res = CreateInteractionResponseMessage::new()
-                        .embed(e)
-                        .components(vec![])
-                        .files(vec![]);
-                    let res = CreateInteractionResponse::UpdateMessage(res);
-                    select_menu.create_response(&ctx.http, res).await?;
                 }*/
             }
             _ => {}

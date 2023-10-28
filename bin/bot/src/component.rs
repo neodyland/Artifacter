@@ -173,9 +173,11 @@ pub fn create_components(
     let format = CreateActionRow::SelectMenu(format);
     let button = CreateActionRow::Buttons(vec![
         CreateButton::new_link(format!("https://enka.network/u/{}", uid)).label("Enka Network"),
+        CreateButton::new_link(format!("https://ag.neody.land/generate?uid={}", uid))
+            .label(t!(locale, "main:general.webapp")),
         /*CreateButton::new("end")
         .style(ButtonStyle::Danger)
-        .label("終了"),*/
+        .label(t!(locale, "main:general.close")),*/
     ]);
     vec![chara, score, format, button]
 }
