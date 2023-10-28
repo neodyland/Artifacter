@@ -12,7 +12,7 @@
     "parameters": {
       "Left": [
         "Text",
-        "Float4"
+        "Float8"
       ]
     },
     "nullable": [

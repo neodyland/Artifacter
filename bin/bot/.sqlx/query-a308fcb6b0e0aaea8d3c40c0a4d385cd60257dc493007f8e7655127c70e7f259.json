@@ -11,7 +11,7 @@
     ],
     "parameters": {
       "Left": [
-        "Float4"
+        "Float8"
       ]
     },
     "nullable": [
