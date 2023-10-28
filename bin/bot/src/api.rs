@@ -62,6 +62,13 @@ impl Api {
             params.push(("counter".to_string(), score));
         }
         let (buf, h) = self.request("generate".to_string(), params).await?;
-        Ok((buf, h.get("X-Score-Counter").unwrap().to_str()?.to_string().to_lowercase()))
+        Ok((
+            buf,
+            h.get("X-Score-Counter")
+                .unwrap()
+                .to_str()?
+                .to_string()
+                .to_lowercase(),
+        ))
     }
 }
