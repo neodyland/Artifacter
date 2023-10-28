@@ -134,6 +134,20 @@ pub fn get_default(cid: &u32) -> ScoreCounter {
         10000079 => ScoreCounter::Normal,
         // Mika
         10000080 => ScoreCounter::Normal,
+        // Kaveh
+        10000081 => ScoreCounter::ElementalMastery,
+        // Baizhu
+        10000082 => ScoreCounter::Hp,
+        // Lynette
+        10000083 => ScoreCounter::ElementalMastery,
+        // Lyney
+        10000084 => ScoreCounter::Normal,
+        // Freminet
+        10000085 => ScoreCounter::ElementalMastery,
+        // Wriothesley
+        10000086 => ScoreCounter::Hp
+        // Neuvilette
+        10000087 => ScoreCounter::Hp
         _ => ScoreCounter::Normal,
     }
 }
