@@ -4,10 +4,14 @@ use sqlx::{migrate, query};
 pub use sqlx::{Error as SqlxError, PgPool};
 
 pub async fn connect() -> PgPool {
-    migrate!();
-    PgPool::connect(&env::var("DATABASE_URL").expect("DATABASE_URL must be set."))
+    let pool = PgPool::connect(&env::var("DATABASE_URL").expect("DATABASE_URL must be set."))
         .await
-        .expect("Failed to connect to Postgres.")
+        .expect("Failed to connect to Postgres.");
+    migrate!()
+        .run(&pool)
+        .await
+        .expect("Failed to migrate database.");
+    pool
 }
 
 pub async fn find_genshin(p: &PgPool, id: u64) -> Result<Option<String>, SqlxError> {
