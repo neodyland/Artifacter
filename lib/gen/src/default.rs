@@ -6,14 +6,14 @@ pub fn get_default(cid: &u32) -> ScoreCounter {
         10000002 => ScoreCounter::Normal,
         // Qin
         10000003 => ScoreCounter::Normal,
-        // Sora
+        // Aether
         10000005 => ScoreCounter::Normal,
         // Lisa
         10000006 => ScoreCounter::Normal,
-        // Hotaru
+        // Lumine
         10000007 => ScoreCounter::Normal,
         // Barbara
-        10000014 => ScoreCounter::Normal,
+        10000014 => ScoreCounter::Hp,
         // Kaeya
         10000015 => ScoreCounter::Normal,
         // Diluc
@@ -23,7 +23,7 @@ pub fn get_default(cid: &u32) -> ScoreCounter {
         // Ambor
         10000021 => ScoreCounter::Normal,
         // Venti
-        10000022 => ScoreCounter::Normal,
+        10000022 => ScoreCounter::ElementalMastery,
         // Xiangling
         10000023 => ScoreCounter::ChargeEfficiency,
         // Beidou
@@ -44,7 +44,7 @@ pub fn get_default(cid: &u32) -> ScoreCounter {
         10000032 => ScoreCounter::Hp,
         // Tartaglia
         10000033 => ScoreCounter::Normal,
-        // Noel
+        // Noelle
         10000034 => ScoreCounter::Def,
         // Qiqi
         10000035 => ScoreCounter::Normal,
@@ -74,7 +74,7 @@ pub fn get_default(cid: &u32) -> ScoreCounter {
         10000048 => ScoreCounter::Normal,
         // Yoimiya
         10000049 => ScoreCounter::Normal,
-        // Tohma
+        // Thoma
         10000050 => ScoreCounter::ElementalMastery,
         // Eula
         10000051 => ScoreCounter::Normal,
@@ -89,13 +89,13 @@ pub fn get_default(cid: &u32) -> ScoreCounter {
         // Sara
         10000056 => ScoreCounter::Normal,
         // Itto
-        10000057 => ScoreCounter::Normal,
+        10000057 => ScoreCounter::Def,
         // Yae
         10000058 => ScoreCounter::Normal,
-        // Heizo
+        // Heizou
         10000059 => ScoreCounter::Normal,
         // Yelan
-        10000060 => ScoreCounter::Normal,
+        10000060 => ScoreCounter::Hp,
         // Aloy
         10000062 => ScoreCounter::Normal,
         // Shenhe
