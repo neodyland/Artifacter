@@ -1,0 +1,15 @@
+{
+  "db_name": "PostgreSQL",
+  "query": "UPDATE linker SET discord_id = $1, old_discord_id = NULL WHERE genshin_id = $2",
+  "describe": {
+    "columns": [],
+    "parameters": {
+      "Left": [
+        "Text",
+        "Text"
+      ]
+    },
+    "nullable": []
+  },
+  "hash": "747d9fbdd4c3a295f498d66b09fdcbb917cd7a096c099c57c49a626cbcd4523a"
+}

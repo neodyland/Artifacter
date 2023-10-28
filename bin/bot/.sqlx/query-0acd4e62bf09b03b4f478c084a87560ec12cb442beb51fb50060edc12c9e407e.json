@@ -1,0 +1,15 @@
+{
+  "db_name": "PostgreSQL",
+  "query": "DELETE FROM linker WHERE discord_id = $1 OR old_discord_id = $2",
+  "describe": {
+    "columns": [],
+    "parameters": {
+      "Left": [
+        "Text",
+        "Float4"
+      ]
+    },
+    "nullable": []
+  },
+  "hash": "0acd4e62bf09b03b4f478c084a87560ec12cb442beb51fb50060edc12c9e407e"
+}

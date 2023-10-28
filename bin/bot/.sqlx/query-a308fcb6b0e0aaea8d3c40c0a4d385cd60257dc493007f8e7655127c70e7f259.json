@@ -1,6 +1,6 @@
 {
   "db_name": "PostgreSQL",
-  "query": "SELECT genshin_id FROM linker WHERE discord_id = $1",
+  "query": "SELECT genshin_id FROM linker WHERE old_discord_id = $1",
   "describe": {
     "columns": [
       {
@@ -11,12 +11,12 @@
     ],
     "parameters": {
       "Left": [
-        "Text"
+        "Float4"
       ]
     },
     "nullable": [
       false
     ]
   },
-  "hash": "274e62268de550709b20f57e2f22d7cdc8a94a9c4fe90e0f5740a28f118423a7"
+  "hash": "a308fcb6b0e0aaea8d3c40c0a4d385cd60257dc493007f8e7655127c70e7f259"
 }
