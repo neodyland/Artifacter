@@ -16,7 +16,7 @@ jobs:
       - name: Build cross platform
         uses: neodyland/rust-ci@e16725b7d7e2cad63c9b4316017d73bf2f5cf518
         with:
-          package: artifacter
+          package: artifacter,api
           install-rustup: false
           install-openssl: true
           cache: true
