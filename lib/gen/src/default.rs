@@ -96,6 +96,8 @@ pub fn get_default(cid: &u32) -> ScoreCounter {
         10000059 => ScoreCounter::Normal,
         // Yelan
         10000060 => ScoreCounter::Hp,
+        // Kirara
+        10000061 => ScoreCounter::Hp
         // Aloy
         10000062 => ScoreCounter::Normal,
         // Shenhe
