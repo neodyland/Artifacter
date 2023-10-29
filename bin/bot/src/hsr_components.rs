@@ -151,9 +151,17 @@ pub fn create_components(
         "hsr_base_img",
         CreateSelectMenuKind::String {
             options: [
-                ("Blazerpom", "blazerpom"),
-                ("Blazer", "blazer"),
-                ("Clara", "clara"),
+                ("Belobog", "belobog"),
+                ("Everwinter", "everwinter"),
+                ("Fu Xuan", "fu_xuan"),
+                ("Jar", "jar"),
+                ("Seal", "seal"),
+                ("Slide", "slide"),
+                ("Svarog", "svarog"),
+                ("Train", "train"),
+                ("Tree", "tree"),
+                ("Underground", "underground"),
+                ("Universe", "universe"),
             ]
             .iter()
             .map(|x| CreateSelectMenuOption::new(x.0, x.1))

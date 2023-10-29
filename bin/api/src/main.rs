@@ -312,9 +312,9 @@ async fn hsr_generate(
         HsrScoreCounter::Attack
     };
     let base_img = if let Some(b) = q.base_img {
-        BaseImage::from_str(&b).unwrap_or(BaseImage::Blazer)
+        BaseImage::from_str(&b).unwrap_or(BaseImage::Belobog)
     } else {
-        BaseImage::Blazer
+        BaseImage::Belobog
     };
     let (usr, from_cache) = match api.simple(q.uid, lang.clone()).await {
         Ok((usr, from_cache)) => (usr, from_cache),

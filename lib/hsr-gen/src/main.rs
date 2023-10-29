@@ -12,7 +12,7 @@ async fn main() {
     let lang = "en-GB".to_string();
     let (user, _d) = api.simple(804445063, lang.to_string()).await.unwrap();
     let character = user.characters.get(1).unwrap();
-    let base_image = get_base_image(BaseImage::Blazerpom);
+    let base_image = get_base_image(BaseImage::Belobog);
     if let Some(img) = generate(
         &api,
         character,
