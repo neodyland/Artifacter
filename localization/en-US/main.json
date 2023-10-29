@@ -30,5 +30,6 @@
     "calculationFormula.defense": "CRIT Rate × 2 + CRIT DMG + DEF(%)",
     "calculationFormula.hp": "CRIT Rate × 2 + CRIT DMG + HP(%)",
     "calculationFormula.elementalMastery": "CRIT Rate × 2 + CRIT DMG + (EM ÷ 4)",
-    "calculationFormula.energyRecharge": "CRIT Rate × 2 + CRIT DMG + ER"
+    "calculationFormula.energyRecharge": "CRIT Rate × 2 + CRIT DMG + ER",
+    "hsr.total": "Total Score"
 }

@@ -7,3 +7,15 @@ edition = "2021"
 
 [dependencies]
 mihoyo-api = { path = "../mihoyo-api" }
+image = { workspace = true }
+rusttype = "0.9.3"
+imageproc = "0.23.0"
+gen-utils = { path = "../gen-utils" }
+localization = "0.1.3"
+
+[dependencies.tokio]
+version = "1.33.0"
+features = ["macros", "rt", "fs"]
+
+[build-dependencies]
+localization-build = "0.1.3"

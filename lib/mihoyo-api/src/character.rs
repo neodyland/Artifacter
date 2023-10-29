@@ -15,7 +15,7 @@ pub struct Element {
     pub color: String,
 }
 
-#[derive(Deserialize, Serialize, Debug)]
+#[derive(Deserialize, Serialize, Debug, Clone)]
 pub struct Attribute {
     pub field: String,
     pub name: String,

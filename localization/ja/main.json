@@ -30,5 +30,6 @@
     "calculationFormula.defense": "会心率 × 2 + 会心ダメージ + 防御力(%)",
     "calculationFormula.hp": "会心率 × 2 + 会心ダメージ + 体力(%)",
     "calculationFormula.elementalMastery": "会心率 × 2 + 会心ダメージ + (熟知 ÷ 4)",
-    "calculationFormula.energyRecharge": "会心率 × 2 + 会心ダメージ + 元素チャージ効率"
+    "calculationFormula.energyRecharge": "会心率 × 2 + 会心ダメージ + 元素チャージ効率",
+    "hsr.total": "総合評価"
 }

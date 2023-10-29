@@ -5,6 +5,7 @@ use crate::{
     store::Store,
     user::{ApiRawUser, ApiUser},
 };
+use image::{load_from_memory, DynamicImage};
 use reqwest::{Client, Error as ReqwestError};
 
 pub struct Api {
@@ -26,10 +27,13 @@ impl Api {
             store: Store::new(),
         }
     }
-    pub async fn asset(&self, uri: &str) -> Result<Vec<u8>, ReqwestError> {
+    pub async fn asset(
+        &self,
+        uri: &str,
+    ) -> Result<DynamicImage, Box<dyn std::error::Error + Send + Sync>> {
         let cache_uri = format!("ui/{}", uri);
         match self.cache.get(&cache_uri).await {
-            Ok((buf, _)) => Ok(buf),
+            Ok((buf, _)) => Ok(load_from_memory(&buf)?),
             Err(_) => {
                 let uri = format!(
                     "https://raw.githubusercontent.com/Mar-7th/StarRailRes/master/{}",
@@ -37,7 +41,7 @@ impl Api {
                 );
                 let data = self.request(&uri).await?;
                 let _ = self.cache.set(cache_uri, &data, SystemTime::now()).await;
-                Ok(data)
+                Ok(load_from_memory(&data)?)
             }
         }
     }
@@ -73,10 +77,15 @@ impl Api {
         Some(ApiRawUser::from_raw(buf.to_vec(), uid, modtime))
     }
     pub async fn simple(&self, uid: i32, lang: String) -> Result<(ApiUser, bool), String> {
+        let lang = match lang.to_lowercase().as_str() {
+            "ja" | "ja-jp" | "jp" => "jp",
+            "en" | "en-us" | "en-gb" => "en",
+            _ => lang.as_str(),
+        };
         match self.find_cache(uid).await {
             Some(cache) => {
                 let data = cache.resolve()?;
-                match self.reload(&data, lang).await {
+                match self.reload(&data, lang.to_string()).await {
                     Ok(u) => match u {
                         Some(new) => Ok((new, false)),
                         None => Ok((data, false)),
@@ -91,7 +100,7 @@ impl Api {
                 }
             }
             None => {
-                let userdata = self.fetch_user(uid, lang).await;
+                let userdata = self.fetch_user(uid, lang.to_string()).await;
                 match userdata {
                     Ok(userdata) => {
                         let _ = self.set_cache(&userdata).await;

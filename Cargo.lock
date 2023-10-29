@@ -884,12 +884,20 @@ name = "gen"
 version = "0.1.0"
 dependencies = [
  "enka-api",
+ "gen-utils",
  "image",
  "imageproc",
  "rusttype",
  "serde",
  "serde_json",
  "tokio",
+]
+
+[[package]]
+name = "gen-utils"
+version = "0.1.0"
+dependencies = [
+ "image",
 ]
 
 [[package]]
@@ -1055,7 +1063,14 @@ dependencies = [
 name = "hsr-gen"
 version = "0.1.0"
 dependencies = [
+ "gen-utils",
+ "image",
+ "imageproc",
+ "localization",
+ "localization-build",
  "mihoyo-api",
+ "rusttype",
+ "tokio",
 ]
 
 [[package]]

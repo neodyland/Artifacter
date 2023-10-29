@@ -5,6 +5,7 @@ use std::{
     str::FromStr,
 };
 
+use constants::get_rarity_image;
 use enka_api::{
     api::Api,
     character::Reliquary,
@@ -258,7 +259,7 @@ pub async fn generate(
     let weapon_img = weapon.image_icon(api).await.ok()?;
     let weapon_img = weapon_img.resize_exact(129, 128, image::imageops::Triangle);
     image::imageops::overlay(&mut image, &weapon_img, 1430, 50);
-    let weapon_rarity_img = constants::get_rarity_image(weapon.rarity)?;
+    let weapon_rarity_img = get_rarity_image(weapon.rarity)?;
     image::imageops::overlay(&mut image, &weapon_rarity_img, 1422, 173);
     let ascension = format!("R{}", weapon.refinement + 1);
     draw_text_mut(&mut image, white, 1435, 45, scale, &font, &ascension);
