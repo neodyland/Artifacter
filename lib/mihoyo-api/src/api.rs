@@ -66,14 +66,22 @@ impl Api {
         let lastupdate = SystemTime::now();
         Ok(ApiRawUser::from_raw(contents, uid, lastupdate))
     }
-    async fn set_cache(&self, data: &ApiRawUser) -> std::io::Result<()> {
+    async fn set_cache(&self, data: &ApiRawUser, lang: String) -> std::io::Result<()> {
         let now = SystemTime::now();
         self.cache
-            .set(format!("user/{}", data.uid()), data.contents(), now)
+            .set(
+                format!("user/{}/{}", data.uid(), lang),
+                data.contents(),
+                now,
+            )
             .await
     }
-    async fn find_cache(&self, uid: i32) -> Option<ApiRawUser> {
-        let (buf, modtime) = self.cache.get(format!("user/{}", uid)).await.ok()?;
+    async fn find_cache(&self, uid: i32, lang: String) -> Option<ApiRawUser> {
+        let (buf, modtime) = self
+            .cache
+            .get(format!("user/{}/{}", uid, lang))
+            .await
+            .ok()?;
         Some(ApiRawUser::from_raw(buf.to_vec(), uid, modtime))
     }
     pub async fn simple(&self, uid: i32, lang: String) -> Result<(ApiUser, bool), String> {
@@ -82,7 +90,7 @@ impl Api {
             "en" | "en-us" | "en-gb" => "en",
             _ => lang.as_str(),
         };
-        match self.find_cache(uid).await {
+        match self.find_cache(uid, lang.to_string()).await {
             Some(cache) => {
                 let data = cache.resolve()?;
                 match self.reload(&data, lang.to_string()).await {
@@ -103,7 +111,7 @@ impl Api {
                 let userdata = self.fetch_user(uid, lang.to_string()).await;
                 match userdata {
                     Ok(userdata) => {
-                        let _ = self.set_cache(&userdata).await;
+                        let _ = self.set_cache(&userdata, lang.to_string()).await;
                         Ok((userdata.resolve()?, false))
                     }
                     Err(e) => Err(match e {
@@ -119,10 +127,10 @@ impl Api {
         if data.reload_time() >= lastupdate {
             Ok(None)
         } else {
-            let raw = self.fetch_user(data.uid(), lang).await;
+            let raw = self.fetch_user(data.uid(), lang.to_string()).await;
             match raw {
                 Ok(raw) => {
-                    let _ = self.set_cache(&raw).await;
+                    let _ = self.set_cache(&raw, lang).await;
                     Ok(Some(raw.resolve()?))
                 }
                 Err(e) => Err(match e {

@@ -76,6 +76,7 @@ dependencies = [
  "dotenv",
  "env_logger",
  "gen",
+ "hsr-gen",
  "log",
  "tokio",
  "tower-http",

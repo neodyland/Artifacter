@@ -1,6 +1,6 @@
-use std::io::Cursor;
+use std::{io::Cursor, str::FromStr};
 
-use gen_utils::{get_grade_image, get_rarity_image};
+use gen_utils::{get_hsr_grade_image, get_rarity_image};
 use image::{
     imageops::{crop_imm, overlay, resize, FilterType},
     DynamicImage, ImageOutputFormat,
@@ -9,7 +9,7 @@ use imageproc::drawing::draw_text_mut;
 use localization::t;
 use mihoyo_api::{
     api::Api,
-    character::{Attribute, Character},
+    character::{Attribute, Character, Relic},
 };
 use rusttype::{Font, Scale};
 use std::io::BufWriter;
@@ -24,7 +24,12 @@ pub async fn generate(
     mut base_image: DynamicImage,
     format: ImageFormat,
     lang: &str,
+    counter: &ScoreCounter,
 ) -> Option<Vec<u8>> {
+    let lang = match lang {
+        "en" | "en-US" | "en-GB" => "en-US",
+        _ => "ja-JP",
+    };
     let font = Font::try_from_bytes(FONT)?;
     // character
     let img = api.asset(&character.portrait).await.ok()?;
@@ -73,8 +78,8 @@ pub async fn generate(
     overlay(&mut base_image, &img, 50, 150);
     // weapon
     let img = api.asset(&character.light_cone.portrait).await.ok()?;
-    let img = resize(&img, 120, 160, FilterType::Triangle);
-    overlay(&mut base_image, &img, 70, 800);
+    let img = resize(&img, 115, 155, FilterType::Triangle);
+    overlay(&mut base_image, &img, 72, 800);
     let img = get_rarity_image(character.light_cone.rarity)?;
     let img = resize(&img, 120, 30, FilterType::Triangle);
     overlay(&mut base_image, &img, 70, 940);
@@ -195,6 +200,22 @@ pub async fn generate(
                 &affix.display,
             );
         }
+        // relic score
+        let relic_score = get_score(&relic, &counter);
+        total_score += relic_score;
+        let score = format!("{:.1}", relic_score);
+        let img = get_hsr_grade_image("B")?;
+        let img = resize(&img, 70, 70, FilterType::Triangle);
+        overlay(&mut base_image, &img, 1770, 75 + 173 * index as i64);
+        draw_text_mut(
+            &mut base_image,
+            image::Rgba([255, 255, 255, 255]),
+            1780,
+            140 + 173 * index as i32,
+            Scale::uniform(30.0),
+            &font,
+            &score,
+        );
     }
     // character stats
     for (index, stats) in resolve_stats(character)?.iter().enumerate() {
@@ -254,10 +275,10 @@ pub async fn generate(
         &font,
         &total,
     );
-    let score = format!("{:.2}", total_score);
-    let img = get_grade_image("B")?;
-    let img = resize(&img, 80, 80, FilterType::Triangle);
-    overlay(&mut base_image, &img, 800, 850);
+    let score = format!("{:.1}", total_score);
+    let img = get_hsr_grade_image("B")?;
+    let img = resize(&img, 120, 120, FilterType::Triangle);
+    overlay(&mut base_image, &img, 780, 830);
     draw_text_mut(
         &mut base_image,
         image::Rgba([255, 255, 255, 255]),
@@ -331,4 +352,53 @@ fn resolve_stats(character: &Character) -> Option<Vec<Attribute>> {
             })
             .collect(),
     )
+}
+
+fn get_score(relic: &Relic, counter: &ScoreCounter) -> f64 {
+    let mut score = 0.0;
+    for affix in relic.sub_affix.iter() {
+        match affix.field.as_str() {
+            "atk" => {
+                if *counter == ScoreCounter::Attack {
+                    score += affix.value * 0.075;
+                }
+            }
+            "atk_per" => {
+                if *counter == ScoreCounter::Attack {
+                    score += affix.value * 100.0;
+                }
+            }
+            "crit_rate" => {
+                score += affix.value * 200.0;
+            }
+            "crit_dmg" => {
+                score += affix.value * 100.0;
+            }
+            _ => {}
+        }
+    }
+    score
+}
+
+#[derive(PartialEq)]
+pub enum ScoreCounter {
+    Attack,
+}
+
+impl FromStr for ScoreCounter {
+    type Err = ();
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        match s {
+            "attack" => Ok(ScoreCounter::Attack),
+            _ => Err(()),
+        }
+    }
+}
+
+impl ToString for ScoreCounter {
+    fn to_string(&self) -> String {
+        match self {
+            ScoreCounter::Attack => "attack".to_string(),
+        }
+    }
 }

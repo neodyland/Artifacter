@@ -13,3 +13,4 @@ gen = { path = "../../lib/gen" }
 apitype = { path = "../../lib/apitype" }
 tokio = { version = "1.33.0", features = ["rt", "rt-multi-thread", "macros"] }
 tower-http = { version = "0.4.4", features = ["cors"] }
+hsr-gen = { path = "../../lib/hsr-gen" }

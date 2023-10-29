@@ -11,13 +11,11 @@ pub struct ProfileQuery {
 pub struct User {
     pub world_level: u8,
     pub level: u8,
-    pub tower_floor_index: u8,
-    pub tower_level_index: u8,
     pub uid: i32,
     pub achievement: u32,
     pub name: String,
     pub description: String,
-    pub name_card: Option<String>,
+    pub avatar: Option<String>,
     pub from_cache: bool,
     pub characters: Vec<UserCharacter>,
     pub lastupdate: u64,
@@ -25,11 +23,11 @@ pub struct User {
 
 #[derive(Serialize, Deserialize, Clone, Debug)]
 pub struct UserCharacter {
-    pub ascension: u8,
     pub level: u8,
+    pub path: String,
+    pub path_name: String,
     pub element: String,
     pub element_name: String,
-    pub xp: u32,
     pub name: String,
     pub icon: String,
     pub id: u32,
@@ -42,4 +40,5 @@ pub struct GenerateQuery {
     pub image_format: Option<String>,
     pub cid: u32,
     pub counter: Option<String>,
+    pub base_img: Option<String>,
 }

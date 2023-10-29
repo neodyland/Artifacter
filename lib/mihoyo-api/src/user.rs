@@ -1,4 +1,4 @@
-use std::time::SystemTime;
+use std::time::{Duration, SystemTime};
 
 use serde::Deserialize;
 use serde_json::Value;
@@ -39,7 +39,7 @@ pub struct ApiUser {
     pub world_level: u8,
     pub friend_count: u8,
     pub description: String,
-    pub reload_time: SystemTime,
+    pub lastupdate: SystemTime,
     pub avatar_id: String,
     pub avatar_name: String,
     pub avatar_icon: String,
@@ -52,7 +52,7 @@ impl ApiUser {
         self.uid
     }
     pub fn reload_time(&self) -> SystemTime {
-        self.reload_time
+        self.lastupdate + Duration::new(30, 0)
     }
     pub fn from_raw(buf: &Vec<u8>, uid: i32, modtime: SystemTime) -> Option<Self> {
         let value: Value = serde_json::from_slice(buf).ok()?;
@@ -84,7 +84,7 @@ impl ApiUser {
             world_level,
             level,
             friend_count,
-            reload_time: modtime,
+            lastupdate: modtime,
             avatar_id: avatar.get("id")?.as_str()?.to_string(),
             avatar_name: avatar.get("name")?.as_str()?.to_string(),
             avatar_icon: avatar.get("icon")?.as_str()?.to_string(),
