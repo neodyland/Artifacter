@@ -27,6 +27,7 @@
     "calculationMethod.hp": "HP Calculation",
     "calculationMethod.elementalMastery": "EM Calculation",
     "calculationMethod.energyRecharge": "ER Calculation",
+    "hsrCalculationFormula.attack": "CRIT DMG + CRIT Rate × 2 + ATK(%) + ATK × 0.075",
     "calculationFormula.attack": "CRIT Rate × 2 + CRIT DMG + ATK(%)",
     "calculationFormula.defense": "CRIT Rate × 2 + CRIT DMG + DEF(%)",
     "calculationFormula.hp": "CRIT Rate × 2 + CRIT DMG + HP(%)",

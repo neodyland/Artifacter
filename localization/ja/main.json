@@ -27,6 +27,7 @@
     "calculationMethod.hp": "HP型",
     "calculationMethod.elementalMastery": "熟知型",
     "calculationMethod.energyRecharge": "チャージ型",
+    "hsrCalculationFormula.attack": "会心率 × 2 + 会心ダメージ + 攻撃力(%) + 攻撃力 × 0.075",
     "calculationFormula.attack": "会心率 × 2 + 会心ダメージ + 攻撃力(%)",
     "calculationFormula.defense": "会心率 × 2 + 会心ダメージ + 防御力(%)",
     "calculationFormula.hp": "会心率 × 2 + 会心ダメージ + 体力(%)",

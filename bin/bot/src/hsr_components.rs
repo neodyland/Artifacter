@@ -10,7 +10,7 @@ use serenity::{
 use crate::{
     api::Api,
     cache::HsrCacheValue,
-    util::{convert_rgb, get_score_calc},
+    util::{convert_rgb, get_hsr_score_calc},
 };
 
 pub async fn hsr_generate_components(
@@ -47,7 +47,7 @@ pub async fn hsr_generate_components(
                 .color(convert_rgb([0x00, 0xff, 0x00]))
                 .description(format!(
                     "{}{}",
-                    get_score_calc(locale.clone(), score.as_str()),
+                    get_hsr_score_calc(locale.clone(), score.as_str()),
                     if user.from_cache {
                         t!(locale, "main:general.isCached")
                     } else {

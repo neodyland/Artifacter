@@ -14,6 +14,10 @@ pub enum ScoreCounter {
     ChargeEfficiency,
 }
 
+pub enum HsrScoreCounter {
+    Attack,
+}
+
 impl From<&str> for ScoreCounter {
     fn from(s: &str) -> Self {
         match s {
@@ -23,6 +27,15 @@ impl From<&str> for ScoreCounter {
             "mastery" => ScoreCounter::ElementalMastery,
             "charge" => ScoreCounter::ChargeEfficiency,
             _ => ScoreCounter::Normal,
+        }
+    }
+}
+
+impl From<&str> for HsrScoreCounter {
+    fn from(s: &str) -> Self {
+        match s {
+            "attack" => HsrScoreCounter::Attack,
+            _ => HsrScoreCounter::Attack,
         }
     }
 }
@@ -43,6 +56,14 @@ pub fn get_score_calc(lang: String, s: impl Into<ScoreCounter>) -> String {
         }
         ScoreCounter::ChargeEfficiency => {
             t!(lang, "main:calculationFormula.energyRecharge")
+        }
+    }
+}
+
+pub fn get_hsr_score_calc(lang: String, s: impl Into<HsrScoreCounter>) -> String {
+    match s.into() {
+        HsrScoreCounter::Attack => {
+            t!(lang, "main:hsrCalculationFormula.attack")
         }
     }
 }
