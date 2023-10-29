@@ -9,11 +9,11 @@ use serenity::User;
 
 /// get user's profile
 #[poise::command(
-    context_menu_command = "Get Info",
+    context_menu_command = "Get Genshin Info",
     description_localized("ja", "プロフィールを表示します"),
     slash_command
 )]
-pub async fn profile(ctx: Context<'_>, user: User) -> Result<(), Error> {
+pub async fn genshin_profile(ctx: Context<'_>, user: User) -> Result<(), Error> {
     let locale = ctx.locale().unwrap_or("ja");
     let data = ctx.data();
     let uid = if let Ok(Some(db_uid)) = find_genshin(&data.db, user.id.get()).await {

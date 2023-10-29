@@ -7,6 +7,7 @@ use serenity::{
 };
 
 use crate::component::generate_components;
+use crate::hsr_components::{hsr_generate_components, hsr_profile_components};
 use crate::{
     component::profile_components,
     state::{Error, State},
@@ -92,54 +93,60 @@ pub async fn handler(
                         }
                         select_menu.edit_response(&ctx.http, builder).await?;
                     }
-                }
-            }
-            ComponentInteractionDataKind::Button => {
-                if custom_id == "build" {
+                } else if &custom_id == "hsr_character"
+                    || &custom_id == "hsr_score"
+                    || &custom_id == "hsr_format"
+                    || &custom_id == "hsr_base_img"
+                {
                     select_menu.defer(&ctx.http).await?;
-                    let uid = select_menu.message.embeds.first();
-                    if uid.is_none() {
-                        return Ok(());
+                    let uid = match message(&select_menu.message.embeds) {
+                        Some(uid) => uid,
+                        None => {
+                            select_menu
+                                .create_response(
+                                    ctx,
+                                    CreateInteractionResponse::Message(
+                                        CreateInteractionResponseMessage::new()
+                                            .content(t!(lang, "main:general.parseFailed")),
+                                    ),
+                                )
+                                .await?;
+                            return Ok(());
+                        }
+                    };
+                    let user = state
+                        .api
+                        .hsr_profile(uid.to_string(), Some(lang.clone()))
+                        .await?;
+                    let mut cache = state.hsr_cache.lock().await;
+                    if let Some(value) = values.first() {
+                        cache.update(uid, custom_id, value.to_string());
+                    };
+                    if let Some(value) = cache.get_or_default(uid) {
+                        if let Some((embed, components, attachment)) =
+                            hsr_generate_components(lang, uid.to_string(), user, value, &state.api)
+                                .await
+                        {
+                            let mut builder = EditInteractionResponse::new()
+                                .components(components)
+                                .embed(embed);
+                            if let Some(attachment) = attachment {
+                                builder = builder.new_attachment(attachment);
+                            }
+                            select_menu.edit_response(&ctx.http, builder).await?;
+                        };
+                    } else {
+                        let (embed, components, attachment) =
+                            hsr_profile_components(lang, uid.to_string(), user);
+                        let mut builder = EditInteractionResponse::new()
+                            .components(components)
+                            .embed(embed);
+                        if let Some(attachment) = attachment {
+                            builder = builder.new_attachment(attachment);
+                        }
+                        select_menu.edit_response(&ctx.http, builder).await?;
                     }
-                    let uid = &uid.unwrap().footer;
-                    if uid.is_none() {
-                        return Ok(());
-                    }
-                    let uid = &uid.as_ref().unwrap().text.parse::<i32>();
-                    if uid.is_err() {
-                        return Ok(());
-                    }
-                    let uid = uid.as_ref().unwrap().to_string();
-                    let user = state.api.profile(uid.clone(), Some(lang.clone())).await?;
-                    if user.characters.is_empty() {
-                        let msg = EditInteractionResponse::new()
-                            .components(vec![])
-                            .embeds(vec![])
-                            .content(t!(lang, "main:general.noCharacters"));
-                        select_menu.edit_response(&ctx.http, msg).await?;
-                        return Ok(());
-                    }
-                    let (embed, components, attachment) = profile_components(lang, uid, user);
-                    let mut builder = EditInteractionResponse::new()
-                        .components(components)
-                        .embed(embed);
-                    if let Some(attachment) = attachment {
-                        builder = builder.new_attachment(attachment);
-                    }
-                    select_menu.edit_response(&ctx.http, builder).await?;
                 }
-                /*if custom_id == "end" {
-                    let msg = &select_menu.message;
-                    if let Some(e) = msg.embeds.first() {
-                        let e = CreateEmbed::from(e.to_owned());
-                        let res = CreateInteractionResponseMessage::new()
-                            .embed(e)
-                            .components(vec![])
-                            .files(vec![]);
-                        let res = CreateInteractionResponse::UpdateMessage(res);
-                        select_menu.create_response(&ctx.http, res).await?;
-                    }
-                }*/
             }
             _ => {}
         }

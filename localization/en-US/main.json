@@ -10,6 +10,7 @@
     "general.selectFileFormat": "Select a file format",
     "general.selectCalculationMethod": "Select a Calculation method",
     "general.selectCharacter": "Select a Character",
+    "general.selectBaseImage": "Select a Base Image",
     "general.failedToFetchData": "Failed to fetch Character data",
     "general.notLinked": "You haven't linked a UID",
     "general.failedToUnlink": "Failed to unlink UID",

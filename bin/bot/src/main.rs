@@ -9,6 +9,7 @@ mod commands;
 mod component;
 mod db;
 mod events;
+mod hsr_components;
 mod logger;
 mod state;
 mod util;

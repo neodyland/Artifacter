@@ -1,0 +1,15 @@
+{
+  "db_name": "PostgreSQL",
+  "query": "INSERT INTO hsr_linker (discord_id, hsr_id) VALUES ($1, $2) ON CONFLICT (discord_id) DO UPDATE SET hsr_id = $2",
+  "describe": {
+    "columns": [],
+    "parameters": {
+      "Left": [
+        "Text",
+        "Text"
+      ]
+    },
+    "nullable": []
+  },
+  "hash": "72828c4a58fec2cbc7536ff5f2efc51383ec996f78d53a31123617d52202e6bc"
+}

@@ -10,6 +10,7 @@
     "general.selectFileFormat": "拡張子を選択してください",
     "general.selectCalculationMethod": "計算方法を選択してください",
     "general.selectCharacter": "キャラクターを選択してください",
+    "general.selectBaseImage": "ベース画像を選択してください",
     "general.failedToFetchData": "データの取得に失敗しました。",
     "general.notLinked": "ユーザーidがリンクされていません。",
     "general.failedToUnlink": "ユーザーidのリンク解除に失敗しました。",
