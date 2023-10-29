@@ -65,7 +65,7 @@ pub async fn link(p: &PgPool, discord_id: u64, genshin_id: i32) -> Result<(), Sq
 
 pub async fn hsr_link(p: &PgPool, discord_id: u64, hsr_id: i32) -> Result<(), SqlxError> {
     query!(
-        "INSERT INTO hsr_linker (discord_id, hsr_id) VALUES ($1, $2) ON CONFLICT (discord_id) DO UPDATE SET hsr_id = $2",
+        "INSERT INTO hsr_linker (discord_id, hsr_id) VALUES ($1, $2)",
         discord_id.to_string(),
         hsr_id.to_string()
     )

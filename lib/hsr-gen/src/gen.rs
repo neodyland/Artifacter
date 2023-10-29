@@ -363,12 +363,11 @@ fn get_score(relic: &Relic, counter: &ScoreCounter) -> f64 {
         match affix.field.as_str() {
             "atk" => {
                 if *counter == ScoreCounter::Attack {
-                    score += affix.value * 0.075;
-                }
-            }
-            "atk_per" => {
-                if *counter == ScoreCounter::Attack {
-                    score += affix.value * 100.0;
+                    if affix.percent {
+                        score += affix.value * 100.0;
+                    } else {
+                        score += affix.value * 0.075;
+                    }
                 }
             }
             "crit_rate" => {
