@@ -85,7 +85,7 @@ pub async fn generate(
     overlay(&mut base_image, &img, 70, 940);
     // weapon text
     let text = character.light_cone.name.clone();
-    draw_text_mut(
+    draw_text_resized(
         &mut base_image,
         image::Rgba([255, 255, 255, 255]),
         325,
@@ -93,6 +93,7 @@ pub async fn generate(
         Scale::uniform(50.0),
         &font,
         &text,
+        200,
     );
     let promo = character.light_cone.promotion;
     let level = character.light_cone.level;
@@ -107,7 +108,7 @@ pub async fn generate(
         &text,
     );
     for (index, attr) in character.light_cone.attributes.iter().enumerate() {
-        draw_text_mut(
+        draw_text_resized(
             &mut base_image,
             image::Rgba([255, 255, 255, 255]),
             325,
@@ -115,6 +116,7 @@ pub async fn generate(
             Scale::uniform(25.0),
             &font,
             &attr.name,
+            200,
         );
         draw_text_mut(
             &mut base_image,
@@ -161,7 +163,7 @@ pub async fn generate(
         );
         // relic text
         let text = relic.name.clone();
-        draw_text_mut(
+        draw_text_resized(
             &mut base_image,
             image::Rgba([255, 255, 255, 255]),
             1550,
@@ -169,6 +171,7 @@ pub async fn generate(
             Scale::uniform(30.0),
             &font,
             &text,
+            200,
         );
         let level = format!("+{}", relic.level);
         draw_text_mut(
@@ -401,4 +404,28 @@ impl ToString for ScoreCounter {
             ScoreCounter::Attack => "attack".to_string(),
         }
     }
+}
+
+fn draw_text_resized(
+    canvas: &mut DynamicImage,
+    color: image::Rgba<u8>,
+    x: i32,
+    y: i32,
+    scale: Scale,
+    font: &Font,
+    text: &str,
+    max_width: u32,
+) {
+    let width = font
+        .layout(text, scale, rusttype::Point { x: 0.0, y: 0.0 })
+        .map(|g| g.pixel_bounding_box())
+        .filter(|g| g.is_some())
+        .map(|g| g.unwrap())
+        .fold(0, |acc, g| acc + g.width() as i32);
+    if width > max_width as i32 {
+        let scale = Scale::uniform(scale.x * (max_width as f32 / width as f32));
+        draw_text_mut(canvas, color, x, y, scale, font, text);
+        return;
+    }
+    draw_text_mut(canvas, color, x, y, scale, font, text)
 }
