@@ -104,13 +104,13 @@ pub fn get_clock_image(f: impl AsRef<str>, locked: bool) -> Option<DynamicImage>
 pub fn get_grade_image(score: f64, part: Option<ReliquaryType>) -> Option<DynamicImage> {
     let scores = get_scores_for_part(part);
     let grade = r_get_grade_image(if score >= scores.ss {
-        "ss"
+        "SS"
     } else if score >= scores.s {
-        "s"
+        "S"
     } else if score >= scores.a {
-        "a"
+        "A"
     } else {
-        "b"
+        "B"
     });
     grade.map(|i| i.resize(45, 45, FilterType::Nearest))
 }

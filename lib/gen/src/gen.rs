@@ -291,7 +291,6 @@ pub async fn generate(
         draw_text_mut(&mut image, white, 1630, 160, scale, &font, &weapon_sub);
         image::imageops::overlay(&mut image, &weapon_sub_image, 1600, 160);
     }
-
     let artifacts = data.reliquarys();
     let mut artifact_x = 30;
     let mut artifact_scores = 0.0;
