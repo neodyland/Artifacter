@@ -1070,6 +1070,7 @@ dependencies = [
  "localization",
  "localization-build",
  "mihoyo-api",
+ "rand 0.8.5",
  "rusttype",
  "tokio",
 ]

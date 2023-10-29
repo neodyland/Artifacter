@@ -1,9 +1,9 @@
-use std::{collections::HashMap, num::TryFromIntError};
+use std::collections::HashMap;
 
 use serde::Deserialize;
 
 use crate::constants::{DUPE, SUBOP};
-use enka_api::character::{Reliquary, Stats, StatsValue};
+use enka_api::character::{Reliquary, Stats};
 
 #[derive(Deserialize)]
 pub struct Dupe {
@@ -23,18 +23,18 @@ impl Dupe {
     pub fn new() -> Self {
         serde_json::from_str(DUPE).unwrap()
     }
-    pub fn get(&self, s: &str) -> Option<HashMap<String, Vec<Vec<f64>>>> {
+    pub fn get(&self, s: &Stats) -> Option<HashMap<String, Vec<Vec<f64>>>> {
         Some(match s {
-            "crit_dmg" => self.crit_dmg.clone(),
-            "crit_per" => self.crit_per.clone(),
-            "charge_per" => self.charge_per.clone(),
-            "def_per" => self.def_per.clone(),
-            "atk_per" => self.atk_per.clone(),
-            "hp_per" => self.hp_per.clone(),
-            "hp" => self.hp.clone(),
-            "atk" => self.atk.clone(),
-            "def" => self.def.clone(),
-            "mastery" => self.mastery.clone(),
+            Stats::Critical => self.crit_per.clone(),
+            Stats::CriticalHurt => self.crit_dmg.clone(),
+            Stats::ChargeEfficiency => self.charge_per.clone(),
+            Stats::DefensePercent => self.def_per.clone(),
+            Stats::AttackPercent => self.atk_per.clone(),
+            Stats::HpPercent => self.hp_per.clone(),
+            Stats::Hp => self.hp.clone(),
+            Stats::Attack => self.atk.clone(),
+            Stats::Defense => self.def.clone(),
+            Stats::ElementMastery => self.mastery.clone(),
             _ => return None,
         })
     }
@@ -58,174 +58,64 @@ impl Subop {
     pub fn new() -> Self {
         serde_json::from_str(SUBOP).unwrap()
     }
-    pub fn get(&self, s: &str) -> Option<HashMap<String, Vec<f64>>> {
+    pub fn get(&self, s: &Stats) -> Option<HashMap<String, Vec<f64>>> {
         Some(match s {
-            "crit_dmg" => self.crit_dmg.clone(),
-            "crit_per" => self.crit_per.clone(),
-            "charge_per" => self.charge_per.clone(),
-            "def_per" => self.def_per.clone(),
-            "atk_per" => self.atk_per.clone(),
-            "hp_per" => self.hp_per.clone(),
-            "hp" => self.hp.clone(),
-            "atk" => self.atk.clone(),
-            "def" => self.def.clone(),
-            "mastery" => self.mastery.clone(),
+            Stats::Critical => self.crit_per.clone(),
+            Stats::CriticalHurt => self.crit_dmg.clone(),
+            Stats::ChargeEfficiency => self.charge_per.clone(),
+            Stats::DefensePercent => self.def_per.clone(),
+            Stats::AttackPercent => self.atk_per.clone(),
+            Stats::HpPercent => self.hp_per.clone(),
+            Stats::Hp => self.hp.clone(),
+            Stats::Attack => self.atk.clone(),
+            Stats::Defense => self.def.clone(),
+            Stats::ElementMastery => self.mastery.clone(),
             _ => return None,
         })
     }
 }
 
-fn to_string(s: &Stats) -> Option<String> {
-    let s = match s {
-        Stats::Critical => "crit_per",
-        Stats::CriticalHurt => "crit_dmg",
-        Stats::ChargeEfficiency => "charge_per",
-        Stats::DefensePercent => "def_per",
-        Stats::AttackPercent => "atk_per",
-        Stats::HpPercent => "hp_per",
-        Stats::Hp => "hp",
-        Stats::Attack => "atk",
-        Stats::Defense => "def",
-        Stats::ElementMastery => "mastery",
-        _ => return None,
-    };
-    Some(s.to_string())
-}
-
 pub fn resolve_op(art: &Reliquary) -> Option<Vec<Vec<f64>>> {
-    let dupel = Dupe::new();
-    let subop = Subop::new();
-    let mut result = Vec::new();
-    let mut count = u64::from(art.level / 4 + art.rarity - 1);
-    let mut last_counts = HashMap::<u64, u64>::new();
-    let mut dupes = Vec::<Vec<Vec<f64>>>::new();
-    for sub in art.sub_stats {
-        if sub.is_none() {
-            result.push(vec![]);
-            dupes.push(vec![]);
+    let sub = art.sub_stats.iter().collect::<Vec<_>>();
+    let dupe_list = Dupe::new();
+    let subop_list = Subop::new();
+    let mut max_count = (art.rarity + art.level / 4 - 1) as usize;
+    let mut dupes = vec![vec![vec![]]; 4];
+    let mut subops = vec![vec![0.0; 6]; 4];
+    for (index, sub) in sub.iter().enumerate() {
+        if let Some(sub) = sub {
+            let trim = trim(sub.1);
+            let not_trim = sub.1.to_string();
+            let dupe_list = dupe_list.get(&sub.0)?;
+            let dupe = dupe_list.get(&trim).or(dupe_list.get(&not_trim));
+            let subop_list = subop_list.get(&sub.0)?;
+            let subop = subop_list.get(&trim).or(subop_list.get(&not_trim))?;
+            subops[index] = subop.clone();
+            if let Some(dupe) = dupe {
+                dupes[index] = dupe.clone();
+            }
+            max_count -= subop.len();
+        }
+    }
+    for (index, dupe) in dupes.iter_mut().enumerate() {
+        if dupe.first().map(|f| f.is_empty()).unwrap_or(false) {
             continue;
         }
-        let sub = sub.unwrap();
-        let s = to_string(&sub.0)?;
-        let v = sub.1;
-        let duper = dupel.get(&s)?;
-        let subs = subop.get(&s)?;
-        let mut dupe = duper.get(&v.to_string());
-        let vstr = v.to_string();
-        if dupe.is_none() {
-            dupe = duper.get(&trim(&vstr));
-        }
-        let mut sub = subs.get(&vstr).map(|x| x.to_owned());
-        if sub.is_none() {
-            sub = subs.get(&trim(&vstr)).map(|x| x.to_owned());
-        }
-        if sub.is_none() {
-            sub = Some(vec![v]);
-        }
-        if sub.is_none() {
-            result.push(vec![]);
-            dupes.push(vec![]);
-            continue;
-        }
-        let sub = sub.unwrap();
-        let c = u64::try_from(sub.len()).ok()?;
-        if c > count {
-            count = 0;
-        } else {
-            count -= c;
-        }
-        if dupe.is_none() {
-            dupes.push(vec![]);
-            result.push(sub.to_vec());
-        } else {
-            let dupe = dupe.unwrap();
-            dupes.push(dupe.to_vec());
-            result.push(vec![]);
-        }
-    }
-    let dupe_counter = dupes
-        .iter()
-        .map(|x| {
-            x.iter()
-                .map(|y| u64::try_from(y.len()))
-                .collect::<Vec<Result<u64, TryFromIntError>>>()
-        })
-        .collect::<Vec<Vec<Result<u64, TryFromIntError>>>>();
-    let mut dupe_counts = vec![];
-    for d in dupe_counter {
-        let mut dupe_count = Vec::<u64>::new();
-        for i in d {
-            if i.is_err() {
-                return None;
+        dupe.sort_by(|a, b| a.partial_cmp(b).unwrap());
+        for dupe in dupe {
+            if max_count == 0 {
+                break;
             }
-            let i = i.unwrap();
-            dupe_count.push(i);
+            subops[index] = dupe.clone();
+            max_count -= 1;
         }
-        dupe_counts.push(dupe_count);
     }
-    let mut dupe_count_result = Vec::<u64>::new();
-    for _ in 0..dupes.len() {
-        dupe_count_result.push(0)
-    }
-    let mut empty = Vec::<usize>::new();
-    let mut i = 10;
-    while count > 0 && i > 0 {
-        if empty.len() == dupe_counts.len() {
-            break;
-        }
-        for dp in 0..dupe_counts.len() {
-            let d = &mut dupe_counts[dp];
-            if d.is_empty() {
-                empty.push(dp);
-                continue;
-            }
-            let x = d.remove(0);
-            if i64::try_from(count).ok()? - i64::try_from(x).ok()? < 0 {
-                continue;
-            }
-            let last_count = *last_counts.get(&dp.try_into().unwrap()).unwrap_or(&0);
-            if count + last_count < x {
-                continue;
-            }
-            last_counts.insert(dp as u64, x);
-            count = count + last_count - x;
-            dupe_count_result[dp] += 1;
-        }
-        i -= 1;
-    }
-    for i in 0..dupes.len() {
-        if dupes[i].is_empty() {
-            continue;
-        }
-        let dupe = dupes[i].clone();
-        let dupe_result = dupe_count_result[i];
-        let sub = dupe.get(usize::try_from(dupe_result).ok()?);
-        if sub.is_none() {
-            continue;
-        }
-        result[i] = sub.unwrap().to_vec();
-    }
-    Some(result)
+    Some(subops)
 }
 
-fn trim(s: &str) -> String {
-    format!("{}.0", s)
-}
-
-pub fn is_valid_subop(s: &StatsValue) -> bool {
-    let sub = to_string(&s.0);
-    if sub.is_none() {
-        return false;
+fn trim(s: f64) -> String {
+    if s.fract() != 0.0 {
+        return s.to_string();
     }
-    let sub = sub.unwrap();
-    let subop = Subop::new();
-    let sub = subop.get(&sub);
-    if sub.is_none() {
-        return false;
-    }
-    let sub = sub.unwrap();
-    if sub.is_empty() {
-        return false;
-    }
-    sub.get(&s.1.to_string()).map(|_| true).unwrap_or(false)
+    format!("{}.0", s.to_string())
 }

@@ -302,21 +302,20 @@ pub async fn generate(
                 .iter()
                 .enumerate()
                 .map(|(i, x)| {
-                    let s = artifact.sub_stats[i];
-                    if s.is_none() {
-                        return "".to_string();
-                    };
-                    let s = s.unwrap();
-                    x.iter()
-                        .map(|y| {
-                            if is_percent(&s.0) {
-                                round_to_1_decimal_places(*y)
-                            } else {
-                                y.to_string()
-                            }
-                        })
-                        .collect::<Vec<_>>()
-                        .join("+")
+                    if let Some(s) = artifact.sub_stats[i] {
+                        x.iter()
+                            .map(|y| {
+                                if is_percent(&s.0) {
+                                    round_to_1_decimal_places(*y)
+                                } else {
+                                    y.to_string()
+                                }
+                            })
+                            .collect::<Vec<_>>()
+                            .join("+")
+                    } else {
+                        "".to_string()
+                    }
                 })
                 .collect::<Vec<_>>();
             let scale = Scale::uniform(15.0);

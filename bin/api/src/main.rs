@@ -17,6 +17,7 @@ use gen::{
     enka_api::{api::Api, character::CharacterId, icon::IconData, DynamicImage},
     gen::{convert, generate as gen, get_default, ImageFormat, Lang, ScoreCounter},
 };
+use hsr_gen::base::random_base_image;
 use hsr_gen::{
     base::{get_base_image, BaseImage},
     format::ImageFormat as HsrImageFormat,
@@ -314,7 +315,7 @@ async fn hsr_generate(
     let base_img = if let Some(b) = q.base_img {
         BaseImage::from_str(&b).unwrap_or(BaseImage::Belobog)
     } else {
-        BaseImage::Belobog
+        random_base_image()
     };
     let (usr, from_cache) = match api.simple(q.uid, lang.clone()).await {
         Ok((usr, from_cache)) => (usr, from_cache),

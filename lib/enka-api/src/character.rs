@@ -399,7 +399,7 @@ impl Display for StatsValue {
         }
     }
 }
-#[derive(Hash, Copy, Clone, Debug)]
+#[derive(Hash, Copy, Clone, Debug, Eq, PartialEq)]
 pub enum ReliquaryType {
     Flower,
     Feather,

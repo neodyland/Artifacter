@@ -1,6 +1,7 @@
 use std::str::FromStr;
 
 use image::{imageops::overlay, load_from_memory, DynamicImage};
+pub use rand::Rng;
 
 pub enum BaseImage {
     Belobog,
@@ -34,6 +35,22 @@ impl FromStr for BaseImage {
             "universe" => Ok(BaseImage::Universe),
             _ => Err(()),
         }
+    }
+}
+
+pub fn random_base_image() -> BaseImage {
+    match rand::thread_rng().gen_range(0..11) {
+        0 => BaseImage::Belobog,
+        1 => BaseImage::Everwinter,
+        2 => BaseImage::FuXuan,
+        3 => BaseImage::Jar,
+        4 => BaseImage::Seal,
+        5 => BaseImage::Slide,
+        6 => BaseImage::Svarog,
+        7 => BaseImage::Train,
+        8 => BaseImage::Tree,
+        9 => BaseImage::Underground,
+        _ => BaseImage::Universe,
     }
 }
 
