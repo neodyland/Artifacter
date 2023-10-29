@@ -76,58 +76,60 @@ pub async fn generate(
     // character rarity
     let img = get_rarity_image(character.rarity)?;
     overlay(&mut base_image, &img, 50, 150);
-    // weapon
-    let img = api.asset(&character.light_cone.portrait).await.ok()?;
-    let img = resize(&img, 115, 155, FilterType::Triangle);
-    overlay(&mut base_image, &img, 72, 800);
-    let img = get_rarity_image(character.light_cone.rarity)?;
-    let img = resize(&img, 120, 30, FilterType::Triangle);
-    overlay(&mut base_image, &img, 70, 940);
-    // weapon text
-    let text = character.light_cone.name.clone();
-    draw_text_resized(
-        &mut base_image,
-        image::Rgba([255, 255, 255, 255]),
-        325,
-        765,
-        Scale::uniform(50.0),
-        &font,
-        &text,
-        200,
-    );
-    let promo = character.light_cone.promotion;
-    let level = character.light_cone.level;
-    let text = format!("Lv.{}/ S{}", level, promo);
-    draw_text_mut(
-        &mut base_image,
-        image::Rgba([255, 255, 255, 255]),
-        325,
-        820,
-        Scale::uniform(20.0),
-        &font,
-        &text,
-    );
-    for (index, attr) in character.light_cone.attributes.iter().enumerate() {
+    if let Some(cone) = &character.light_cone {
+        // weapon
+        let img = api.asset(&cone.portrait).await.ok()?;
+        let img = resize(&img, 115, 155, FilterType::Triangle);
+        overlay(&mut base_image, &img, 72, 800);
+        let img = get_rarity_image(cone.rarity)?;
+        let img = resize(&img, 120, 30, FilterType::Triangle);
+        overlay(&mut base_image, &img, 70, 940);
+        // weapon text
+        let text = cone.name.clone();
         draw_text_resized(
             &mut base_image,
             image::Rgba([255, 255, 255, 255]),
             325,
-            870 + 50 * index as i32,
-            Scale::uniform(25.0),
+            765,
+            Scale::uniform(50.0),
             &font,
-            &attr.name,
+            &text,
             200,
         );
+        let promo = cone.promotion;
+        let level = cone.level;
+        let text = format!("Lv.{}/ S{}", level, promo);
         draw_text_mut(
             &mut base_image,
             image::Rgba([255, 255, 255, 255]),
-            475,
-            870 + 50 * index as i32,
-            Scale::uniform(25.0),
+            325,
+            820,
+            Scale::uniform(20.0),
             &font,
-            &attr.display,
+            &text,
         );
-    }
+        for (index, attr) in cone.attributes.iter().enumerate() {
+            draw_text_resized(
+                &mut base_image,
+                image::Rgba([255, 255, 255, 255]),
+                325,
+                870 + 50 * index as i32,
+                Scale::uniform(25.0),
+                &font,
+                &attr.name,
+                200,
+            );
+            draw_text_mut(
+                &mut base_image,
+                image::Rgba([255, 255, 255, 255]),
+                475,
+                870 + 50 * index as i32,
+                Scale::uniform(25.0),
+                &font,
+                &attr.display,
+            );
+        }
+    };
     // relics
     let mut total_score = 0.0;
     for (index, relic) in character.relics.iter().enumerate() {

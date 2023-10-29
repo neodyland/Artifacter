@@ -127,7 +127,7 @@ pub struct Character {
     pub element: Element,
     pub rank_icons: Vec<String>,
     pub promotion: u64,
-    pub light_cone: LightCone,
+    pub light_cone: Option<LightCone>,
     pub properties: Vec<Properties>,
     pub attributes: Vec<Attribute>,
     pub additions: Vec<Attribute>,
