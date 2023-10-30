@@ -34,9 +34,9 @@
     "calculationFormula.elementalMastery": "CRIT Rate × 2 + CRIT DMG + (EM ÷ 4)",
     "calculationFormula.energyRecharge": "CRIT Rate × 2 + CRIT DMG + ER",
     "hsr.total": "Total Score",
-    "about.inviteThisBot": "Botを招待",
-    "about.supportServer": "サポートサーバー",
-    "about.website": "Webサイト",
-    "about.title": "Artifacterについて",
-    "about.description": "Artifacterは、原神、崩壊スターレイル用のビルドカードを生成できるツールです。\n\nPowered by [Neodyland](https://neody.land/)"
+    "about.inviteThisBot": "Invite me",
+    "about.supportServer": "Support Server",
+    "about.website": "Website",
+    "about.title": "About Artifacter",
+    "about.description": "Artifacter allows you to create buildcards for Genshin Impact and Honkai: Star Rail.\n\nPowered by [Neodyland](https://neody.land/)"
 }
