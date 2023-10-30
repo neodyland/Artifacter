@@ -38,7 +38,7 @@ pub async fn generate(
     let img = crop_imm(
         &resize(&img, 1000, 1000, FilterType::Triangle),
         240,
-        165,
+        85,
         570,
         670,
     )

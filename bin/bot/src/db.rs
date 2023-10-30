@@ -54,7 +54,7 @@ pub async fn find_genshin(p: &PgPool, id: u64) -> Result<Option<String>, SqlxErr
 
 pub async fn link(p: &PgPool, discord_id: u64, genshin_id: i32) -> Result<(), SqlxError> {
     query!(
-        "INSERT INTO linker (discord_id, genshin_id) VALUES ($1, $2) ON CONFLICT (discord_id) DO UPDATE SET genshin_id = $2",
+        "INSERT INTO linker (discord_id, genshin_id) VALUES ($1, $2)",
         discord_id.to_string(),
         genshin_id.to_string()
     )

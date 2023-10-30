@@ -14,7 +14,7 @@
     "general.failedToFetchData": "Failed to fetch Character data",
     "general.notLinked": "You haven't linked a UID",
     "general.failedToUnlink": "Failed to unlink UID",
-    "general.unlinked": "Successfully unlinked your UID. {{err}}",
+    "general.unlinked": "Successfully unlinked your UID.",
     "general.failedToLink": "Failed to link UID. {{err}}",
     "general.alreadyLinked": "You already have a linked UID. Use /unlink to unlink it first.",
     "general.linked": "Successfully linked your UID.",

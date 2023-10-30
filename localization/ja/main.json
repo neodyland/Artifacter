@@ -14,7 +14,7 @@
     "general.failedToFetchData": "データの取得に失敗しました。",
     "general.notLinked": "ユーザーidがリンクされていません。",
     "general.failedToUnlink": "ユーザーidのリンク解除に失敗しました。",
-    "general.unlinked": "ユーザーidのリンクを解除しました。{{err}}",
+    "general.unlinked": "ユーザーidのリンクを解除しました。",
     "general.failedToLink": "ユーザーidのリンクに失敗しました。{{err}}",
     "general.alreadyLinked": "ユーザーidは既にリンクされています。/unlinkでリンクを解除してください。",
     "general.linked": "ユーザーidをリンクしました。",
