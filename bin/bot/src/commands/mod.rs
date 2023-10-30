@@ -1,4 +1,5 @@
 use poise::Command;
+mod about;
 mod build;
 mod genshin_profile;
 mod hsr;
@@ -19,5 +20,6 @@ pub fn load() -> Vec<Command<State, Error>> {
         hsr_unlink::hsr_unlink(),
         hsr_profile::hsr_profile(),
         hsr::hsr(),
+        about::about(),
     ]
 }

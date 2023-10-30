@@ -152,7 +152,7 @@ pub async fn generate(
             Scale::uniform(30.0),
             &font,
             &text,
-            200,
+            150,
         );
         let img = api.asset(&relic.main_affix.icon).await.ok()?;
         let img = resize(&img, 35, 35, FilterType::Triangle);
@@ -178,7 +178,7 @@ pub async fn generate(
             &level,
         );
         for (rindex, affix) in relic.sub_affix.iter().enumerate() {
-            draw_text_mut(
+            draw_text_resized(
                 &mut base_image,
                 image::Rgba([255, 255, 255, 255]),
                 1550,
@@ -186,6 +186,7 @@ pub async fn generate(
                 Scale::uniform(20.0),
                 &font,
                 &affix.name,
+                100,
             );
             draw_text_mut(
                 &mut base_image,
@@ -291,7 +292,7 @@ pub async fn generate(
         &mut base_image,
         image::Rgba([255, 255, 255, 255]),
         980,
-        830,
+        845,
         Scale::uniform(70.0),
         &font,
         &score,
