@@ -570,15 +570,13 @@ pub async fn generate(
         .collect::<Vec<Option<&str>>>();
     let mut set = HashMap::<String, u32>::new();
     for s in sets {
-        if s.is_none() {
-            continue;
-        }
-        let s = s.unwrap();
-        if set.contains_key(s) {
-            let count = set.get(s).unwrap();
-            set.insert(s.to_string(), count + 1);
-        } else {
-            set.insert(s.to_string(), 1);
+        if let Some(s) = s {
+            if set.contains_key(s) {
+                let count = set.get(s).unwrap();
+                set.insert(s.to_string(), count + 1);
+            } else {
+                set.insert(s.to_string(), 1);
+            }
         }
     }
     let mut largest_set_key = 0;
@@ -592,15 +590,23 @@ pub async fn generate(
         }
     }
     let (set_name, set_count) = if let Some(largest_set) = largest_set {
-        (largest_set.0.to_string(), *largest_set.1)
+        if largest_set.1 > &1 {
+            (largest_set.0.to_string(), *largest_set.1)
+        } else {
+            ("None".to_string(), 0)
+        }
     } else {
         ("None".to_string(), 0)
     };
     let (second_set_name, second_set_count) = if let Some(second_largest_set) = second_largest_set {
-        (
-            Some(second_largest_set.0.to_string()),
-            *second_largest_set.1,
-        )
+        if second_largest_set.1 > &1 {
+            (
+                Some(second_largest_set.0.to_string()),
+                *second_largest_set.1,
+            )
+        } else {
+            (None, 0)
+        }
     } else {
         (None, 0)
     };
