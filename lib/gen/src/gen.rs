@@ -10,16 +10,19 @@ use enka_api::{
     api::Api,
     character::Reliquary,
     character::{Character, CharacterId},
-    character::{Stats, StatsValue},
+    character::{ReliquaryType, Stats, StatsValue},
     element::Element,
     icon::IconData,
 };
 use image::{
-    imageops::{self, resize},
+    imageops::{
+        self, overlay, resize,
+        FilterType::{Nearest, Triangle},
+    },
     DynamicImage, ImageOutputFormat, Rgba,
 };
 use imageproc::drawing::{draw_text_mut, text_size};
-use rusttype::Scale;
+use rusttype::{Font, Scale};
 
 pub use crate::default::get_default;
 use serde::Deserialize;
@@ -180,11 +183,10 @@ pub async fn generate(
     let mut image = constants::get_base_image(&data.element)?;
     let character_image = data.image_gacha_splash(api).await?;
     if is_not_mains(data.id) {
-        let character_image =
-            character_image.resize_exact(1200, 600, imageops::FilterType::Nearest);
+        let character_image = character_image.resize_exact(1200, 600, Nearest);
         imageops::overlay(&mut image, &character_image, -225, 50);
     } else {
-        let character_image = character_image.resize_exact(600, 600, imageops::FilterType::Nearest);
+        let character_image = character_image.resize_exact(600, 600, Nearest);
         imageops::overlay(&mut image, &character_image, 150, 50);
     }
     let character_name = data.name(api, lang).ok()?;
@@ -210,18 +212,12 @@ pub async fn generate(
     );
 
     let scale = Scale::uniform(25.0);
-    let skills = data.skills();
-    let mut skill_y = 320;
-    let mut first = true;
-    for skill in skills {
+    for (index, skill) in data.skills().iter().enumerate() {
         let img = skill.image(api).await.ok()?;
-        let img = img.resize(80, 80, image::imageops::Triangle);
-        image::imageops::overlay(&mut image, &img, 20, skill_y as i64);
-        let ex = skill.extra_level();
-        let lv = skill.level();
-        let text = format!("Lv.{}", lv + ex);
-        let (tw, th) = text_size(scale, &font, &text);
-        let color = if lv + ex == 13 || (lv == 10 && first) {
+        let img = img.resize(80, 80, Triangle);
+        overlay(&mut image, &img, 20, 330 + index as i64 * 100);
+        let lv = skill.level() + skill.extra_level();
+        let color = if lv > 9 {
             image::Rgba([0, 255, 255, 255])
         } else {
             white
@@ -229,43 +225,38 @@ pub async fn generate(
         draw_text_mut(
             &mut image,
             color,
-            60 - tw / 2,
-            skill_y + th + 50,
+            40,
+            400 + index as i32 * 100,
             scale,
             &font,
-            &text,
+            &format!("Lv.{}", lv),
         );
-        skill_y += 100;
-        first = false;
     }
 
     let clocks = data.talents();
-    let mut clock_y = 100;
-    for clock in clocks {
+    for (index, clock) in clocks.iter().enumerate() {
         let locked_image = get_clock_image(data.element.fight_prop_name(), !clock.is_unlock())?;
-        let mut locked_image = resize(&locked_image, 70, 70, image::imageops::Triangle);
+        let mut locked_image = resize(&locked_image, 70, 70, Triangle);
         if clock.is_unlock() {
             let img = clock.image(api).await.ok()?;
-            let img = img.into_rgba8();
-            let img = resize(&img, 35, 35, image::imageops::Triangle);
-            image::imageops::overlay(&mut locked_image, &img, 16, 15);
+            let img = resize(&img, 35, 35, Triangle);
+            overlay(&mut locked_image, &img, 16, 15);
         }
-        image::imageops::overlay(&mut image, &locked_image, 680, clock_y as i64);
-        clock_y += 80;
+        overlay(&mut image, &locked_image, 680, 100 + 80 * index as i64);
     }
 
     let weapon = data.weapon();
     let weapon_img = weapon.image_icon(api).await.ok()?;
-    let weapon_img = weapon_img.resize_exact(129, 128, image::imageops::Triangle);
-    image::imageops::overlay(&mut image, &weapon_img, 1430, 50);
+    let weapon_img = weapon_img.resize_exact(129, 128, Triangle);
+    overlay(&mut image, &weapon_img, 1430, 50);
     let weapon_rarity_img = get_rarity_image(weapon.rarity)?;
-    image::imageops::overlay(&mut image, &weapon_rarity_img, 1422, 173);
+    overlay(&mut image, &weapon_rarity_img, 1422, 173);
     let ascension = format!("R{}", weapon.refinement + 1);
     draw_text_mut(&mut image, white, 1435, 45, scale, &font, &ascension);
     let weapon_level = format!("Lv.{}", weapon.level);
     let weapon_name = weapon.name(api, lang)?;
     let scale = Scale::uniform(30.0);
-    draw_text_mut(&mut image, white, 1600, 45, scale, &font, weapon_name);
+    draw_text_resized(&mut image, white, 1600, 45, scale, &font, weapon_name, 250);
     draw_text_mut(&mut image, white, 1600, 85, scale, &font, &weapon_level);
     let scale = Scale::uniform(25.0);
     let weapon_damage = format!("ATK:{}", weapon.base_attack);
@@ -274,9 +265,8 @@ pub async fn generate(
         p.0 = [255, 255, 255, p.0[3]];
     }
     draw_text_mut(&mut image, white, 1630, 125, scale, &font, &weapon_damage);
-    image::imageops::overlay(&mut image, &damage_image, 1600, 125);
-    if weapon.stats.is_some() {
-        let stats = weapon.stats.unwrap();
+    overlay(&mut image, &damage_image, 1600, 125);
+    if let Some(stats) = weapon.stats {
         let weapon_sub = format!(
             "{} {}{}",
             stats.0.name(api, lang)?,
@@ -288,14 +278,19 @@ pub async fn generate(
             p.0 = [255, 255, 255, p.0[3]];
         }
         draw_text_mut(&mut image, white, 1630, 160, scale, &font, &weapon_sub);
-        image::imageops::overlay(&mut image, &weapon_sub_image, 1600, 160);
+        overlay(&mut image, &weapon_sub_image, 1600, 160);
     }
     let artifacts = data.reliquarys();
     let mut artifact_x = 30;
     let mut artifact_scores = 0.0;
-    for artifact in artifacts {
+    for artifact in get_artifacts(artifacts) {
+        if artifact.is_none() {
+            artifact_x += 373;
+            continue;
+        }
+        let artifact = artifact.unwrap();
         let gray = image::Rgba([240, 240, 240, 200]);
-        if let Some(o) = dupe::resolve_op(artifact) {
+        if let Some(o) = dupe::resolve_op(&artifact) {
             let mut sub_y = 785;
             let o = o
                 .iter()
@@ -332,10 +327,10 @@ pub async fn generate(
                 );
             }
         };
-        let (score, used) = get_score(artifact, &counter);
+        let (score, used) = get_score(&artifact, &counter);
         artifact_scores += score;
         let rank_img = constants::get_grade_image(score, Some(artifact.position))?;
-        image::imageops::overlay(&mut image, &rank_img, artifact_x + 50, 1015);
+        overlay(&mut image, &rank_img, artifact_x + 50, 1015);
         let score = round_to_1_decimal_places(score);
         let scale = Scale::uniform(40.0);
         let score_width = text_size(scale, &font, &score).0;
@@ -349,9 +344,7 @@ pub async fn generate(
             &score,
         );
         let img = artifact.image_icon(api).await.ok()?;
-        let mut img = img
-            .resize_exact(256, 256, image::imageops::Triangle)
-            .into_rgba8();
+        let mut img = img.resize_exact(256, 256, Triangle).into_rgba8();
         img.pixels_mut().for_each(|p| {
             let p3 = p.0[3];
             if p3 > 100 {
@@ -360,7 +353,7 @@ pub async fn generate(
                 p.0[3] -= 20;
             }
         });
-        image::imageops::overlay(&mut image, &img, artifact_x, 630);
+        overlay(&mut image, &img, artifact_x, 630);
         let main = artifact.main_stats;
         let main_type = main.0.name(api, lang)?;
         let main_value = if is_percent(&main.0) {
@@ -394,7 +387,7 @@ pub async fn generate(
             &font,
             &main_value,
         );
-        image::imageops::overlay(
+        overlay(
             &mut image,
             &main_image,
             artifact_x + 310 - main_type_width as i64,
@@ -468,13 +461,13 @@ pub async fn generate(
                 &font,
                 &sub_value,
             );
-            image::imageops::overlay(&mut image, &sub_image, artifact_x + 20, sub_y.into());
+            overlay(&mut image, &sub_image, artifact_x + 20, sub_y.into());
             sub_y += 52;
         }
         artifact_x += 373;
     }
     let rank_img = constants::get_grade_image(artifact_scores, None)?;
-    image::imageops::overlay(&mut image, &rank_img, 1810, 355);
+    overlay(&mut image, &rank_img, 1810, 355);
     let total_score = locale::Locale::from(locale::json!({
         "en": "Total Score",
         "ja": "総合スコア",
@@ -568,7 +561,7 @@ pub async fn generate(
     }
     status_y -= 70;
     let img = data.element.image(icons, 2.5)?;
-    image::imageops::overlay(&mut image, &img, 790, status_y.into());
+    overlay(&mut image, &img, 790, status_y.into());
 
     let sets = data
         .reliquarys()
@@ -590,81 +583,33 @@ pub async fn generate(
     }
     let mut largest_set_key = 0;
     let mut largest_set: Option<(&String, &u32)> = None;
-    let mut second_largest_set_key = 0;
     let mut second_largest_set: Option<(&String, &u32)> = None;
     for (key, value) in set.iter() {
         if value >= &largest_set_key {
             second_largest_set = largest_set;
-            second_largest_set_key = largest_set_key;
             largest_set = Some((key, value));
             largest_set_key = *value;
         }
     }
-    let (set_name, set_count) = if largest_set.is_none() {
-        ("None".to_string(), 0)
-    } else if largest_set_key < 2 {
-        ("None".to_string(), 0)
+    let (set_name, set_count) = if let Some(largest_set) = largest_set {
+        (largest_set.0.to_string(), *largest_set.1)
     } else {
-        (largest_set.unwrap().0.to_string(), *largest_set.unwrap().1)
+        ("None".to_string(), 0)
     };
-    let (second_set_name, second_set_count) = if second_largest_set.is_none() {
-        (None, 0)
-    } else if second_largest_set_key < 2 {
-        (None, 0)
-    } else {
+    let (second_set_name, second_set_count) = if let Some(second_largest_set) = second_largest_set {
         (
-            Some(second_largest_set.unwrap().0.to_string()),
-            *second_largest_set.unwrap().1,
+            Some(second_largest_set.0.to_string()),
+            *second_largest_set.1,
         )
+    } else {
+        (None, 0)
     };
     let first_key_color = if largest_set_key > 3 {
         Rgba([0, 255, 255, 255])
     } else {
         white
     };
-    if second_set_name.is_none() {
-        let set_width = text_size(scale, &font, &set_name).0;
-        if set_width > 300 {
-            let scale = Scale::uniform(20.0);
-            let set_width = text_size(scale, &font, &set_name).0;
-            draw_text_mut(
-                &mut image,
-                first_key_color,
-                1640 - set_width / 2,
-                265,
-                scale,
-                &font,
-                &set_name,
-            );
-        } else {
-            draw_text_mut(
-                &mut image,
-                first_key_color,
-                1640 - set_width / 2,
-                260,
-                scale,
-                &font,
-                &set_name,
-            );
-        }
-        draw_text_mut(
-            &mut image,
-            white,
-            1820,
-            260,
-            scale,
-            &font,
-            &format!("{}", set_count),
-        );
-    } else {
-        let second_set_name = second_set_name.unwrap();
-        let set_width = text_size(scale, &font, &set_name).0;
-        let second_set_width = text_size(scale, &font, &second_set_name).0;
-        let set_width = if set_width > second_set_width {
-            set_width
-        } else {
-            second_set_width
-        };
+    if let Some(second_set_name) = second_set_name {
         draw_text_mut(
             &mut image,
             white,
@@ -683,53 +628,37 @@ pub async fn generate(
             &font,
             &format!("{}", second_set_count),
         );
-        if set_width > 300 {
-            let scale = Scale::uniform(20.0);
-            let set_width = text_size(scale, &font, &set_name).0;
-            let second_set_width = text_size(scale, &font, &second_set_name).0;
-            let set_width = if set_width > second_set_width {
-                set_width
-            } else {
-                second_set_width
-            };
-            draw_text_mut(
-                &mut image,
-                white,
-                1640 - set_width / 2,
-                240,
-                scale,
-                &font,
-                &set_name,
-            );
-            draw_text_mut(
-                &mut image,
-                white,
-                1640 - set_width / 2,
-                285,
-                scale,
-                &font,
-                &second_set_name,
-            );
-        } else {
-            draw_text_mut(
-                &mut image,
-                white,
-                1640 - set_width / 2,
-                235,
-                scale,
-                &font,
-                &set_name,
-            );
-            draw_text_mut(
-                &mut image,
-                white,
-                1640 - set_width / 2,
-                280,
-                scale,
-                &font,
-                &second_set_name,
-            );
-        }
+        draw_text_resized(&mut image, white, 1520, 240, scale, &font, &set_name, 250);
+        draw_text_resized(
+            &mut image,
+            white,
+            1520,
+            285,
+            scale,
+            &font,
+            &second_set_name,
+            250,
+        );
+    } else {
+        draw_text_resized(
+            &mut image,
+            first_key_color,
+            1520,
+            255,
+            scale,
+            &font,
+            &set_name,
+            250,
+        );
+        draw_text_mut(
+            &mut image,
+            white,
+            1820,
+            260,
+            scale,
+            &font,
+            &format!("{}", set_count),
+        );
     }
 
     let kind = counter.to_string_locale(lang);
@@ -839,4 +768,43 @@ pub fn get_score(data: &Reliquary, counter: &ScoreCounter) -> (f64, Vec<String>)
 
 fn is_not_mains(name: CharacterId) -> bool {
     name.0 != 10000005 && name.0 != 10000007
+}
+
+fn draw_text_resized(
+    canvas: &mut DynamicImage,
+    color: image::Rgba<u8>,
+    x: i32,
+    y: i32,
+    scale: Scale,
+    font: &Font,
+    text: &str,
+    max_width: u32,
+) {
+    let width = font
+        .layout(text, scale, rusttype::Point { x: 0.0, y: 0.0 })
+        .map(|g| g.pixel_bounding_box())
+        .filter(|g| g.is_some())
+        .map(|g| g.unwrap())
+        .fold(0, |acc, g| acc + g.width() as i32);
+    if width > max_width as i32 {
+        let scale = Scale::uniform(scale.x * (max_width as f32 / width as f32));
+        draw_text_mut(canvas, color, x, y, scale, font, text);
+        return;
+    }
+    draw_text_mut(canvas, color, x, y, scale, font, text)
+}
+
+fn get_artifacts(artifacts: &Vec<Reliquary>) -> Vec<Option<&Reliquary>> {
+    let mut result = vec![None; 5];
+    for artifact in artifacts {
+        let position = artifact.position;
+        result[match position {
+            ReliquaryType::Flower => 0,
+            ReliquaryType::Feather => 1,
+            ReliquaryType::Sands => 2,
+            ReliquaryType::Goblet => 3,
+            ReliquaryType::Circlet => 4,
+        }] = Some(artifact);
+    }
+    result
 }
