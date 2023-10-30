@@ -147,7 +147,7 @@ pub fn get_default(cid: &u32) -> ScoreCounter {
         // Freminet
         10000085 => ScoreCounter::ElementalMastery,
         // Wriothesley
-        10000086 => ScoreCounter::Hp,
+        10000086 => ScoreCounter::Normal,
         // Neuvilette
         10000087 => ScoreCounter::Hp,
         _ => ScoreCounter::Normal,

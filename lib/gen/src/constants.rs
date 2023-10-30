@@ -2,27 +2,38 @@ use enka_api::{character::ReliquaryType, element::Element};
 use gen_utils::get_grade_image as r_get_grade_image;
 use gen_utils::get_rarity_image as r_get_rarity_image;
 use image::imageops::FilterType::Triangle;
+use image::load_from_memory;
 use image::{imageops::FilterType, DynamicImage};
+use once_cell::sync::Lazy;
+use rusttype::Font;
 
-pub const FONT: &[u8; 11451544] = include_bytes!("../../../assets/font.ttf");
-const BASE_ELECTRIC: &[u8; 1238638] = include_bytes!("../../../assets/base/electric.png");
-const BASE_FIRE: &[u8; 1395828] = include_bytes!("../../../assets/base/fire.png");
-const BASE_GRASS: &[u8; 1338229] = include_bytes!("../../../assets/base/grass.png");
-const BASE_WATER: &[u8; 617017] = include_bytes!("../../../assets/base/water.png");
-const BASE_ICE: &[u8; 1343022] = include_bytes!("../../../assets/base/ice.png");
-const BASE_ROCK: &[u8; 1443299] = include_bytes!("../../../assets/base/rock.png");
-const BASE_WIND: &[u8; 534511] = include_bytes!("../../../assets/base/wind.png");
+pub const FONT: Lazy<Font> =
+    Lazy::new(|| Font::try_from_bytes(include_bytes!("../../../assets/font.ttf")).unwrap());
+const BASE_ELECTRIC: Lazy<DynamicImage> =
+    Lazy::new(|| load_from_memory(include_bytes!("../../../assets/base/electric.png")).unwrap());
+const BASE_FIRE: Lazy<DynamicImage> =
+    Lazy::new(|| load_from_memory(include_bytes!("../../../assets/base/fire.png")).unwrap());
+const BASE_GRASS: Lazy<DynamicImage> =
+    Lazy::new(|| load_from_memory(include_bytes!("../../../assets/base/grass.png")).unwrap());
+const BASE_WATER: Lazy<DynamicImage> =
+    Lazy::new(|| load_from_memory(include_bytes!("../../../assets/base/water.png")).unwrap());
+const BASE_ICE: Lazy<DynamicImage> =
+    Lazy::new(|| load_from_memory(include_bytes!("../../../assets/base/ice.png")).unwrap());
+const BASE_ROCK: Lazy<DynamicImage> =
+    Lazy::new(|| load_from_memory(include_bytes!("../../../assets/base/rock.png")).unwrap());
+const BASE_WIND: Lazy<DynamicImage> =
+    Lazy::new(|| load_from_memory(include_bytes!("../../../assets/base/wind.png")).unwrap());
 pub const DUPE: &str = include_str!("../../../assets/dupe.json");
 pub const SUBOP: &str = include_str!("../../../assets/subop.json");
 pub fn get_base_image(kind: &Element) -> Option<DynamicImage> {
     match kind {
-        Element::Electric => image::load_from_memory(BASE_ELECTRIC).ok(),
-        Element::Fire => image::load_from_memory(BASE_FIRE).ok(),
-        Element::Grass => image::load_from_memory(BASE_GRASS).ok(),
-        Element::Water => image::load_from_memory(BASE_WATER).ok(),
-        Element::Ice => image::load_from_memory(BASE_ICE).ok(),
-        Element::Rock => image::load_from_memory(BASE_ROCK).ok(),
-        Element::Wind => image::load_from_memory(BASE_WIND).ok(),
+        Element::Electric => Some(BASE_ELECTRIC.clone()),
+        Element::Fire => Some(BASE_FIRE.clone()),
+        Element::Grass => Some(BASE_GRASS.clone()),
+        Element::Water => Some(BASE_WATER.clone()),
+        Element::Ice => Some(BASE_ICE.clone()),
+        Element::Rock => Some(BASE_ROCK.clone()),
+        Element::Wind => Some(BASE_WIND.clone()),
         Element::None => None,
     }
 }
@@ -65,40 +76,62 @@ pub fn get_scores_for_part(part: Option<ReliquaryType>) -> Scores {
         },
     }
 }
-const ELECTRIC: &[u8; 6968] = include_bytes!("../../../assets/clock/electric.png");
-const ELECTRIC_LOCKED: &[u8; 7797] = include_bytes!("../../../assets/clock/electric_locked.png");
-const FIRE: &[u8; 6599] = include_bytes!("../../../assets/clock/fire.png");
-const FIRE_LOCKED: &[u8; 7447] = include_bytes!("../../../assets/clock/fire_locked.png");
-const GRASS: &[u8; 6941] = include_bytes!("../../../assets/clock/grass.png");
-const GRASS_LOCKED: &[u8; 7591] = include_bytes!("../../../assets/clock/grass_locked.png");
-const ICE: &[u8; 6953] = include_bytes!("../../../assets/clock/ice.png");
-const ICE_LOCKED: &[u8; 7761] = include_bytes!("../../../assets/clock/ice_locked.png");
-const ROCK: &[u8; 6898] = include_bytes!("../../../assets/clock/rock.png");
-const ROCK_LOCKED: &[u8; 7627] = include_bytes!("../../../assets/clock/rock_locked.png");
-const WATER: &[u8; 6726] = include_bytes!("../../../assets/clock/water.png");
-const WATER_LOCKED: &[u8; 7544] = include_bytes!("../../../assets/clock/water_locked.png");
-const WIND: &[u8; 6071] = include_bytes!("../../../assets/clock/wind.png");
-const WIND_LOCKED: &[u8; 7737] = include_bytes!("../../../assets/clock/wind_locked.png");
+const ELECTRIC: Lazy<DynamicImage> =
+    Lazy::new(|| load_from_memory(include_bytes!("../../../assets/clock/electric.png")).unwrap());
+const ELECTRIC_LOCKED: Lazy<DynamicImage> = Lazy::new(|| {
+    load_from_memory(include_bytes!("../../../assets/clock/electric_locked.png")).unwrap()
+});
+const FIRE: Lazy<DynamicImage> =
+    Lazy::new(|| load_from_memory(include_bytes!("../../../assets/clock/fire.png")).unwrap());
+const FIRE_LOCKED: Lazy<DynamicImage> = Lazy::new(|| {
+    load_from_memory(include_bytes!("../../../assets/clock/fire_locked.png")).unwrap()
+});
+const GRASS: Lazy<DynamicImage> =
+    Lazy::new(|| load_from_memory(include_bytes!("../../../assets/clock/grass.png")).unwrap());
+const GRASS_LOCKED: Lazy<DynamicImage> = Lazy::new(|| {
+    load_from_memory(include_bytes!("../../../assets/clock/grass_locked.png")).unwrap()
+});
+const ICE: Lazy<DynamicImage> =
+    Lazy::new(|| load_from_memory(include_bytes!("../../../assets/clock/ice.png")).unwrap());
+const ICE_LOCKED: Lazy<DynamicImage> =
+    Lazy::new(|| load_from_memory(include_bytes!("../../../assets/clock/ice_locked.png")).unwrap());
+const ROCK: Lazy<DynamicImage> =
+    Lazy::new(|| load_from_memory(include_bytes!("../../../assets/clock/rock.png")).unwrap());
+const ROCK_LOCKED: Lazy<DynamicImage> = Lazy::new(|| {
+    load_from_memory(include_bytes!("../../../assets/clock/rock_locked.png")).unwrap()
+});
+const WATER: Lazy<DynamicImage> =
+    Lazy::new(|| load_from_memory(include_bytes!("../../../assets/clock/water.png")).unwrap());
+const WATER_LOCKED: Lazy<DynamicImage> = Lazy::new(|| {
+    load_from_memory(include_bytes!("../../../assets/clock/water_locked.png")).unwrap()
+});
+const WIND: Lazy<DynamicImage> =
+    Lazy::new(|| load_from_memory(include_bytes!("../../../assets/clock/wind.png")).unwrap());
+const WIND_LOCKED: Lazy<DynamicImage> = Lazy::new(|| {
+    load_from_memory(include_bytes!("../../../assets/clock/wind_locked.png")).unwrap()
+});
 
 pub fn get_clock_image(f: impl AsRef<str>, locked: bool) -> Option<DynamicImage> {
-    image::load_from_memory(match (f.as_ref().to_lowercase(), locked) {
-        (f, true) if f == "electric" || f == "elec" => ELECTRIC_LOCKED,
-        (f, true) if f == "fire" => FIRE_LOCKED,
-        (f, true) if f == "grass" => GRASS_LOCKED,
-        (f, true) if f == "ice" => ICE_LOCKED,
-        (f, true) if f == "rock" => ROCK_LOCKED,
-        (f, true) if f == "water" => WATER_LOCKED,
-        (f, true) if f == "wind" => WIND_LOCKED,
-        (f, false) if f == "electric" || f == "elec" => ELECTRIC,
-        (f, false) if f == "fire" => FIRE,
-        (f, false) if f == "grass" => GRASS,
-        (f, false) if f == "ice" => ICE,
-        (f, false) if f == "rock" => ROCK,
-        (f, false) if f == "water" => WATER,
-        (f, false) if f == "wind" => WIND,
-        _ => return None,
-    })
-    .ok()
+    Some(
+        match (f.as_ref().to_lowercase(), locked) {
+            (f, true) if f == "electric" || f == "elec" => ELECTRIC_LOCKED,
+            (f, true) if f == "fire" => FIRE_LOCKED,
+            (f, true) if f == "grass" => GRASS_LOCKED,
+            (f, true) if f == "ice" => ICE_LOCKED,
+            (f, true) if f == "rock" => ROCK_LOCKED,
+            (f, true) if f == "water" => WATER_LOCKED,
+            (f, true) if f == "wind" => WIND_LOCKED,
+            (f, false) if f == "electric" || f == "elec" => ELECTRIC,
+            (f, false) if f == "fire" => FIRE,
+            (f, false) if f == "grass" => GRASS,
+            (f, false) if f == "ice" => ICE,
+            (f, false) if f == "rock" => ROCK,
+            (f, false) if f == "water" => WATER,
+            (f, false) if f == "wind" => WIND,
+            _ => return None,
+        }
+        .clone(),
+    )
 }
 
 pub fn get_grade_image(score: f64, part: Option<ReliquaryType>) -> Option<DynamicImage> {

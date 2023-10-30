@@ -4,6 +4,10 @@ use serde::Deserialize;
 
 use crate::constants::{DUPE, SUBOP};
 use enka_api::character::{Reliquary, Stats};
+use once_cell::sync::Lazy;
+
+const DUPE_LIST: Lazy<Dupe> = Lazy::new(|| serde_json::from_str(DUPE).unwrap());
+const SUBOP_LIST: Lazy<Subop> = Lazy::new(|| serde_json::from_str(SUBOP).unwrap());
 
 #[derive(Deserialize)]
 pub struct Dupe {
@@ -20,9 +24,6 @@ pub struct Dupe {
 }
 
 impl Dupe {
-    pub fn new() -> Self {
-        serde_json::from_str(DUPE).unwrap()
-    }
     pub fn get(&self, s: &Stats) -> Option<HashMap<String, Vec<Vec<f64>>>> {
         Some(match s {
             Stats::Critical => self.crit_per.clone(),
@@ -55,9 +56,6 @@ pub struct Subop {
 }
 
 impl Subop {
-    pub fn new() -> Self {
-        serde_json::from_str(SUBOP).unwrap()
-    }
     pub fn get(&self, s: &Stats) -> Option<HashMap<String, Vec<f64>>> {
         Some(match s {
             Stats::Critical => self.crit_per.clone(),
@@ -77,8 +75,6 @@ impl Subop {
 
 pub fn resolve_op(art: &Reliquary) -> Option<Vec<Vec<f64>>> {
     let sub = art.sub_stats.iter().collect::<Vec<_>>();
-    let dupe_list = Dupe::new();
-    let subop_list = Subop::new();
     let mut max_count = (art.rarity + art.level / 4 - 1) as usize;
     let mut dupes = vec![vec![vec![]]; 4];
     let mut subops = vec![vec![0.0; 6]; 4];
@@ -86,9 +82,9 @@ pub fn resolve_op(art: &Reliquary) -> Option<Vec<Vec<f64>>> {
         if let Some(sub) = sub {
             let trim = trim(sub.1);
             let not_trim = sub.1.to_string();
-            let dupe_list = dupe_list.get(&sub.0)?;
+            let dupe_list = &DUPE_LIST.get(&sub.0)?;
             let dupe = dupe_list.get(&trim).or(dupe_list.get(&not_trim));
-            let subop_list = subop_list.get(&sub.0)?;
+            let subop_list = &SUBOP_LIST.get(&sub.0)?;
             let subop = subop_list.get(&trim).or(subop_list.get(&not_trim))?;
             subops[index] = subop.clone();
             if let Some(dupe) = dupe {

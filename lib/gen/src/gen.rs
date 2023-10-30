@@ -19,7 +19,7 @@ use image::{
     DynamicImage, ImageOutputFormat, Rgba,
 };
 use imageproc::drawing::{draw_text_mut, text_size};
-use rusttype::{Font, Scale};
+use rusttype::Scale;
 
 pub use crate::default::get_default;
 use serde::Deserialize;
@@ -177,7 +177,6 @@ pub async fn generate(
 ) -> Option<Vec<u8>> {
     let lang = &raw_lang.to_string();
     let font = FONT;
-    let font = Font::try_from_bytes(font)?;
     let mut image = constants::get_base_image(&data.element)?;
     let character_image = data.image_gacha_splash(api).await?;
     if is_not_mains(data.id) {

@@ -15,8 +15,10 @@ use rusttype::{Font, Scale};
 use std::io::BufWriter;
 
 use crate::format::ImageFormat;
+use once_cell::sync::Lazy;
 
-const FONT: &[u8; 4917640] = include_bytes!("../../../assets/hsr-font.ttf");
+const FONT: Lazy<Font> =
+    Lazy::new(|| Font::try_from_bytes(include_bytes!("../../../assets/hsr-font.ttf")).unwrap());
 
 pub async fn generate(
     api: &Api,
@@ -30,7 +32,7 @@ pub async fn generate(
         "en" | "en-US" | "en-GB" => "en-US",
         _ => "ja-JP",
     };
-    let font = Font::try_from_bytes(FONT)?;
+    let font = FONT.clone();
     // character
     let img = api.asset(&character.portrait).await.ok()?;
     let img = crop_imm(
@@ -141,30 +143,6 @@ pub async fn generate(
         overlay(&mut base_image, &img, 1300, 135 + 173 * index as i64);
         // main stats
         let text = relic.main_affix.name.clone();
-        draw_text_mut(
-            &mut base_image,
-            image::Rgba([255, 255, 255, 255]),
-            1425,
-            60 + 173 * index as i32,
-            Scale::uniform(25.0),
-            &font,
-            &text,
-        );
-        let img = api.asset(&relic.main_affix.icon).await.ok()?;
-        let img = resize(&img, 30, 30, FilterType::Triangle);
-        overlay(&mut base_image, &img, 1415, 90 + 173 * index as i64);
-        let text = relic.main_affix.display.clone();
-        draw_text_mut(
-            &mut base_image,
-            image::Rgba([255, 255, 255, 255]),
-            1445,
-            90 + 173 * index as i32,
-            Scale::uniform(25.0),
-            &font,
-            &text,
-        );
-        // relic text
-        let text = relic.name.clone();
         draw_text_resized(
             &mut base_image,
             image::Rgba([255, 255, 255, 255]),
@@ -174,6 +152,19 @@ pub async fn generate(
             &font,
             &text,
             200,
+        );
+        let img = api.asset(&relic.main_affix.icon).await.ok()?;
+        let img = resize(&img, 35, 35, FilterType::Triangle);
+        overlay(&mut base_image, &img, 1755, 50 + 173 * index as i64);
+        let text = relic.main_affix.display.clone();
+        draw_text_mut(
+            &mut base_image,
+            image::Rgba([255, 255, 255, 255]),
+            1790,
+            50 + 173 * index as i32,
+            Scale::uniform(30.0),
+            &font,
+            &text,
         );
         let level = format!("+{}", relic.level);
         draw_text_mut(
@@ -210,13 +201,13 @@ pub async fn generate(
         total_score += relic_score;
         let score = format!("{:.1}", relic_score);
         let img = get_hsr_grade_image("B")?;
-        let img = resize(&img, 70, 70, FilterType::Triangle);
-        overlay(&mut base_image, &img, 1770, 75 + 173 * index as i64);
+        let img = resize(&img, 80, 80, FilterType::Triangle);
+        overlay(&mut base_image, &img, 1780, 75 + 173 * index as i64);
         draw_text_mut(
             &mut base_image,
             image::Rgba([255, 255, 255, 255]),
-            1780,
-            140 + 173 * index as i32,
+            1790,
+            150 + 173 * index as i32,
             Scale::uniform(30.0),
             &font,
             &score,
@@ -255,15 +246,26 @@ pub async fn generate(
     overlay(&mut base_image, &img, 700, 180);
     // skill
     for (index, skill) in character.skills.iter().enumerate() {
+        let plus = if index < 7 { 0 } else { (index - 7) / 2 + 1 } as i64;
+        let plus_index = if index < 7 {
+            index
+        } else {
+            (index - 7) % 2 + 5
+        } as i64;
         let img = api.asset(&skill.icon).await.ok()?;
         let img = resize(&img, 60, 60, FilterType::Triangle);
-        overlay(&mut base_image, &img, 765, 100 + 80 * index as i64);
+        overlay(
+            &mut base_image,
+            &img,
+            765 + plus * 60,
+            100 + 80 * plus_index,
+        );
         let level = format!("Lv.{}", skill.level);
         draw_text_mut(
             &mut base_image,
             image::Rgba([255, 255, 255, 255]),
-            780,
-            160 + 80 * index as i32,
+            780 + plus as i32 * 60,
+            160 + 80 * plus_index as i32,
             Scale::uniform(15.0),
             &font,
             &level,
@@ -282,13 +284,13 @@ pub async fn generate(
     );
     let score = format!("{:.1}", total_score);
     let img = get_hsr_grade_image("B")?;
-    let img = resize(&img, 120, 120, FilterType::Triangle);
-    overlay(&mut base_image, &img, 780, 830);
+    let img = resize(&img, 150, 150, FilterType::Triangle);
+    overlay(&mut base_image, &img, 760, 800);
     draw_text_mut(
         &mut base_image,
         image::Rgba([255, 255, 255, 255]),
         980,
-        850,
+        830,
         Scale::uniform(70.0),
         &font,
         &score,

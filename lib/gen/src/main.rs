@@ -9,10 +9,21 @@ async fn main() {
     let format = gen::gen::ImageFormat::Png;
     let counter = gen::gen::ScoreCounter::Hp;
     let raw_lang = gen::gen::Lang::Ja;
-    let res = gen::gen::generate(character.clone(), &api, &raw_lang, &icons, counter, format)
+    let now = std::time::Instant::now();
+    for _ in 0..50 {
+        let _res = gen::gen::generate(
+            character.clone(),
+            &api,
+            &raw_lang,
+            &icons,
+            counter,
+            format.clone(),
+        )
         .await
         .unwrap();
-    tokio::fs::write("test.png", res).await.unwrap();
+    }
+    println!("{:?}", now.elapsed());
+    // tokio::fs::write("test.png", res).await.unwrap();
     /*let api = enka_api::api::Api::new();
     let (user, _cached) = api.simple(882746077).await.unwrap();
     let character = user.character(enka_api::character::CharacterId(10000048)).unwrap();

@@ -1,6 +1,7 @@
 use std::str::FromStr;
 
 use image::{imageops::overlay, load_from_memory, DynamicImage};
+use once_cell::sync::Lazy;
 pub use rand::Rng;
 
 pub enum BaseImage {
@@ -54,22 +55,38 @@ pub fn random_base_image() -> BaseImage {
     }
 }
 
-const HSR_EFFECT: &[u8; 165992] = include_bytes!("../../../assets/hsr_effect/orange.png");
-const BELOBOG: &[u8; 3008217] = include_bytes!("../../../assets/hsr_base/belobog.png");
-const EVERWINTER: &[u8; 2395309] = include_bytes!("../../../assets/hsr_base/everwinter.png");
-const FU_XUAN: &[u8; 2881624] = include_bytes!("../../../assets/hsr_base/fu_xuan.png");
-const JAR: &[u8; 3611677] = include_bytes!("../../../assets/hsr_base/jar.png");
-const SEAL: &[u8; 2456088] = include_bytes!("../../../assets/hsr_base/seal.png");
-const SLIDE: &[u8; 2432260] = include_bytes!("../../../assets/hsr_base/slide.png");
-const SVAROG: &[u8; 2225647] = include_bytes!("../../../assets/hsr_base/svarog.png");
-const TRAIN: &[u8; 2609576] = include_bytes!("../../../assets/hsr_base/train.png");
-const TREE: &[u8; 2791487] = include_bytes!("../../../assets/hsr_base/tree.png");
-const UNDERGROUND: &[u8; 3147197] = include_bytes!("../../../assets/hsr_base/underground.png");
-const UNIVERSE: &[u8; 2334599] = include_bytes!("../../../assets/hsr_base/universe.png");
+const HSR_EFFECT: Lazy<DynamicImage> = Lazy::new(|| {
+    load_from_memory(include_bytes!("../../../assets/hsr_effect/orange.png")).unwrap()
+});
+const BELOBOG: Lazy<DynamicImage> =
+    Lazy::new(|| load_from_memory(include_bytes!("../../../assets/hsr_base/belobog.png")).unwrap());
+const EVERWINTER: Lazy<DynamicImage> = Lazy::new(|| {
+    load_from_memory(include_bytes!("../../../assets/hsr_base/everwinter.png")).unwrap()
+});
+const FU_XUAN: Lazy<DynamicImage> =
+    Lazy::new(|| load_from_memory(include_bytes!("../../../assets/hsr_base/fu_xuan.png")).unwrap());
+const JAR: Lazy<DynamicImage> =
+    Lazy::new(|| load_from_memory(include_bytes!("../../../assets/hsr_base/jar.png")).unwrap());
+const SEAL: Lazy<DynamicImage> =
+    Lazy::new(|| load_from_memory(include_bytes!("../../../assets/hsr_base/seal.png")).unwrap());
+const SLIDE: Lazy<DynamicImage> =
+    Lazy::new(|| load_from_memory(include_bytes!("../../../assets/hsr_base/slide.png")).unwrap());
+const SVAROG: Lazy<DynamicImage> =
+    Lazy::new(|| load_from_memory(include_bytes!("../../../assets/hsr_base/svarog.png")).unwrap());
+const TRAIN: Lazy<DynamicImage> =
+    Lazy::new(|| load_from_memory(include_bytes!("../../../assets/hsr_base/train.png")).unwrap());
+const TREE: Lazy<DynamicImage> =
+    Lazy::new(|| load_from_memory(include_bytes!("../../../assets/hsr_base/tree.png")).unwrap());
+const UNDERGROUND: Lazy<DynamicImage> = Lazy::new(|| {
+    load_from_memory(include_bytes!("../../../assets/hsr_base/underground.png")).unwrap()
+});
+const UNIVERSE: Lazy<DynamicImage> = Lazy::new(|| {
+    load_from_memory(include_bytes!("../../../assets/hsr_base/universe.png")).unwrap()
+});
 
 pub fn get_base_image(img: BaseImage) -> DynamicImage {
-    let effect = load_from_memory(HSR_EFFECT).unwrap();
-    let on = load_from_memory(match img {
+    let effect = HSR_EFFECT.clone();
+    let on = match img {
         BaseImage::Belobog => BELOBOG,
         BaseImage::Everwinter => EVERWINTER,
         BaseImage::FuXuan => FU_XUAN,
@@ -81,8 +98,8 @@ pub fn get_base_image(img: BaseImage) -> DynamicImage {
         BaseImage::Tree => TREE,
         BaseImage::Underground => UNDERGROUND,
         BaseImage::Universe => UNIVERSE,
-    })
-    .unwrap();
+    }
+    .clone();
     let mut on = on.blur(5.0);
     overlay(&mut on, &effect, 0, 0);
     on

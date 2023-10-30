@@ -12,3 +12,4 @@ rusttype = "0.9.3"
 imageproc = "0.23.0"
 tokio = { version = "1.33.0", features = ["rt", "macros", "fs"] }
 gen-utils = { path = "../gen-utils" }
+once_cell = { workspace = true }

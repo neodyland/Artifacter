@@ -9,9 +9,13 @@ use tokio::fs::write;
 #[tokio::main(flavor = "current_thread")]
 async fn main() {
     let api = Api::new();
-    let lang = "en-GB".to_string();
-    let (user, _d) = api.simple(804445063, lang.to_string()).await.unwrap();
-    let character = user.characters.get(1).unwrap();
+    let lang = "ja".to_string();
+    let (user, _d) = api.simple(803336796, lang.to_string()).await.unwrap();
+    let character = user
+        .characters
+        .iter()
+        .find(|x| x.id == "1213".to_string())
+        .unwrap();
     let base_image = get_base_image(BaseImage::Belobog);
     if let Some(img) = generate(
         &api,
