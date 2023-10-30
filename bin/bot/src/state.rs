@@ -1,4 +1,4 @@
-use std::sync::{atomic::AtomicBool, Arc};
+use std::{collections::BTreeSet, sync::Arc};
 
 use tokio::sync::Mutex;
 
@@ -11,7 +11,7 @@ use crate::{
 #[derive(Clone)]
 pub struct State {
     pub db: PgPool,
-    pub started: Arc<AtomicBool>,
+    pub started: Arc<Mutex<BTreeSet<u32>>>,
     pub api: Api,
     pub cache: Arc<Mutex<Cache>>,
     pub hsr_cache: Arc<Mutex<HsrCache>>,
@@ -20,9 +20,10 @@ pub struct State {
 impl State {
     pub async fn new() -> Self {
         let db = connect().await;
+        let set = BTreeSet::new();
         Self {
             db,
-            started: Arc::new(AtomicBool::new(false)),
+            started: Arc::new(Mutex::new(set)),
             api: Api::new(),
             cache: Arc::new(Mutex::new(Cache::new())),
             hsr_cache: Arc::new(Mutex::new(HsrCache::new())),

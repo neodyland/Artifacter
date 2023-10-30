@@ -1,4 +1,4 @@
-use std::sync::{atomic::Ordering, Arc};
+use std::sync::Arc;
 
 use poise::serenity_prelude as serenity;
 use serenity::{ActivityData, Context, Ready};
@@ -15,8 +15,15 @@ pub async fn handler(
 ) -> Result<(), Error> {
     log::info!("{} is connected!", ready.user.name);
     let ctx = Arc::new(ctx.to_owned());
-    if !state.started.load(Ordering::Relaxed) {
-        state.started.store(true, Ordering::Relaxed);
+    let started = {
+        let mut started = state.started.lock().await;
+        if let Some(s) = ready.shard {
+            started.insert(s.id.0)
+        } else {
+            false
+        }
+    };
+    if started {
         tokio::spawn(async move {
             loop {
                 let activity =
