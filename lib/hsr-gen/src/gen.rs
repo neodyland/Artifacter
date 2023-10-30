@@ -46,7 +46,7 @@ pub async fn generate(
     overlay(&mut base_image, &img, 60, 45);
     // character text
     let text = character.name.clone();
-    draw_text_mut(
+    draw_text_resized(
         &mut base_image,
         image::Rgba([255, 255, 255, 255]),
         50,
@@ -54,6 +54,7 @@ pub async fn generate(
         Scale::uniform(50.0),
         &font,
         &text,
+        380,
     );
     /*let promo = format!("R{}", character.promotion);
     draw_text_mut(
