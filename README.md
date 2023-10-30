@@ -9,3 +9,5 @@ https://github.com/FuroBath/ArtifacterImageGen を参考にしております。
 Genshin Impact Wikiなどから取得しております。
 ## API
 https://enka.network/ を使用しております。
+# Botの導入
+https://2q.is/AVk9vB から導入できます。
