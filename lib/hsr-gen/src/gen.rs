@@ -202,7 +202,7 @@ pub async fn generate(
         let relic_score = get_score(&relic, &counter);
         total_score += relic_score;
         let score = format!("{:.1}", relic_score);
-        let img = get_hsr_grade_image("B")?;
+        let img = get_score_image(relic_score, Some(index))?;
         let img = resize(&img, 80, 80, FilterType::Triangle);
         overlay(&mut base_image, &img, 1780, 75 + 173 * index as i64);
         draw_text_mut(
@@ -285,7 +285,7 @@ pub async fn generate(
         &total,
     );
     let score = format!("{:.1}", total_score);
-    let img = get_hsr_grade_image("B")?;
+    let img = get_score_image(total_score, None)?;
     let img = resize(&img, 150, 150, FilterType::Triangle);
     overlay(&mut base_image, &img, 760, 800);
     draw_text_mut(
@@ -433,4 +433,57 @@ fn draw_text_resized(
         return;
     }
     draw_text_mut(canvas, color, x, y, scale, font, text)
+}
+
+struct Score {
+    a: f64,
+    s: f64,
+    ss: f64,
+}
+
+const TOTAL_SCORE: Score = Score {
+    a: 150.0,
+    s: 180.0,
+    ss: 210.0,
+};
+
+const SCORE_0: Score = Score {
+    a: 30.0,
+    s: 35.0,
+    ss: 40.0,
+};
+
+const SCORE_1: Score = Score {
+    a: 20.0,
+    s: 25.0,
+    ss: 30.0,
+};
+
+const SCORE_2: Score = Score {
+    a: 25.0,
+    s: 30.0,
+    ss: 35.0,
+};
+
+fn get_score_image(score: f64, place: Option<usize>) -> Option<DynamicImage> {
+    let score_selector = if let Some(place) = place {
+        match place {
+            0 | 1 => SCORE_0,
+            2 | 4 => SCORE_1,
+            3 | 5 => SCORE_2,
+            _ => SCORE_0,
+        }
+    } else {
+        TOTAL_SCORE
+    };
+    let score = if score > score_selector.ss {
+        "SS"
+    } else if score > score_selector.s {
+        "S"
+    } else if score > score_selector.a {
+        "A"
+    } else {
+        "B"
+    };
+    get_hsr_grade_image(score)
 }
