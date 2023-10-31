@@ -101,7 +101,7 @@ pub async fn generate(
         );
         let promo = cone.promotion;
         let level = cone.level;
-        let text = format!("Lv.{}/ S{}", level, promo);
+        let text = format!("Lv.{}/ E{}", level, promo);
         draw_text_mut(
             &mut base_image,
             image::Rgba([255, 255, 255, 255]),
