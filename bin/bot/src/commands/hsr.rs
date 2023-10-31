@@ -1,5 +1,6 @@
 use localization::t;
 use poise::CreateReply;
+use rand::Rng;
 
 use crate::db::find_hsr;
 use crate::hsr_components::hsr_profile_components;
@@ -16,6 +17,12 @@ pub async fn hsr(
     #[description_localized("ja", "ユーザーID")]
     uid: Option<i32>,
 ) -> Result<(), Error> {
+    let display_tips = if uid.is_some() {
+        let rng: u32 = rand::thread_rng().gen_range(0..100);
+        rng < 25
+    } else {
+        false
+    };
     let locale = ctx.locale().unwrap_or("ja");
     let data = ctx.data();
     let mut uid = uid.map(|u| u.to_string());
@@ -59,6 +66,9 @@ pub async fn hsr(
     let mut builder = CreateReply::default().components(components).embed(embed);
     if let Some(attachment) = attachment {
         builder = builder.attachment(attachment);
+    }
+    if display_tips {
+        builder = builder.content(t!(locale, "main:tips.hsrLink"));
     }
     ctx.send(builder).await?;
     Ok(())

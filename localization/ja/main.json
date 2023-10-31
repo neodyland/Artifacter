@@ -38,5 +38,7 @@
     "about.supportServer": "サポートサーバー",
     "about.website": "Webサイト",
     "about.title": "Artifacterについて",
-    "about.description": "Artifacterは、原神、崩壊スターレイル用のビルドカードを生成できるツールです。\n\nPowered by [Neodyland](https://neody.land/)"
+    "about.description": "Artifacterは、原神、崩壊スターレイル用のビルドカードを生成できるツールです。\n\nPowered by [Neodyland](https://neody.land/)",
+    "tips.hsrLink": "`/hsr_link`でUIDをリンクすることにより、このコマンドを実行するたびに、UIDを指定する必要がなくなります。",
+    "tips.genshinLink": "`/link`でUIDをリンクすることにより、このコマンドを実行するたびに、UIDを指定する必要がなくなります。"
 }
