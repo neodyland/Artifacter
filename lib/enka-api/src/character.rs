@@ -140,7 +140,7 @@ pub(crate) fn parse_character(api: &Api, player_character: &Value) -> Option<Cha
     fn find(map: &serde_json::Map<String, Value>, key: &str) -> Option<String> {
         Some(String::from(map.get(key)?.as_str()?))
     }
-    let mut skills = vec![];
+    let mut skills: Vec<CharacterSkill> = vec![];
     {
         let extra_map = get_or_null(player_character, "proudSkillExtraLevelMap");
         let skill_level_map = get_or_null(player_character, "skillLevelMap");
@@ -421,7 +421,7 @@ impl ReliquaryType {
 }
 #[derive(Clone, Debug)]
 pub struct Reliquary {
-    name: u32,
+    name: u64,
     set_name: u32,
     icon: String,
     pub position: ReliquaryType,
@@ -438,7 +438,7 @@ impl Reliquary {
     pub fn set_name<'a>(&self, api: &'a Api, language: impl AsRef<str>) -> Option<&'a str> {
         api.get_store().locale(language, self.set_name.to_string())
     }
-    pub fn name_hash(&self) -> u32 {
+    pub fn name_hash(&self) -> u64 {
         self.name
     }
     pub fn name<'a>(&self, api: &'a Api, language: impl AsRef<str>) -> Option<&'a str> {
@@ -453,7 +453,7 @@ impl Reliquary {
 }
 #[derive(Clone, Debug)]
 pub struct Weapon {
-    name: u32,
+    name: u64,
     icon: String,
     pub id: u32,
     pub level: u8,
@@ -464,7 +464,7 @@ pub struct Weapon {
     pub stats: Option<StatsValue>,
 }
 impl Weapon {
-    pub fn name_hash(&self) -> u32 {
+    pub fn name_hash(&self) -> u64 {
         self.name
     }
     pub fn name<'a>(&self, api: &'a Api, language: impl AsRef<str>) -> Option<&'a str> {
@@ -515,7 +515,7 @@ fn parse_equip_reliquary(entry: &Value) -> Option<Reliquary> {
         id,
         position: ReliquaryType::parse(flat.get("equipType")?.as_str()?).ok()?,
         icon: flat.get("icon")?.as_str()?.to_owned(),
-        name: u32::from_str(flat.get("nameTextMapHash")?.as_str()?).ok()?,
+        name: flat.get("nameTextMapHash")?.as_u64()?,
         set_name: u32::from_str(flat.get("setNameTextMapHash")?.as_str()?).ok()?,
         rarity: flat.get("rankLevel")?.as_u64()? as u8,
         level: (reliquary.get("level")?.as_u64()? - 1) as u8,
@@ -557,7 +557,7 @@ fn parse_equip_weapon(entry: &Value) -> Option<Weapon> {
         refinement: weapon.get("affixMap")?.get(format!("1{}", id))?.as_u64()? as u8,
         rarity: flat.get("rankLevel")?.as_u64()? as u8,
         icon: flat.get("icon")?.as_str()?.to_owned(),
-        name: u32::from_str(flat.get("nameTextMapHash")?.as_str()?).ok()?,
+        name: flat.get("nameTextMapHash")?.as_u64()?,
         base_attack,
         stats,
     })
