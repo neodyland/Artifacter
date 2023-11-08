@@ -150,6 +150,10 @@ pub fn get_default(cid: &u32) -> ScoreCounter {
         10000086 => ScoreCounter::Normal,
         // Neuvilette
         10000087 => ScoreCounter::Hp,
+        // Charlotte
+        10000088 => ScoreCounter::Hp,
+        // Furina
+        10000089 => ScoreCounter::Hp,
         _ => ScoreCounter::Normal,
     }
 }
