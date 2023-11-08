@@ -512,5 +512,19 @@
     "filename_sideIcon": "UI_AvatarIcon_Side_Wriothesley",
     "filename_gachaSplash": "UI_Gacha_AvatarImg_Wriothesley",
     "filename_gachaSlice": "UI_Gacha_AvatarIcon_Wriothesley"
+  },
+  "furina": {
+    "filename_icon": "UI_AvatarIcon_Furina",
+    "filename_iconCard": "UI_AvatarIcon_Furina_Card",
+    "filename_sideIcon": "UI_AvatarIcon_Side_Furina",
+    "filename_gachaSplash": "UI_Gacha_AvatarImg_Furina",
+    "filename_gachaSlice": "UI_Gacha_AvatarIcon_Furina"
+  },
+  "charlotte": {
+    "filename_icon": "UI_AvatarIcon_Charlotte",
+    "filename_iconCard": "UI_AvatarIcon_Charlotte_Card",
+    "filename_sideIcon": "UI_AvatarIcon_Side_Charlotte",
+    "filename_gachaSplash": "UI_Gacha_AvatarImg_Charlotte",
+    "filename_gachaSlice": "UI_Gacha_AvatarIcon_Charlotte"
   }
 }
