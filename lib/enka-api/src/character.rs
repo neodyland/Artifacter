@@ -486,6 +486,7 @@ fn parse_equip_list(list: &Vec<Value>) -> (Option<Weapon>, Vec<Reliquary>) {
     for entry in list {
         if entry.get("reliquary").is_some() {
             if let Some(r) = parse_equip_reliquary(entry) {
+                println!("{:?}", r);
                 reliquarys.push(r);
             }
         } else if entry.get("weapon").is_some() {
@@ -516,7 +517,7 @@ fn parse_equip_reliquary(entry: &Value) -> Option<Reliquary> {
         position: ReliquaryType::parse(flat.get("equipType")?.as_str()?).ok()?,
         icon: flat.get("icon")?.as_str()?.to_owned(),
         name: flat.get("nameTextMapHash")?.as_u64()?,
-        set_name: u32::from_str(flat.get("setNameTextMapHash")?.as_str()?).ok()?,
+        set_name: flat.get("setNameTextMapHash")?.as_u64()? as u32,
         rarity: flat.get("rankLevel")?.as_u64()? as u8,
         level: (reliquary.get("level")?.as_u64()? - 1) as u8,
         main_stats: parse_reliquary_stat(flat.get("reliquaryMainstat")?, "mainPropId")?,
