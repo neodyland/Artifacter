@@ -12,6 +12,7 @@ mod events;
 mod hsr_components;
 mod logger;
 mod state;
+mod tips;
 mod util;
 
 #[tokio::main]

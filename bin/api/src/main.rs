@@ -333,7 +333,7 @@ async fn hsr_generate(
     };
     match hsr_gen(
         &api,
-        character.clone(),
+        character,
         get_base_image(base_img),
         format.clone(),
         &lang,

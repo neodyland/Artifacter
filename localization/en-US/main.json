@@ -40,5 +40,6 @@
     "about.title": "About Artifacter",
     "about.description": "Artifacter allows you to create buildcards for Genshin Impact and Honkai: Star Rail.\n\nPowered by [Neodyland](https://neody.land/)",
     "tips.hsrLink": "You can use `/hsr_link` to save your UID and use this command without specifying your UID every time.",
-    "tips.genshinLink": "You can use `/link` to save your UID and use this command without specifying your UID every time."
+    "tips.genshinLink": "You can use `/link` to save your UID and use this command without specifying your UID every time.",
+    "tips.supportServer": "Join the [Support Server](https://discord.com/invite/5JKEWnYZHj) to get the latest updates and announcements about Artifacter!"
 }
