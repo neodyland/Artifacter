@@ -55,51 +55,50 @@ pub fn random_base_image() -> BaseImage {
     }
 }
 
-const HSR_EFFECT: Lazy<DynamicImage> = Lazy::new(|| {
+static HSR_EFFECT: Lazy<DynamicImage> = Lazy::new(|| {
     load_from_memory(include_bytes!("../../../assets/hsr_effect/orange.png")).unwrap()
 });
-const BELOBOG: Lazy<DynamicImage> =
+static BELOBOG: Lazy<DynamicImage> =
     Lazy::new(|| load_from_memory(include_bytes!("../../../assets/hsr_base/belobog.png")).unwrap());
-const EVERWINTER: Lazy<DynamicImage> = Lazy::new(|| {
+static EVERWINTER: Lazy<DynamicImage> = Lazy::new(|| {
     load_from_memory(include_bytes!("../../../assets/hsr_base/everwinter.png")).unwrap()
 });
-const FU_XUAN: Lazy<DynamicImage> =
+static FU_XUAN: Lazy<DynamicImage> =
     Lazy::new(|| load_from_memory(include_bytes!("../../../assets/hsr_base/fu_xuan.png")).unwrap());
-const JAR: Lazy<DynamicImage> =
+static JAR: Lazy<DynamicImage> =
     Lazy::new(|| load_from_memory(include_bytes!("../../../assets/hsr_base/jar.png")).unwrap());
-const SEAL: Lazy<DynamicImage> =
+static SEAL: Lazy<DynamicImage> =
     Lazy::new(|| load_from_memory(include_bytes!("../../../assets/hsr_base/seal.png")).unwrap());
-const SLIDE: Lazy<DynamicImage> =
+static SLIDE: Lazy<DynamicImage> =
     Lazy::new(|| load_from_memory(include_bytes!("../../../assets/hsr_base/slide.png")).unwrap());
-const SVAROG: Lazy<DynamicImage> =
+static SVAROG: Lazy<DynamicImage> =
     Lazy::new(|| load_from_memory(include_bytes!("../../../assets/hsr_base/svarog.png")).unwrap());
-const TRAIN: Lazy<DynamicImage> =
+static TRAIN: Lazy<DynamicImage> =
     Lazy::new(|| load_from_memory(include_bytes!("../../../assets/hsr_base/train.png")).unwrap());
-const TREE: Lazy<DynamicImage> =
+static TREE: Lazy<DynamicImage> =
     Lazy::new(|| load_from_memory(include_bytes!("../../../assets/hsr_base/tree.png")).unwrap());
-const UNDERGROUND: Lazy<DynamicImage> = Lazy::new(|| {
+static UNDERGROUND: Lazy<DynamicImage> = Lazy::new(|| {
     load_from_memory(include_bytes!("../../../assets/hsr_base/underground.png")).unwrap()
 });
-const UNIVERSE: Lazy<DynamicImage> = Lazy::new(|| {
+static UNIVERSE: Lazy<DynamicImage> = Lazy::new(|| {
     load_from_memory(include_bytes!("../../../assets/hsr_base/universe.png")).unwrap()
 });
 
 pub fn get_base_image(img: BaseImage) -> DynamicImage {
     let effect = HSR_EFFECT.clone();
     let on = match img {
-        BaseImage::Belobog => BELOBOG,
-        BaseImage::Everwinter => EVERWINTER,
-        BaseImage::FuXuan => FU_XUAN,
-        BaseImage::Jar => JAR,
-        BaseImage::Seal => SEAL,
-        BaseImage::Slide => SLIDE,
-        BaseImage::Svarog => SVAROG,
-        BaseImage::Train => TRAIN,
-        BaseImage::Tree => TREE,
-        BaseImage::Underground => UNDERGROUND,
-        BaseImage::Universe => UNIVERSE,
-    }
-    .clone();
+        BaseImage::Belobog => BELOBOG.clone(),
+        BaseImage::Everwinter => EVERWINTER.clone(),
+        BaseImage::FuXuan => FU_XUAN.clone(),
+        BaseImage::Jar => JAR.clone(),
+        BaseImage::Seal => SEAL.clone(),
+        BaseImage::Slide => SLIDE.clone(),
+        BaseImage::Svarog => SVAROG.clone(),
+        BaseImage::Train => TRAIN.clone(),
+        BaseImage::Tree => TREE.clone(),
+        BaseImage::Underground => UNDERGROUND.clone(),
+        BaseImage::Universe => UNIVERSE.clone(),
+    };
     let mut on = on.blur(5.0);
     overlay(&mut on, &effect, 0, 0);
     on
