@@ -12,10 +12,10 @@ impl Cache {
     }
     pub fn update(&mut self, uid: i32, k: String, v: String) {
         self.inner.entry(uid).or_insert_with(|| CacheValue {
-                    format: "png".to_string(),
-                    score: None,
-                    character: None,
-                });
+            format: "png".to_string(),
+            score: None,
+            character: None,
+        });
         if let Some(value) = self.inner.get_mut(&uid) {
             match k.as_str() {
                 "format" => value.format = v,
@@ -55,11 +55,11 @@ impl HsrCache {
     }
     pub fn update(&mut self, uid: i32, k: String, v: String) {
         self.inner.entry(uid).or_insert_with(|| HsrCacheValue {
-                    format: "png".to_string(),
-                    score: None,
-                    character: None,
-                    base_img: None,
-                });
+            format: "png".to_string(),
+            score: None,
+            character: None,
+            base_img: None,
+        });
         if let Some(value) = self.inner.get_mut(&uid) {
             match k.as_str() {
                 "hsr_format" => value.format = v,

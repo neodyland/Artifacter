@@ -526,5 +526,19 @@
     "filename_sideIcon": "UI_AvatarIcon_Side_Charlotte",
     "filename_gachaSplash": "UI_Gacha_AvatarImg_Charlotte",
     "filename_gachaSlice": "UI_Gacha_AvatarIcon_Charlotte"
+  },
+  "navia": {
+    "filename_icon": "UI_AvatarIcon_Navia",
+    "filename_iconCard": "UI_AvatarIcon_Navia_Card",
+    "filename_sideIcon": "UI_AvatarIcon_Side_Navia",
+    "filename_gachaSplash": "UI_Gacha_AvatarImg_Navia",
+    "filename_gachaSlice": "UI_Gacha_AvatarIcon_Navia"
+  },
+  "chevreuse": {
+    "filename_icon": "UI_AvatarIcon_Chevreuse",
+    "filename_iconCard": "UI_AvatarIcon_Chevreuse_Card",
+    "filename_sideIcon": "UI_AvatarIcon_Side_Chevreuse",
+    "filename_gachaSplash": "UI_Gacha_AvatarImg_Chevreuse",
+    "filename_gachaSlice": "UI_Gacha_AvatarIcon_Chevreuse"
   }
 }
