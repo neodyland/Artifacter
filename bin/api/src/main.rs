@@ -34,6 +34,12 @@ pub struct AppState {
     pub icons: Arc<IconData>,
 }
 
+impl Default for AppState {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+
 impl AppState {
     pub fn new() -> Self {
         let api = Api::new();
@@ -47,6 +53,12 @@ impl AppState {
 #[derive(Clone)]
 pub struct HsrAppState {
     pub api: Arc<MihoyoApi>,
+}
+
+impl Default for HsrAppState {
+    fn default() -> Self {
+        Self::new()
+    }
 }
 
 impl HsrAppState {
@@ -90,17 +102,12 @@ async fn main() {
 }
 
 fn trim_image(img: Option<DynamicImage>, format: &str) -> Option<String> {
-    if img.is_none() {
-        return None;
-    }
+    img.as_ref()?;
     let img = match ImageFormat::from_str(format) {
         Ok(f) => convert(img.unwrap(), f),
         Err(_) => None,
     };
-    match img {
-        Some(img) => Some(general_purpose::STANDARD_NO_PAD.encode(img.as_slice())),
-        None => None,
-    }
+    img.map(|img| general_purpose::STANDARD_NO_PAD.encode(img.as_slice()))
 }
 
 async fn profile(Query(q): Query<ProfileQuery>, State(s): State<AppState>) -> impl IntoResponse {

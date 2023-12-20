@@ -101,7 +101,7 @@ pub fn hsr_profile_components(
     } else {
         None
     };
-    return (embed, components, attachment);
+    (embed, components, attachment)
 }
 
 pub fn create_components(

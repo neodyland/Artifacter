@@ -48,7 +48,7 @@ impl Api {
         if let Some(lang) = lang {
             params.push(("lang".to_string(), lang));
         }
-        let (res, _h) = self.request(format!("profile"), params).await?;
+        let (res, _h) = self.request("profile".to_string(), params).await?;
         let user = serde_json::from_slice(&res)?;
         Ok(user)
     }
@@ -61,7 +61,7 @@ impl Api {
         if let Some(lang) = lang {
             params.push(("lang".to_string(), lang));
         }
-        let (res, _h) = self.request(format!("hsr/profile"), params).await?;
+        let (res, _h) = self.request("hsr/profile".to_string(), params).await?;
         let user = serde_json::from_slice(&res)?;
         Ok(user)
     }

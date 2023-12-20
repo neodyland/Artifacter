@@ -14,7 +14,7 @@ async fn main() {
     let character = user
         .characters
         .iter()
-        .find(|x| x.id == "1213".to_string())
+        .find(|x| x.id == *"1213")
         .unwrap();
     let base_image = get_base_image(BaseImage::Belobog);
     if let Some(img) = generate(
