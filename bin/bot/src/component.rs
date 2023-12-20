@@ -48,7 +48,7 @@ pub async fn generate_components(
                     "{}{}",
                     get_score_calc(locale.clone(), score.as_str()),
                     if user.from_cache {
-                        t!(locale, "main:general.isCached")
+                        format!("\n{}",t!(locale, "main:general.isCached"))
                     } else {
                         "".to_string()
                     }
