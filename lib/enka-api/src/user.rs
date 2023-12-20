@@ -90,7 +90,7 @@ impl ApiUser {
         &self.profile
     }
     pub fn characters(&self) -> Vec<Character> {
-        self.characters.values().map(|x| x.clone()).collect()
+        self.characters.values().cloned().collect()
     }
     pub fn character(&self, id: CharacterId) -> Option<&Character> {
         self.characters.get(&id)

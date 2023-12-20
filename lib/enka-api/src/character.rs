@@ -150,10 +150,7 @@ pub(crate) fn parse_character(api: &Api, player_character: &Value) -> Option<Cha
             let mut skill_map = HashMap::with_capacity(4);
             for (id, level) in skill_level_map {
                 let image = match skill_image.get(id) {
-                    Some(v) => match v.as_str() {
-                        Some(str) => Some(str.to_owned()),
-                        None => None,
-                    },
+                    Some(v) => v.as_str().map(|str| str.to_owned()),
                     None => None,
                 };
                 let extra_level = match characters.get("ProudMap") {

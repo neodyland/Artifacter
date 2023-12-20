@@ -113,5 +113,5 @@ fn trim(s: f64) -> String {
     if s.fract() != 0.0 {
         return s.to_string();
     }
-    format!("{}.0", s.to_string())
+    format!("{}.0", s)
 }

@@ -290,7 +290,7 @@ pub async fn generate(
         }
         let artifact = artifact.unwrap();
         let gray = image::Rgba([240, 240, 240, 200]);
-        if let Some(o) = dupe::resolve_op(&artifact) {
+        if let Some(o) = dupe::resolve_op(artifact) {
             let mut sub_y = 785;
             let o = o
                 .iter()
@@ -327,7 +327,7 @@ pub async fn generate(
                 );
             }
         };
-        let (score, used) = get_score(&artifact, &counter);
+        let (score, used) = get_score(artifact, &counter);
         artifact_scores += score;
         let rank_img = constants::get_grade_image(score, Some(artifact.position))?;
         overlay(&mut image, &rank_img, artifact_x + 50, 1015);
@@ -788,9 +788,7 @@ fn draw_text_resized(
 ) {
     let width = font
         .layout(text, scale, rusttype::Point { x: 0.0, y: 0.0 })
-        .map(|g| g.pixel_bounding_box())
-        .filter(|g| g.is_some())
-        .map(|g| g.unwrap())
+        .filter_map(|g| g.pixel_bounding_box())
         .fold(0, |acc, g| acc + g.width());
     if width > max_width as i32 {
         let scale = Scale::uniform(scale.x * (max_width as f32 / width as f32));

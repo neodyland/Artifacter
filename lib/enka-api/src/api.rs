@@ -16,6 +16,12 @@ pub struct Api {
 
 const USER_AGENT: &str = "EnkaApi/0.1.0 (+https://artifacter.neody.land/)";
 
+impl Default for Api {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+
 impl Api {
     pub fn new() -> Self {
         Self {

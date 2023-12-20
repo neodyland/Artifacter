@@ -199,7 +199,7 @@ pub async fn generate(
             );
         }
         // relic score
-        let relic_score = get_score(&relic, &counter);
+        let relic_score = get_score(relic, counter);
         total_score += relic_score;
         let score = format!("{:.1}", relic_score);
         let img = get_score_image(relic_score, Some(index))?;
@@ -319,15 +319,15 @@ pub async fn convert(image: DynamicImage, format: ImageFormat) -> Option<Vec<u8>
 fn resolve_stats(character: &Character) -> Option<Vec<Attribute>> {
     let mut attr = character.attributes.iter().clone();
     let additional = character.additions.iter().clone();
-    let mut hp = attr.find(|attr| attr.field == "hp".to_string())?.clone();
-    let mut atk = attr.find(|attr| attr.field == "atk".to_string())?.clone();
-    let mut def = attr.find(|attr| attr.field == "def".to_string())?.clone();
-    let mut speed = attr.find(|attr| attr.field == "spd".to_string())?.clone();
+    let mut hp = attr.find(|attr| attr.field == *"hp")?.clone();
+    let mut atk = attr.find(|attr| attr.field == *"atk")?.clone();
+    let mut def = attr.find(|attr| attr.field == *"def")?.clone();
+    let mut speed = attr.find(|attr| attr.field == *"spd")?.clone();
     let mut crit_rate = attr
-        .find(|attr| attr.field == "crit_rate".to_string())?
+        .find(|attr| attr.field == *"crit_rate")?
         .clone();
     let mut crit_dmg = attr
-        .find(|attr| attr.field == "crit_dmg".to_string())?
+        .find(|attr| attr.field == *"crit_dmg")?
         .clone();
     for add in additional.clone() {
         match add.field.as_str() {
@@ -352,7 +352,7 @@ fn resolve_stats(character: &Character) -> Option<Vec<Attribute>> {
             .map(|a| {
                 let mut a = a.clone();
                 a.display = if a.percent {
-                    a.value = a.value * 100.0;
+                    a.value *= 100.0;
                     format!("{:.2}%", a.value)
                 } else {
                     format!("{}", (a.value.round() as i64))
@@ -423,10 +423,8 @@ fn draw_text_resized(
 ) {
     let width = font
         .layout(text, scale, rusttype::Point { x: 0.0, y: 0.0 })
-        .map(|g| g.pixel_bounding_box())
-        .filter(|g| g.is_some())
-        .map(|g| g.unwrap())
-        .fold(0, |acc, g| acc + g.width() as i32);
+        .filter_map(|g| g.pixel_bounding_box())
+        .fold(0, |acc, g| acc + g.width());
     if width > max_width as i32 {
         let scale = Scale::uniform(scale.x * (max_width as f32 / width as f32));
         draw_text_mut(canvas, color, x, y, scale, font, text);

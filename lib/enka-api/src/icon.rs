@@ -161,13 +161,13 @@ impl IconData {
     pub fn image(&self, path: impl AsRef<str>, zoom: f32) -> Option<RgbaImage> {
         let bytes = self.svg(path)?;
         let ops = usvg::Options::default();
-        let tree = usvg::Tree::from_data(&bytes, &ops).ok()?;
+        let tree = usvg::Tree::from_data(bytes, &ops).ok()?;
         let size = tree.size;
         let fit = FitTo::Zoom(zoom);
         let tf = Transform::identity();
         let width = size.width() * zoom as f64;
         let height = size.height() * zoom as f64;
-        let mut rgba8 = vec![0; (width as usize * height as usize * 4) as usize];
+        let mut rgba8 = vec![0; width as usize * height as usize * 4];
         let pxmap = PixmapMut::from_bytes(&mut rgba8, width as u32, height as u32)?;
         resvg::render(&tree, fit, tf, pxmap);
         let img: RgbaImage = ImageBuffer::from_raw(width as u32, height as u32, rgba8)?;
