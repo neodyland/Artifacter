@@ -791,7 +791,7 @@ fn draw_text_resized(
         .map(|g| g.pixel_bounding_box())
         .filter(|g| g.is_some())
         .map(|g| g.unwrap())
-        .fold(0, |acc, g| acc + g.width() as i32);
+        .fold(0, |acc, g| acc + g.width());
     if width > max_width as i32 {
         let scale = Scale::uniform(scale.x * (max_width as f32 / width as f32));
         draw_text_mut(canvas, color, x, y, scale, font, text);

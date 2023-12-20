@@ -49,7 +49,7 @@ pub async fn hsr_generate_components(
                     "{}{}",
                     get_hsr_score_calc(locale.clone(), score.as_str()),
                     if user.from_cache {
-                        format!("\n{}",t!(locale, "main:general.isCached"))
+                        format!("\n{}", t!(locale, "main:general.isCached"))
                     } else {
                         "".to_string()
                     }
@@ -175,7 +175,7 @@ pub fn create_components(
     let button = CreateActionRow::Buttons(vec![
         CreateButton::new_link(format!("https://enka.network/hsr/{}", uid)).label("Enka Network"),
         CreateButton::new_link(format!(
-            "https://ag.neody.land/generate?uid={}&game=hsr",
+            "https://artifacter.neody.land/ja-JP/hsr/generate?uid={}",
             uid
         ))
         .label(t!(locale, "main:general.webapp")),
