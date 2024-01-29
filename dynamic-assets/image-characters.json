@@ -540,5 +540,19 @@
     "filename_sideIcon": "UI_AvatarIcon_Side_Chevreuse",
     "filename_gachaSplash": "UI_Gacha_AvatarImg_Chevreuse",
     "filename_gachaSlice": "UI_Gacha_AvatarIcon_Chevreuse"
+  },
+  "xian­yun": {
+    "filename_icon": "UI_AvatarIcon_Xian­yun",
+    "filename_iconCard": "UI_AvatarIcon_Xian­yun_Card",
+    "filename_sideIcon": "UI_AvatarIcon_Side_Xian­yun",
+    "filename_gachaSplash": "UI_Gacha_AvatarImg_Xian­yun",
+    "filename_gachaSlice": "UI_Gacha_AvatarIcon_Xian­yun"
+  },
+  "gaming": {
+    "filename_icon": "UI_AvatarIcon_Gaming",
+    "filename_iconCard": "UI_AvatarIcon_Gaming_Card",
+    "filename_sideIcon": "UI_AvatarIcon_Side_Gaming",
+    "filename_gachaSplash": "UI_Gacha_AvatarImg_Gaming",
+    "filename_gachaSlice": "UI_Gacha_AvatarIcon_Gaming"
   }
 }
