@@ -578,15 +578,13 @@ pub async fn generate(
         .map(|x| x.set_name(api, lang))
         .collect::<Vec<Option<&str>>>();
     let mut set = HashMap::<String, u32>::new();
-    for s in sets {
-        if let Some(s) = s {
+    for s in sets.into_iter().flatten() {
             if set.contains_key(s) {
                 let count = set.get(s).unwrap();
                 set.insert(s.to_string(), count + 1);
             } else {
                 set.insert(s.to_string(), 1);
             }
-        }
     }
     let mut largest_set_key = 0;
     let mut largest_set: Option<(&String, &u32)> = None;
@@ -695,9 +693,7 @@ pub fn convert(image: DynamicImage, format: ImageFormat) -> Option<Vec<u8>> {
 }
 
 pub fn is_percent(stat: &Stats) -> bool {
-    match stat {
-        Stats::Critical
-        | Stats::AttackPercent
+    matches!(stat,Stats::Critical| Stats::AttackPercent
         | Stats::ChargeEfficiency
         | Stats::CriticalHurt
         | Stats::DefensePercent
@@ -709,9 +705,7 @@ pub fn is_percent(stat: &Stats) -> bool {
         | Stats::ElementAddHurt(Element::Wind)
         | Stats::ElementAddHurt(Element::Rock)
         | Stats::Heal
-        | Stats::HpPercent => true,
-        _ => false,
-    }
+        | Stats::HpPercent)
 }
 
 fn round_to_1_decimal_places(x: f64) -> String {

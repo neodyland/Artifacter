@@ -6,8 +6,8 @@ use crate::constants::{DUPE, SUBOP};
 use enka_api::character::{Reliquary, Stats};
 use once_cell::sync::Lazy;
 
-const DUPE_LIST: Lazy<Dupe> = Lazy::new(|| serde_json::from_str(DUPE).unwrap());
-const SUBOP_LIST: Lazy<Subop> = Lazy::new(|| serde_json::from_str(SUBOP).unwrap());
+static DUPE_LIST: Lazy<Dupe> = Lazy::new(|| serde_json::from_str(DUPE).unwrap());
+static SUBOP_LIST: Lazy<Subop> = Lazy::new(|| serde_json::from_str(SUBOP).unwrap());
 
 #[derive(Deserialize)]
 pub struct Dupe {
@@ -82,9 +82,9 @@ pub fn resolve_op(art: &Reliquary) -> Option<Vec<Vec<f64>>> {
         if let Some(sub) = sub {
             let trim = trim(sub.1);
             let not_trim = sub.1.to_string();
-            let dupe_list = &DUPE_LIST.get(&sub.0)?;
+            let dupe_list = DUPE_LIST.get(&sub.0)?;
             let dupe = dupe_list.get(&trim).or(dupe_list.get(&not_trim));
-            let subop_list = &SUBOP_LIST.get(&sub.0)?;
+            let subop_list = SUBOP_LIST.get(&sub.0)?;
             let mut subop = subop_list.get(&trim).or(subop_list.get(&not_trim))?;
             if let Some(dupe) = dupe {
                 dupes[index] = dupe.clone();

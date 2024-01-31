@@ -15,7 +15,7 @@ use crate::{
 
 use super::Framework;
 
-pub fn message(embeds: &Vec<Embed>) -> Option<i32> {
+pub fn message(embeds: &[Embed]) -> Option<i32> {
     if let Some(embed) = embeds.first() {
         if let Some(footer) = &embed.footer {
             if let Ok(f) = footer.text.parse::<i32>() {

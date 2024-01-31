@@ -23,10 +23,8 @@ pub async fn build(
     let data = ctx.data();
     let mut uid = uid.map(|u| u.to_string());
     if uid.is_none() {
-        if let Ok(db_uid) = find_genshin(&data.db, ctx.author().id.get()).await {
-            if let Some(db_uid) = db_uid {
+        if let Ok(Some(db_uid)) = find_genshin(&data.db, ctx.author().id.get()).await {
                 uid = Some(db_uid);
-            }
         }
         if uid.is_none() {
             ctx.send(CreateReply::new().content(t!(locale, "main:general.noUserId")))

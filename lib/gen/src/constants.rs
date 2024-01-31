@@ -7,24 +7,24 @@ use image::{imageops::FilterType, DynamicImage};
 use once_cell::sync::Lazy;
 use rusttype::Font;
 
-pub const FONT: Lazy<Font> =
+pub static FONT: Lazy<Font> =
     Lazy::new(|| Font::try_from_bytes(include_bytes!("../../../assets/font.ttf")).unwrap());
-const BASE_ELECTRIC: Lazy<DynamicImage> =
+static BASE_ELECTRIC: Lazy<DynamicImage> =
     Lazy::new(|| load_from_memory(include_bytes!("../../../assets/base/electric.png")).unwrap());
-const BASE_FIRE: Lazy<DynamicImage> =
+static BASE_FIRE: Lazy<DynamicImage> =
     Lazy::new(|| load_from_memory(include_bytes!("../../../assets/base/fire.png")).unwrap());
-const BASE_GRASS: Lazy<DynamicImage> =
+static BASE_GRASS: Lazy<DynamicImage> =
     Lazy::new(|| load_from_memory(include_bytes!("../../../assets/base/grass.png")).unwrap());
-const BASE_WATER: Lazy<DynamicImage> =
+static BASE_WATER: Lazy<DynamicImage> =
     Lazy::new(|| load_from_memory(include_bytes!("../../../assets/base/water.png")).unwrap());
-const BASE_ICE: Lazy<DynamicImage> =
+static BASE_ICE: Lazy<DynamicImage> =
     Lazy::new(|| load_from_memory(include_bytes!("../../../assets/base/ice.png")).unwrap());
-const BASE_ROCK: Lazy<DynamicImage> =
+static BASE_ROCK: Lazy<DynamicImage> =
     Lazy::new(|| load_from_memory(include_bytes!("../../../assets/base/rock.png")).unwrap());
-const BASE_WIND: Lazy<DynamicImage> =
+static BASE_WIND: Lazy<DynamicImage> =
     Lazy::new(|| load_from_memory(include_bytes!("../../../assets/base/wind.png")).unwrap());
-pub const DUPE: &str = include_str!("../../../assets/dupe.json");
-pub const SUBOP: &str = include_str!("../../../assets/subop.json");
+pub static DUPE: &str = include_str!("../../../assets/dupe.json");
+pub static SUBOP: &str = include_str!("../../../assets/subop.json");
 pub fn get_base_image(kind: &Element) -> Option<DynamicImage> {
     match kind {
         Element::Electric => Some(BASE_ELECTRIC.clone()),
@@ -76,38 +76,38 @@ pub fn get_scores_for_part(part: Option<ReliquaryType>) -> Scores {
         },
     }
 }
-const ELECTRIC: Lazy<DynamicImage> =
+static ELECTRIC: Lazy<DynamicImage> =
     Lazy::new(|| load_from_memory(include_bytes!("../../../assets/clock/electric.png")).unwrap());
-const ELECTRIC_LOCKED: Lazy<DynamicImage> = Lazy::new(|| {
+static ELECTRIC_LOCKED: Lazy<DynamicImage> = Lazy::new(|| {
     load_from_memory(include_bytes!("../../../assets/clock/electric_locked.png")).unwrap()
 });
-const FIRE: Lazy<DynamicImage> =
+static FIRE: Lazy<DynamicImage> =
     Lazy::new(|| load_from_memory(include_bytes!("../../../assets/clock/fire.png")).unwrap());
-const FIRE_LOCKED: Lazy<DynamicImage> = Lazy::new(|| {
+static FIRE_LOCKED: Lazy<DynamicImage> = Lazy::new(|| {
     load_from_memory(include_bytes!("../../../assets/clock/fire_locked.png")).unwrap()
 });
-const GRASS: Lazy<DynamicImage> =
+static GRASS: Lazy<DynamicImage> =
     Lazy::new(|| load_from_memory(include_bytes!("../../../assets/clock/grass.png")).unwrap());
-const GRASS_LOCKED: Lazy<DynamicImage> = Lazy::new(|| {
+static GRASS_LOCKED: Lazy<DynamicImage> = Lazy::new(|| {
     load_from_memory(include_bytes!("../../../assets/clock/grass_locked.png")).unwrap()
 });
-const ICE: Lazy<DynamicImage> =
+static ICE: Lazy<DynamicImage> =
     Lazy::new(|| load_from_memory(include_bytes!("../../../assets/clock/ice.png")).unwrap());
-const ICE_LOCKED: Lazy<DynamicImage> =
+static ICE_LOCKED: Lazy<DynamicImage> =
     Lazy::new(|| load_from_memory(include_bytes!("../../../assets/clock/ice_locked.png")).unwrap());
-const ROCK: Lazy<DynamicImage> =
+static ROCK: Lazy<DynamicImage> =
     Lazy::new(|| load_from_memory(include_bytes!("../../../assets/clock/rock.png")).unwrap());
-const ROCK_LOCKED: Lazy<DynamicImage> = Lazy::new(|| {
+static ROCK_LOCKED: Lazy<DynamicImage> = Lazy::new(|| {
     load_from_memory(include_bytes!("../../../assets/clock/rock_locked.png")).unwrap()
 });
-const WATER: Lazy<DynamicImage> =
+static WATER: Lazy<DynamicImage> =
     Lazy::new(|| load_from_memory(include_bytes!("../../../assets/clock/water.png")).unwrap());
-const WATER_LOCKED: Lazy<DynamicImage> = Lazy::new(|| {
+static WATER_LOCKED: Lazy<DynamicImage> = Lazy::new(|| {
     load_from_memory(include_bytes!("../../../assets/clock/water_locked.png")).unwrap()
 });
-const WIND: Lazy<DynamicImage> =
+static WIND: Lazy<DynamicImage> =
     Lazy::new(|| load_from_memory(include_bytes!("../../../assets/clock/wind.png")).unwrap());
-const WIND_LOCKED: Lazy<DynamicImage> = Lazy::new(|| {
+static WIND_LOCKED: Lazy<DynamicImage> = Lazy::new(|| {
     load_from_memory(include_bytes!("../../../assets/clock/wind_locked.png")).unwrap()
 });
 
