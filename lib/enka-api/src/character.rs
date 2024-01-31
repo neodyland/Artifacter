@@ -483,7 +483,6 @@ fn parse_equip_list(list: &Vec<Value>) -> (Option<Weapon>, Vec<Reliquary>) {
     for entry in list {
         if entry.get("reliquary").is_some() {
             if let Some(r) = parse_equip_reliquary(entry) {
-                println!("{:?}", r);
                 reliquarys.push(r);
             }
         } else if entry.get("weapon").is_some() {

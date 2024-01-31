@@ -9,7 +9,7 @@ use constants::get_rarity_image;
 use enka_api::{
     api::Api,
     character::Reliquary,
-    character::{Character, CharacterId},
+    character::Character,
     character::{ReliquaryType, Stats, StatsValue},
     element::Element,
     icon::IconData,
@@ -182,13 +182,22 @@ pub async fn generate(
     let font = FONT;
     let mut image = constants::get_base_image(&data.element)?;
     let character_image = data.image_gacha_splash(api).await?;
-    if is_not_mains(data.id) {
-        let character_image = character_image.resize_exact(1200, 600, Nearest);
-        imageops::overlay(&mut image, &character_image, -225, 50);
-    } else {
-        let character_image = character_image.resize_exact(600, 600, Nearest);
-        imageops::overlay(&mut image, &character_image, 150, 50);
-    }
+    match data.id.0 {
+        // liuyun
+        10000093 => {
+            let character_image = character_image.resize_exact(800, 600, Nearest);
+            imageops::overlay(&mut image, &character_image, 0, 50);
+        }
+        // gaming, main characters
+        10000092 | 10000005 | 10000007 => {
+            let character_image = character_image.resize_exact(600, 600, Nearest);
+            imageops::overlay(&mut image, &character_image, 150, 50);
+        }
+        _ => {
+            let character_image = character_image.resize_exact(1200, 600, Nearest);
+            imageops::overlay(&mut image, &character_image, -225, 50);
+        }
+    };
     let character_name = data.name(api, lang).ok()?;
     let character_level = format!("Lv.{},{}", data.level, data.friendship());
     let white = image::Rgba([255, 255, 255, 255]);
@@ -770,10 +779,6 @@ pub fn mini_score(data: [Option<StatsValue>; 4], counter: &ScoreCounter) -> (f64
 
 pub fn get_score(data: &Reliquary, counter: &ScoreCounter) -> (f64, Vec<String>) {
     mini_score(data.sub_stats, counter)
-}
-
-fn is_not_mains(name: CharacterId) -> bool {
-    name.0 != 10000005 && name.0 != 10000007
 }
 
 fn draw_text_resized(

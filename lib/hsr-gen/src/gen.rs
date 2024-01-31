@@ -323,12 +323,8 @@ fn resolve_stats(character: &Character) -> Option<Vec<Attribute>> {
     let mut atk = attr.find(|attr| attr.field == *"atk")?.clone();
     let mut def = attr.find(|attr| attr.field == *"def")?.clone();
     let mut speed = attr.find(|attr| attr.field == *"spd")?.clone();
-    let mut crit_rate = attr
-        .find(|attr| attr.field == *"crit_rate")?
-        .clone();
-    let mut crit_dmg = attr
-        .find(|attr| attr.field == *"crit_dmg")?
-        .clone();
+    let mut crit_rate = attr.find(|attr| attr.field == *"crit_rate")?.clone();
+    let mut crit_dmg = attr.find(|attr| attr.field == *"crit_dmg")?.clone();
     for add in additional.clone() {
         match add.field.as_str() {
             "hp" => hp.value += add.value,

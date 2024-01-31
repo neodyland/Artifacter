@@ -85,11 +85,13 @@ pub fn resolve_op(art: &Reliquary) -> Option<Vec<Vec<f64>>> {
             let dupe_list = &DUPE_LIST.get(&sub.0)?;
             let dupe = dupe_list.get(&trim).or(dupe_list.get(&not_trim));
             let subop_list = &SUBOP_LIST.get(&sub.0)?;
-            let subop = subop_list.get(&trim).or(subop_list.get(&not_trim))?;
-            subops[index] = subop.clone();
+            let mut subop = subop_list.get(&trim).or(subop_list.get(&not_trim))?;
             if let Some(dupe) = dupe {
                 dupes[index] = dupe.clone();
+                let dupe = dupe.iter().min_by_key(|d| d.len())?;
+                subop = dupe;
             }
+            subops[index] = subop.clone();
             max_count -= subop.len();
         }
     }
