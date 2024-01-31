@@ -126,13 +126,11 @@ pub(crate) fn parse_character(api: &Api, player_character: &Value) -> Option<Cha
                     None => 0,
                 }
             };
-            let mut index = 0;
-            for name in consts {
+            for (index, name) in consts.iter().enumerate() {
                 let talent = CharacterTalent {
                     image: name.as_str()?.to_owned(),
                     unlock: index < talent_count,
                 };
-                index += 1;
                 talents.push(talent);
             }
         }
@@ -197,7 +195,7 @@ pub(crate) fn parse_character(api: &Api, player_character: &Value) -> Option<Cha
     if let Some(costumes_list) = characters.get("Costumes") {
         if let Some(costumes_list) = costumes_list.as_object() {
             for (id, costume_json) in costumes_list {
-                fn load_costume(id: &String, useing: bool, json: &Value) -> Option<Costume> {
+                fn load_costume(id: &str, useing: bool, json: &Value) -> Option<Costume> {
                     fn str_or(json: &Value, key: &str) -> Option<String> {
                         Some(json.get(key)?.as_str()?.to_owned())
                     }
@@ -507,10 +505,8 @@ fn parse_equip_reliquary(entry: &Value) -> Option<Reliquary> {
     let mut sub_stats = [None, None, None, None];
     if let Some(reliquary_substats) = reliquary_substats {
         if let Some(reliquary_substats) = reliquary_substats.as_array() {
-            let mut index = 0;
-            for v in reliquary_substats {
+            for (index, v) in reliquary_substats.iter().enumerate() {
                 sub_stats[index] = parse_reliquary_stat(v, "appendPropId");
-                index += 1;
             }
         }
     }
