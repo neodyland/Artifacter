@@ -54,7 +54,7 @@ impl ApiUser {
     pub fn reload_time(&self) -> SystemTime {
         self.lastupdate + Duration::new(30, 0)
     }
-    pub fn from_raw(buf: &Vec<u8>, uid: i32, modtime: SystemTime) -> Option<Self> {
+    pub fn from_raw(buf: &[u8], uid: i32, modtime: SystemTime) -> Option<Self> {
         let value: Value = serde_json::from_slice(buf).ok()?;
         let value = value.as_object()?;
         let profile = value.get("player")?.as_object()?;

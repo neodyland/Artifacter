@@ -8,8 +8,8 @@ use std::{
 use constants::get_rarity_image;
 use enka_api::{
     api::Api,
-    character::Reliquary,
     character::Character,
+    character::Reliquary,
     character::{ReliquaryType, Stats, StatsValue},
     element::Element,
     icon::IconData,
@@ -349,7 +349,7 @@ pub async fn generate(
             artifact_x as i32 - score_width + 350,
             1015,
             scale,
-            &font,
+            font,
             &score,
         );
         let img = artifact.image_icon(api).await.ok()?;
@@ -375,25 +375,25 @@ pub async fn generate(
             p.0 = [255, 255, 255, p.0[3]];
         }
         let scale = Scale::uniform(30.0);
-        let main_type_width = text_size(scale, &font, main_type).0;
+        let main_type_width = text_size(scale, font, main_type).0;
         draw_text_mut(
             &mut image,
             white,
             artifact_x as i32 + 340 - main_type_width,
             660,
             scale,
-            &font,
+            font,
             main_type,
         );
         let scale = Scale::uniform(60.0);
-        let main_value_width = text_size(scale, &font, &main_value).0;
+        let main_value_width = text_size(scale, font, &main_value).0;
         draw_text_mut(
             &mut image,
             white,
             artifact_x as i32 + 340 - main_value_width,
             690,
             scale,
-            &font,
+            font,
             &main_value,
         );
         overlay(
@@ -404,14 +404,14 @@ pub async fn generate(
         );
         let level = format!("+{}", artifact.level);
         let scale = Scale::uniform(25.0);
-        let level_width = text_size(scale, &font, &level).0;
+        let level_width = text_size(scale, font, &level).0;
         draw_text_mut(
             &mut image,
             white,
             artifact_x as i32 + 340 - level_width,
             750,
             scale,
-            &font,
+            font,
             &level,
         );
         let mut sub_y = 810;
@@ -438,7 +438,7 @@ pub async fn generate(
                 p.0 = [255, 255, 255, p.0[3]];
             }
             let scale = Scale::uniform(30.0);
-            let sub_type_width = text_size(scale, &font, sub_type).0;
+            let sub_type_width = text_size(scale, font, sub_type).0;
             if sub_type_width <= 200 {
                 draw_text_mut(
                     &mut image,
@@ -446,7 +446,7 @@ pub async fn generate(
                     artifact_x as i32 + 60,
                     sub_y,
                     scale,
-                    &font,
+                    font,
                     sub_type,
                 );
             } else {
@@ -456,18 +456,18 @@ pub async fn generate(
                     artifact_x as i32 + 60,
                     sub_y + 7,
                     Scale::uniform(20.0),
-                    &font,
+                    font,
                     sub_type,
                 );
             }
-            let sub_value_width = text_size(scale, &font, &sub_value).0;
+            let sub_value_width = text_size(scale, font, &sub_value).0;
             draw_text_mut(
                 &mut image,
                 color,
                 artifact_x as i32 + 340 - sub_value_width,
                 sub_y,
                 scale,
-                &font,
+                font,
                 &sub_value,
             );
             overlay(&mut image, &sub_image, artifact_x + 20, sub_y.into());
@@ -484,17 +484,17 @@ pub async fn generate(
     .get(raw_lang)
     .to_string();
     let scale = Scale::uniform(30.0);
-    draw_text_mut(&mut image, white, 1440, 350, scale, &font, &total_score);
+    draw_text_mut(&mut image, white, 1440, 350, scale, font, &total_score);
     let text = round_to_1_decimal_places(artifact_scores).to_string();
     let scale = Scale::uniform(90.0);
-    let (text_w, text_h) = text_size(scale, &font, &text);
+    let (text_w, text_h) = text_size(scale, font, &text);
     draw_text_mut(
         &mut image,
         white,
         1630 - text_w / 2,
         450 - text_h / 2,
         scale,
-        &font,
+        font,
         &text,
     );
 
@@ -555,17 +555,17 @@ pub async fn generate(
     ];
     let scale = Scale::uniform(35.0);
     for (status, code) in statuslist {
-        let status_width = text_size(scale, &font, &status).0;
+        let status_width = text_size(scale, font, &status).0;
         draw_text_mut(
             &mut image,
             white,
             1350 - status_width,
             status_y,
             scale,
-            &font,
+            font,
             &status,
         );
-        draw_text_mut(&mut image, white, 845, status_y, scale, &font, code);
+        draw_text_mut(&mut image, white, 845, status_y, scale, font, code);
         status_y += 70;
     }
     status_y -= 70;
@@ -579,12 +579,12 @@ pub async fn generate(
         .collect::<Vec<Option<&str>>>();
     let mut set = HashMap::<String, u32>::new();
     for s in sets.into_iter().flatten() {
-            if set.contains_key(s) {
-                let count = set.get(s).unwrap();
-                set.insert(s.to_string(), count + 1);
-            } else {
-                set.insert(s.to_string(), 1);
-            }
+        if set.contains_key(s) {
+            let count = set.get(s).unwrap();
+            set.insert(s.to_string(), count + 1);
+        } else {
+            set.insert(s.to_string(), 1);
+        }
     }
     let mut largest_set_key = 0;
     let mut largest_set: Option<(&String, &u32)> = None;
@@ -629,7 +629,7 @@ pub async fn generate(
             1820,
             240,
             scale,
-            &font,
+            font,
             &format!("{}", set_count),
         );
         draw_text_mut(
@@ -638,17 +638,17 @@ pub async fn generate(
             1820,
             285,
             scale,
-            &font,
+            font,
             &format!("{}", second_set_count),
         );
-        draw_text_resized(&mut image, white, 1520, 240, scale, &font, &set_name, 250);
+        draw_text_resized(&mut image, white, 1520, 240, scale, font, &set_name, 250);
         draw_text_resized(
             &mut image,
             white,
             1520,
             285,
             scale,
-            &font,
+            font,
             &second_set_name,
             250,
         );
@@ -659,7 +659,7 @@ pub async fn generate(
             1520,
             260,
             scale,
-            &font,
+            font,
             &set_name,
             250,
         );
@@ -669,15 +669,15 @@ pub async fn generate(
             1820,
             260,
             scale,
-            &font,
+            font,
             &format!("{}", set_count),
         );
     }
 
     let kind = counter.to_string_locale(lang);
     let scale = Scale::uniform(35.0);
-    let (kind_w, _) = text_size(scale, &font, &kind);
-    draw_text_mut(&mut image, white, 1870 - kind_w, 580, scale, &font, &kind);
+    let (kind_w, _) = text_size(scale, font, &kind);
+    draw_text_mut(&mut image, white, 1870 - kind_w, 580, scale, font, &kind);
     convert(image, format)
 }
 
@@ -693,19 +693,23 @@ pub fn convert(image: DynamicImage, format: ImageFormat) -> Option<Vec<u8>> {
 }
 
 pub fn is_percent(stat: &Stats) -> bool {
-    matches!(stat,Stats::Critical| Stats::AttackPercent
-        | Stats::ChargeEfficiency
-        | Stats::CriticalHurt
-        | Stats::DefensePercent
-        | Stats::ElementAddHurt(Element::Electric)
-        | Stats::ElementAddHurt(Element::Fire)
-        | Stats::ElementAddHurt(Element::Ice)
-        | Stats::ElementAddHurt(Element::Grass)
-        | Stats::ElementAddHurt(Element::Water)
-        | Stats::ElementAddHurt(Element::Wind)
-        | Stats::ElementAddHurt(Element::Rock)
-        | Stats::Heal
-        | Stats::HpPercent)
+    matches!(
+        stat,
+        Stats::Critical
+            | Stats::AttackPercent
+            | Stats::ChargeEfficiency
+            | Stats::CriticalHurt
+            | Stats::DefensePercent
+            | Stats::ElementAddHurt(Element::Electric)
+            | Stats::ElementAddHurt(Element::Fire)
+            | Stats::ElementAddHurt(Element::Ice)
+            | Stats::ElementAddHurt(Element::Grass)
+            | Stats::ElementAddHurt(Element::Water)
+            | Stats::ElementAddHurt(Element::Wind)
+            | Stats::ElementAddHurt(Element::Rock)
+            | Stats::Heal
+            | Stats::HpPercent
+    )
 }
 
 fn round_to_1_decimal_places(x: f64) -> String {

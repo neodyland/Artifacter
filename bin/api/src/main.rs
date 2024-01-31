@@ -122,7 +122,7 @@ async fn profile(Query(q): Query<ProfileQuery>, State(s): State<AppState>) -> im
         Ok((usr, from_cache)) => {
             let profile = usr.profile();
             let mut characters = Vec::with_capacity(usr.characters.len());
-            for (_, c) in &usr.characters {
+            for c in usr.characters.values() {
                 let icon = trim_image(c.image_icon(&api).await, &format);
                 characters.push(UserCharacter {
                     ascension: c.ascension_level(),

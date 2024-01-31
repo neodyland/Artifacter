@@ -24,7 +24,7 @@ pub async fn hsr(
     let mut uid = uid.map(|u| u.to_string());
     if uid.is_none() {
         if let Ok(Some(db_uid)) = find_hsr(&data.db, ctx.author().id.get()).await {
-                uid = Some(db_uid);
+            uid = Some(db_uid);
         }
         if uid.is_none() {
             ctx.send(CreateReply::new().content(t!(locale, "main:general.noUserId")))

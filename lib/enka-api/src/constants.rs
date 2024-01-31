@@ -3,10 +3,10 @@ use std::{collections::HashMap, str::FromStr};
 use once_cell::sync::Lazy;
 use serde_json::Value;
 
-const CHARACTERS: &str = include_str!("../../../dynamic-assets/characters.json");
-const IMAGE_CHARACTERS: &str = include_str!("../../../dynamic-assets/image-characters.json");
-pub const LOC: &str = include_str!("../../../dynamic-assets/loc.json");
-pub const NAMECARDS: &str = include_str!("../../../dynamic-assets/namecards.json");
+static CHARACTERS: &str = include_str!("../../../dynamic-assets/characters.json");
+static IMAGE_CHARACTERS: &str = include_str!("../../../dynamic-assets/image-characters.json");
+pub static LOC: &str = include_str!("../../../dynamic-assets/loc.json");
+pub static NAMECARDS: &str = include_str!("../../../dynamic-assets/namecards.json");
 
 fn mearge_character_db(mut base: Value, db: Value) -> Option<Value> {
     let mut db_map = HashMap::new();
@@ -30,7 +30,7 @@ fn mearge_character_db(mut base: Value, db: Value) -> Option<Value> {
     Some(base)
 }
 
-pub const UI_ICON: Lazy<Value> = Lazy::new(|| {
+pub static UI_ICON: Lazy<Value> = Lazy::new(|| {
     let ui_icon = mearge_character_db(
         Value::from_str(CHARACTERS).unwrap(),
         Value::from_str(IMAGE_CHARACTERS).unwrap(),

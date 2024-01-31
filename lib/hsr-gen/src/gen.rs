@@ -17,7 +17,7 @@ use std::io::BufWriter;
 use crate::format::ImageFormat;
 use once_cell::sync::Lazy;
 
-const FONT: Lazy<Font> =
+static FONT: Lazy<Font> =
     Lazy::new(|| Font::try_from_bytes(include_bytes!("../../../assets/hsr-font.ttf")).unwrap());
 
 pub async fn generate(

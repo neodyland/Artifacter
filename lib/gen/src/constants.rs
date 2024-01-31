@@ -112,25 +112,23 @@ static WIND_LOCKED: Lazy<DynamicImage> = Lazy::new(|| {
 });
 
 pub fn get_clock_image(f: impl AsRef<str>, locked: bool) -> Option<&'static DynamicImage> {
-    Some(
-        match (f.as_ref().to_lowercase(), locked) {
-            (f, true) if f == "electric" || f == "elec" => &ELECTRIC_LOCKED,
-            (f, true) if f == "fire" => &FIRE_LOCKED,
-            (f, true) if f == "grass" => &GRASS_LOCKED,
-            (f, true) if f == "ice" => &ICE_LOCKED,
-            (f, true) if f == "rock" => &ROCK_LOCKED,
-            (f, true) if f == "water" => &WATER_LOCKED,
-            (f, true) if f == "wind" => &WIND_LOCKED,
-            (f, false) if f == "electric" || f == "elec" => &ELECTRIC,
-            (f, false) if f == "fire" => &FIRE,
-            (f, false) if f == "grass" => &GRASS,
-            (f, false) if f == "ice" => &ICE,
-            (f, false) if f == "rock" => &ROCK,
-            (f, false) if f == "water" => &WATER,
-            (f, false) if f == "wind" => &WIND,
-            _ => return None,
-        }
-    )
+    Some(match (f.as_ref().to_lowercase(), locked) {
+        (f, true) if f == "electric" || f == "elec" => &ELECTRIC_LOCKED,
+        (f, true) if f == "fire" => &FIRE_LOCKED,
+        (f, true) if f == "grass" => &GRASS_LOCKED,
+        (f, true) if f == "ice" => &ICE_LOCKED,
+        (f, true) if f == "rock" => &ROCK_LOCKED,
+        (f, true) if f == "water" => &WATER_LOCKED,
+        (f, true) if f == "wind" => &WIND_LOCKED,
+        (f, false) if f == "electric" || f == "elec" => &ELECTRIC,
+        (f, false) if f == "fire" => &FIRE,
+        (f, false) if f == "grass" => &GRASS,
+        (f, false) if f == "ice" => &ICE,
+        (f, false) if f == "rock" => &ROCK,
+        (f, false) if f == "water" => &WATER,
+        (f, false) if f == "wind" => &WIND,
+        _ => return None,
+    })
 }
 
 pub fn get_grade_image(score: f64, part: Option<ReliquaryType>) -> Option<DynamicImage> {
