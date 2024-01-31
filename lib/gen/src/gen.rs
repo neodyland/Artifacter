@@ -207,7 +207,7 @@ pub async fn generate(
         30,
         20,
         Scale::uniform(60.0),
-        &font,
+        font,
         character_name,
     );
     draw_text_mut(
@@ -216,7 +216,7 @@ pub async fn generate(
         35,
         80,
         Scale::uniform(32.0),
-        &font,
+        font,
         &character_level,
     );
 
@@ -237,7 +237,7 @@ pub async fn generate(
             40,
             400 + index as i32 * 100,
             scale,
-            &font,
+            font,
             &format!("Lv.{}", lv),
         );
     }
@@ -261,19 +261,19 @@ pub async fn generate(
     let weapon_rarity_img = get_rarity_image(weapon.rarity)?;
     overlay(&mut image, &weapon_rarity_img, 1422, 173);
     let ascension = format!("R{}", weapon.refinement + 1);
-    draw_text_mut(&mut image, white, 1435, 45, scale, &font, &ascension);
+    draw_text_mut(&mut image, white, 1435, 45, scale, font, &ascension);
     let weapon_level = format!("Lv.{}", weapon.level);
     let weapon_name = weapon.name(api, lang)?;
     let scale = Scale::uniform(30.0);
-    draw_text_resized(&mut image, white, 1600, 45, scale, &font, weapon_name, 250);
-    draw_text_mut(&mut image, white, 1600, 85, scale, &font, &weapon_level);
+    draw_text_resized(&mut image, white, 1600, 45, scale, font, weapon_name, 250);
+    draw_text_mut(&mut image, white, 1600, 85, scale, font, &weapon_level);
     let scale = Scale::uniform(25.0);
     let weapon_damage = format!("ATK:{}", weapon.base_attack);
     let mut damage_image = icons.image("FIGHT_PROP_ATTACK.svg", 1.8)?;
     for p in damage_image.pixels_mut() {
         p.0 = [255, 255, 255, p.0[3]];
     }
-    draw_text_mut(&mut image, white, 1630, 125, scale, &font, &weapon_damage);
+    draw_text_mut(&mut image, white, 1630, 125, scale, font, &weapon_damage);
     overlay(&mut image, &damage_image, 1600, 125);
     if let Some(stats) = weapon.stats {
         let weapon_sub = format!(
@@ -286,7 +286,7 @@ pub async fn generate(
         for p in weapon_sub_image.pixels_mut() {
             p.0 = [255, 255, 255, p.0[3]];
         }
-        draw_text_mut(&mut image, white, 1630, 160, scale, &font, &weapon_sub);
+        draw_text_mut(&mut image, white, 1630, 160, scale, font, &weapon_sub);
         overlay(&mut image, &weapon_sub_image, 1600, 160);
     }
     let artifacts = data.reliquarys();
@@ -323,7 +323,7 @@ pub async fn generate(
                 .collect::<Vec<_>>();
             let scale = Scale::uniform(15.0);
             for x in o {
-                let width = text_size(scale, &font, &x).0;
+                let width = text_size(scale, font, &x).0;
                 sub_y += 52;
                 draw_text_mut(
                     &mut image,
@@ -331,7 +331,7 @@ pub async fn generate(
                     artifact_x as i32 + 340 - width,
                     sub_y,
                     scale,
-                    &font,
+                    font,
                     &x,
                 );
             }
@@ -342,7 +342,7 @@ pub async fn generate(
         overlay(&mut image, &rank_img, artifact_x + 50, 1015);
         let score = round_to_1_decimal_places(score);
         let scale = Scale::uniform(40.0);
-        let score_width = text_size(scale, &font, &score).0;
+        let score_width = text_size(scale, font, &score).0;
         draw_text_mut(
             &mut image,
             white,
