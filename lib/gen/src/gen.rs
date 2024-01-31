@@ -179,7 +179,7 @@ pub async fn generate(
     format: ImageFormat,
 ) -> Option<Vec<u8>> {
     let lang = &raw_lang.to_string();
-    let font = FONT;
+    let font = &FONT;
     let mut image = constants::get_base_image(&data.element)?;
     let character_image = data.image_gacha_splash(api).await?;
     match data.id.0 {
@@ -245,7 +245,7 @@ pub async fn generate(
     let clocks = data.talents();
     for (index, clock) in clocks.iter().enumerate() {
         let locked_image = get_clock_image(data.element.fight_prop_name(), !clock.is_unlock())?;
-        let mut locked_image = resize(&locked_image, 70, 70, Triangle);
+        let mut locked_image = resize(locked_image, 70, 70, Triangle);
         if clock.is_unlock() {
             let img = clock.image(api).await.ok()?;
             let img = resize(&img, 35, 35, Triangle);
