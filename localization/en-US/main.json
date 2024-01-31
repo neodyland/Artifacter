@@ -1,6 +1,6 @@
 {
     "general.noUserId": "UID has not been specified",
-    "general.userIdMustBeNineDigits": "Your UID should be should be 9 digits long.",
+    "general.userIdMustBeNineDigits": "Your UID should be should be 9 or 10 digits long.",
     "general.noCharacters": "Could not find characters (check if Show Character Details is on)",
     "general.isCached": "Using cached data",
     "general.spiralAbyss": "Spiral Abyss",

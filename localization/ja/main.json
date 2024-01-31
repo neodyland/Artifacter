@@ -1,6 +1,6 @@
 {
     "general.noUserId": "ユーザーidが指定されていません。",
-    "general.userIdMustBeNineDigits": "ユーザーidは9桁である必要があります。",
+    "general.userIdMustBeNineDigits": "ユーザーidは9か10桁である必要があります。",
     "general.noCharacters": "キャラクターが登録されていません。(もしくは非公開になっています",
     "general.isCached": "キャッシュから取得されています。",
     "general.spiralAbyss": "螺旋",
