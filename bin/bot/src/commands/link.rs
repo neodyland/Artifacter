@@ -17,7 +17,7 @@ pub async fn link(
     let discord_id = ctx.author().id.get();
     let locale = ctx.locale().unwrap_or("ja");
     let db = &ctx.data().db;
-    if uid.to_string().len() != 9 || uid.to_string().len() != 10 {
+    if uid.to_string().len() != 9 && uid.to_string().len() != 10 {
         ctx.send(CreateReply::new().content(t!(locale, "main:general.userIdMustBeNineDigits")))
             .await?;
         return Ok(());

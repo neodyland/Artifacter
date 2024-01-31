@@ -35,7 +35,7 @@ pub async fn build(
         }
     }
     let uid = uid.unwrap();
-    if uid.to_string().len() != 9 || uid.to_string().len() != 10 {
+    if uid.to_string().len() != 9 && uid.to_string().len() != 10 {
         ctx.send(CreateReply::new().content(t!(locale, "main:general.userIdMustBeNineDigits")))
             .await?;
         return Ok(());

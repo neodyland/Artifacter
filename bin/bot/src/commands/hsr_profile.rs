@@ -23,7 +23,7 @@ pub async fn hsr_profile(ctx: Context<'_>, user: User) -> Result<(), Error> {
             .await?;
         return Ok(());
     };
-    if uid.to_string().len() != 9 || uid.to_string().len() != 10 {
+    if uid.to_string().len() != 9 && uid.to_string().len() != 10 {
         ctx.send(CreateReply::new().content(t!(locale, "main:general.userIdMustBeNineDigits")))
             .await?;
         return Ok(());
