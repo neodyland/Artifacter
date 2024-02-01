@@ -1,3 +1,5 @@
+use std::borrow::Cow;
+
 use apitype::genshin::{User, UserCharacter};
 use base64::{engine::general_purpose, Engine as _};
 use localization::t;
@@ -13,13 +15,17 @@ use crate::{
     util::{convert_rgb, get_score_calc},
 };
 
-pub async fn generate_components(
+pub async fn generate_components<'a>(
     locale: String,
     uid: String,
     user: User,
     cache: &CacheValue,
     api: &Api,
-) -> Option<(CreateEmbed, Vec<CreateActionRow>, Option<CreateAttachment>)> {
+) -> Option<(
+    CreateEmbed<'a>,
+    Vec<CreateActionRow<'a>>,
+    Option<CreateAttachment<'a>>,
+)> {
     if let Some(cid) = cache.character.clone() {
         if let Ok((img, score)) = api
             .generate(
@@ -62,11 +68,15 @@ pub async fn generate_components(
     None
 }
 
-pub fn profile_components(
+pub fn profile_components<'a>(
     locale: String,
     uid: String,
     user: User,
-) -> (CreateEmbed, Vec<CreateActionRow>, Option<CreateAttachment>) {
+) -> (
+    CreateEmbed<'a>,
+    Vec<CreateActionRow<'a>>,
+    Option<CreateAttachment<'a>>,
+) {
     let footer = CreateEmbedFooter::new(uid.to_string());
     let embed = CreateEmbed::default()
         .title(format!(
@@ -116,11 +126,11 @@ pub fn profile_components(
     (embed, components, attachment)
 }
 
-pub fn create_components(
+pub fn create_components<'a>(
     characters: Vec<UserCharacter>,
     locale: String,
     uid: String,
-) -> Vec<CreateActionRow> {
+) -> Vec<CreateActionRow<'a>> {
     let mut options = Vec::<CreateSelectMenuOption>::new();
     for character in characters {
         options.push(
@@ -128,10 +138,15 @@ pub fn create_components(
                 .description(format!("{}Lv", character.level)),
         )
     }
-    let chara = CreateSelectMenu::new("character", CreateSelectMenuKind::String { options })
-        .placeholder(t!(locale, "main:general.selectCharacter"))
-        .max_values(1)
-        .min_values(1);
+    let chara = CreateSelectMenu::new(
+        "character",
+        CreateSelectMenuKind::String {
+            options: Cow::Owned(options),
+        },
+    )
+    .placeholder(t!(locale, "main:general.selectCharacter"))
+    .max_values(1)
+    .min_values(1);
     let chara = CreateActionRow::SelectMenu(chara);
     let score = CreateSelectMenu::new(
         "score",

@@ -1,3 +1,5 @@
+use std::borrow::Cow;
+
 use apitype::hsr::{User, UserCharacter};
 use base64::{engine::general_purpose, Engine as _};
 use localization::t;
@@ -19,7 +21,11 @@ pub async fn hsr_generate_components(
     user: User,
     cache: &HsrCacheValue,
     api: &Api,
-) -> Option<(CreateEmbed, Vec<CreateActionRow>, Option<CreateAttachment>)> {
+) -> Option<(
+    CreateEmbed<'static>,
+    Vec<CreateActionRow<'static>>,
+    Option<CreateAttachment<'static>>,
+)> {
     if let Some(cid) = cache.character.clone() {
         if let Ok((img, score)) = api
             .hsr_generate(
@@ -63,11 +69,15 @@ pub async fn hsr_generate_components(
     None
 }
 
-pub fn hsr_profile_components(
+pub fn hsr_profile_components<'a>(
     locale: String,
     uid: String,
     user: User,
-) -> (CreateEmbed, Vec<CreateActionRow>, Option<CreateAttachment>) {
+) -> (
+    CreateEmbed<'a>,
+    Vec<CreateActionRow<'a>>,
+    Option<CreateAttachment<'a>>,
+) {
     let footer = CreateEmbedFooter::new(uid.to_string());
     let embed = CreateEmbed::default()
         .title(format!(
@@ -104,11 +114,11 @@ pub fn hsr_profile_components(
     (embed, components, attachment)
 }
 
-pub fn create_components(
+pub fn create_components<'a>(
     characters: Vec<UserCharacter>,
     locale: String,
     uid: String,
-) -> Vec<CreateActionRow> {
+) -> Vec<CreateActionRow<'a>> {
     let mut options = Vec::<CreateSelectMenuOption>::new();
     for character in characters {
         options.push(
@@ -116,10 +126,15 @@ pub fn create_components(
                 .description(format!("{}Lv", character.level)),
         )
     }
-    let chara = CreateSelectMenu::new("hsr_character", CreateSelectMenuKind::String { options })
-        .placeholder(t!(locale, "main:general.selectCharacter"))
-        .max_values(1)
-        .min_values(1);
+    let chara = CreateSelectMenu::new(
+        "hsr_character",
+        CreateSelectMenuKind::String {
+            options: Cow::Owned(options),
+        },
+    )
+    .placeholder(t!(locale, "main:general.selectCharacter"))
+    .max_values(1)
+    .min_values(1);
     let chara = CreateActionRow::SelectMenu(chara);
     let score = CreateSelectMenu::new(
         "hsr_score",

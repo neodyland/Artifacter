@@ -11,7 +11,7 @@ use crate::{
 #[derive(Clone)]
 pub struct State {
     pub db: PgPool,
-    pub started: Arc<Mutex<BTreeSet<u32>>>,
+    pub started: Arc<Mutex<BTreeSet<u16>>>,
     pub api: Api,
     pub cache: Arc<Mutex<Cache>>,
     pub hsr_cache: Arc<Mutex<HsrCache>>,

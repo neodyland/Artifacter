@@ -1,6 +1,5 @@
 use localization::t;
 
-pub use serde_json::json;
 pub fn convert_rgb(rgb: [u8; 3]) -> u32 {
     let [r, g, b] = rgb;
     (r as u32) << 16 | (g as u32) << 8 | b as u32

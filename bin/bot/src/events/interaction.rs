@@ -45,7 +45,7 @@ pub async fn handler(
                     None => {
                         select_menu
                             .create_response(
-                                ctx,
+                                &ctx.http,
                                 CreateInteractionResponse::Message(
                                     CreateInteractionResponseMessage::new()
                                         .content(t!(lang, "main:general.parseFailed")),
@@ -61,7 +61,7 @@ pub async fn handler(
                     .await?;
                 let mut cache = state.cache.lock().await;
                 if let Some(value) = values.first() {
-                    cache.update(uid, custom_id, value.to_string());
+                    cache.update(uid, custom_id.to_string(), value.to_string());
                 };
                 if let Some(value) = cache.get_or_default(uid) {
                     if let Some((embed, components, attachment)) =
@@ -98,7 +98,7 @@ pub async fn handler(
                     None => {
                         select_menu
                             .create_response(
-                                ctx,
+                                &ctx.http,
                                 CreateInteractionResponse::Message(
                                     CreateInteractionResponseMessage::new()
                                         .content(t!(lang, "main:general.parseFailed")),
@@ -114,7 +114,7 @@ pub async fn handler(
                     .await?;
                 let mut cache = state.hsr_cache.lock().await;
                 if let Some(value) = values.first() {
-                    cache.update(uid, custom_id, value.to_string());
+                    cache.update(uid, custom_id.to_string(), value.to_string());
                 };
                 if let Some(value) = cache.get_or_default(uid) {
                     if let Some((embed, components, attachment)) =
