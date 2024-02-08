@@ -66,7 +66,7 @@ pub async fn generate(
         &font,
         &promo,
     );*/
-    let level = format!("Lv.{}/ R{}", character.level, character.rank);
+    let level = format!("Lv.{}/ E{}", character.level, character.rank);
     draw_text_mut(
         &mut base_image,
         image::Rgba([255, 255, 255, 255]),
@@ -101,7 +101,7 @@ pub async fn generate(
         );
         let rank = cone.rank;
         let level = cone.level;
-        let text = format!("Lv.{}/ R{}", level, rank);
+        let text = format!("Lv.{}/ S{}", level, rank);
         draw_text_mut(
             &mut base_image,
             image::Rgba([255, 255, 255, 255]),
