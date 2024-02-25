@@ -188,8 +188,8 @@ pub async fn generate(
             let character_image = character_image.resize_exact(800, 600, Nearest);
             imageops::overlay(&mut image, &character_image, 0, 50);
         }
-        // gaming, main characters
-        10000092 | 10000005 | 10000007 => {
+        // main characters
+        10000005 | 10000007 => {
             let character_image = character_image.resize_exact(600, 600, Nearest);
             imageops::overlay(&mut image, &character_image, 150, 50);
         }
