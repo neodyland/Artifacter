@@ -554,5 +554,12 @@
     "filename_sideIcon": "UI_AvatarIcon_Side_Gaming",
     "filename_gachaSplash": "UI_Gacha_AvatarImg_Gaming",
     "filename_gachaSlice": "UI_Gacha_AvatarIcon_Gaming"
+  },
+  "chiori": {
+    "filename_icon": "UI_AvatarIcon_Chiori",
+    "filename_iconCard": "UI_AvatarIcon_Chiori_Card",
+    "filename_sideIcon": "UI_AvatarIcon_Side_Chiori",
+    "filename_gachaSplash": "UI_Gacha_AvatarImg_Chiori",
+    "filename_gachaSlice": "UI_Gacha_AvatarIcon_Chiori"
   }
 }
