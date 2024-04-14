@@ -154,6 +154,16 @@ pub fn get_default(cid: &u32) -> ScoreCounter {
         10000088 => ScoreCounter::Hp,
         // Furina
         10000089 => ScoreCounter::Hp,
+        // Chevreuse
+        10000090 => ScoreCounter::Hp,
+        // Navia
+        10000091 => ScoreCounter::Def,
+        // Gaming
+        10000092 => ScoreCounter::Normal,
+        // Xianyun
+        10000093 => ScoreCounter::Normal,
+        // Chiori
+        10000094 => ScoreCounter::Def,
         _ => ScoreCounter::Normal,
     }
 }
