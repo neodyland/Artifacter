@@ -482,11 +482,11 @@ impl ScoreCounter {
             ScoreCounter::Attack => "攻撃型",
             ScoreCounter::Hp => "HP型",
             ScoreCounter::Defense => "防御型",
-            ScoreCounter::Ehr => "熟知型",
+            ScoreCounter::Ehr => "効果命中型",
             ScoreCounter::Be => "チャージ型",
             ScoreCounter::Speed => "速度型",
             ScoreCounter::HpOnly => "HPのみ",
-            ScoreCounter::EhrOnly => "熟知のみ",
+            ScoreCounter::EhrOnly => "効果命中のみ",
             ScoreCounter::SpeedOnly => "速度のみ",
         }
     }
