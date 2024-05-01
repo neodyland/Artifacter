@@ -1,7 +1,7 @@
 {
     "general.noUserId": "ユーザーidが指定されていません。",
     "general.userIdMustBeNineDigits": "ユーザーidは9か10桁である必要があります。",
-    "general.noCharacters": "キャラクターが登録されていません。(もしくは非公開になっています",
+    "general.noCharacters": "キャラクターが登録されていません。(もしくは非公開になっています)\n崩壊スターレイルの場合は`/hsr`、原神の場合は`/build`、ゼンレスゾーンゼロの場合は`/zzz`(近日実装予定)\nをご利用ください。",
     "general.isCached": "キャッシュから取得されています。",
     "general.spiralAbyss": "螺旋",
     "general.floor": "階",
