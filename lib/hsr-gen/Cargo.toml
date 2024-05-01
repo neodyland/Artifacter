@@ -6,7 +6,7 @@ edition = "2021"
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
-mihoyo-api = { path = "../mihoyo-api" }
+mihomo-api = { path = "../mihomo-api" }
 image = { workspace = true }
 rusttype = "0.9.3"
 imageproc = "0.23.0"

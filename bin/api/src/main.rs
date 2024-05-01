@@ -22,7 +22,7 @@ use hsr_gen::{
     base::{get_base_image, BaseImage},
     format::ImageFormat as HsrImageFormat,
     gen::{generate as hsr_gen, ScoreCounter as HsrScoreCounter},
-    mihoyo_api::api::Api as MihoyoApi,
+    mihomo_api::api::Api as MihoyoApi,
 };
 use log::LevelFilter;
 use tokio::time::Instant;

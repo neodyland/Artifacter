@@ -7,7 +7,7 @@ use image::{
 };
 use imageproc::drawing::draw_text_mut;
 use localization::t;
-use mihoyo_api::{
+use mihomo_api::{
     api::Api,
     character::{Attribute, Character, Relic},
 };
@@ -284,10 +284,17 @@ pub async fn generate(
         &font,
         &total,
     );
+    let calc = counter.to_string_locale(lang);
+    draw_text_mut(
+        &mut base_image,
+        image::Rgba([255, 255, 255, 255]),
+        900,
+        770,
+        Scale::uniform(30.0),
+        &font,
+        &calc,
+    );
     let score = format!("{:.1}", total_score);
-    let img = get_score_image(total_score, None)?;
-    let img = resize(&img, 150, 150, FilterType::Triangle);
-    overlay(&mut base_image, &img, 760, 800);
     draw_text_mut(
         &mut base_image,
         image::Rgba([255, 255, 255, 255]),
@@ -297,6 +304,9 @@ pub async fn generate(
         &font,
         &score,
     );
+    let img = get_score_image(total_score, None)?;
+    let img = resize(&img, 150, 150, FilterType::Triangle);
+    overlay(&mut base_image, &img, 760, 800);
     convert(base_image, format).await
 }
 
@@ -372,11 +382,73 @@ fn get_score(relic: &Relic, counter: &ScoreCounter) -> f64 {
                     }
                 }
             }
-            "crit_rate" => {
-                score += affix.value * 200.0;
+            "crit_rate" => match counter {
+                ScoreCounter::Attack
+                | ScoreCounter::Hp
+                | ScoreCounter::Defense
+                | ScoreCounter::Ehr
+                | ScoreCounter::Be
+                | ScoreCounter::Speed => {
+                    score += affix.value * 200.0;
+                }
+                _ => {}
+            },
+            "crit_dmg" => match counter {
+                ScoreCounter::Attack
+                | ScoreCounter::Hp
+                | ScoreCounter::Defense
+                | ScoreCounter::Ehr
+                | ScoreCounter::Be
+                | ScoreCounter::Speed => {
+                    score += affix.value * 100.0;
+                }
+                _ => {}
+            },
+            "hp" => {
+                if *counter == ScoreCounter::Hp || *counter == ScoreCounter::HpOnly {
+                    let s = if affix.percent {
+                        affix.value * 100.0
+                    } else {
+                        affix.value * 0.075
+                    };
+                    score += if counter == &ScoreCounter::HpOnly {
+                        s * 2.0
+                    } else {
+                        s
+                    };
+                }
             }
-            "crit_dmg" => {
-                score += affix.value * 100.0;
+            "def" => {
+                if *counter == ScoreCounter::Defense {
+                    if affix.percent {
+                        score += affix.value * 100.0;
+                    } else {
+                        score += affix.value * 0.075;
+                    }
+                }
+            }
+            "spd" => {
+                if *counter == ScoreCounter::Speed || *counter == ScoreCounter::SpeedOnly {
+                    if counter == &ScoreCounter::SpeedOnly {
+                        score += affix.value * 2.0;
+                    } else {
+                        score += affix.value;
+                    }
+                }
+            }
+            "effect_hit" => {
+                if *counter == ScoreCounter::Ehr || *counter == ScoreCounter::EhrOnly {
+                    if counter == &ScoreCounter::EhrOnly {
+                        score += affix.value * 300.0;
+                    } else {
+                        score += affix.value * 150.0;
+                    }
+                }
+            }
+            "break_dmg" => {
+                if *counter == ScoreCounter::Be {
+                    score += affix.value;
+                }
             }
             _ => {}
         }
@@ -387,6 +459,50 @@ fn get_score(relic: &Relic, counter: &ScoreCounter) -> f64 {
 #[derive(PartialEq)]
 pub enum ScoreCounter {
     Attack,
+    Hp,
+    Defense,
+    Ehr,
+    Be,
+    Speed,
+    SpeedOnly,
+    HpOnly,
+    EhrOnly,
+}
+
+impl ScoreCounter {
+    pub fn to_string_locale(&self, lang: &str) -> String {
+        match lang {
+            "ja-JP" | "ja" => self.ja(),
+            _ => self.en(),
+        }
+        .to_string()
+    }
+    pub fn ja(&self) -> &str {
+        match self {
+            ScoreCounter::Attack => "攻撃型",
+            ScoreCounter::Hp => "HP型",
+            ScoreCounter::Defense => "防御型",
+            ScoreCounter::Ehr => "熟知型",
+            ScoreCounter::Be => "チャージ型",
+            ScoreCounter::Speed => "速度型",
+            ScoreCounter::HpOnly => "HPのみ",
+            ScoreCounter::EhrOnly => "熟知のみ",
+            ScoreCounter::SpeedOnly => "速度のみ",
+        }
+    }
+    pub fn en(&self) -> &str {
+        match self {
+            ScoreCounter::Attack => "Attack",
+            ScoreCounter::Hp => "Hp",
+            ScoreCounter::Defense => "Defense",
+            ScoreCounter::Ehr => "Ehr",
+            ScoreCounter::Be => "Be",
+            ScoreCounter::Speed => "Speed",
+            ScoreCounter::HpOnly => "HpOnly",
+            ScoreCounter::EhrOnly => "EhrOnly",
+            ScoreCounter::SpeedOnly => "SpeedOnly",
+        }
+    }
 }
 
 impl FromStr for ScoreCounter {
@@ -394,6 +510,14 @@ impl FromStr for ScoreCounter {
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         match s {
             "attack" => Ok(ScoreCounter::Attack),
+            "hp" => Ok(ScoreCounter::Hp),
+            "defense" => Ok(ScoreCounter::Defense),
+            "ehr" => Ok(ScoreCounter::Ehr),
+            "be" => Ok(ScoreCounter::Be),
+            "speed" => Ok(ScoreCounter::Speed),
+            "hp_only" => Ok(ScoreCounter::HpOnly),
+            "ehr_only" => Ok(ScoreCounter::EhrOnly),
+            "speed_only" => Ok(ScoreCounter::SpeedOnly),
             _ => Err(()),
         }
     }
@@ -403,6 +527,14 @@ impl ToString for ScoreCounter {
     fn to_string(&self) -> String {
         match self {
             ScoreCounter::Attack => "attack".to_string(),
+            ScoreCounter::Hp => "hp".to_string(),
+            ScoreCounter::Defense => "defense".to_string(),
+            ScoreCounter::Ehr => "ehr".to_string(),
+            ScoreCounter::Be => "be".to_string(),
+            ScoreCounter::Speed => "speed".to_string(),
+            ScoreCounter::HpOnly => "hp_only".to_string(),
+            ScoreCounter::EhrOnly => "ehr_only".to_string(),
+            ScoreCounter::SpeedOnly => "speed_only".to_string(),
         }
     }
 }

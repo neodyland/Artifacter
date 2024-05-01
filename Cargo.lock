@@ -1149,7 +1149,7 @@ dependencies = [
  "imageproc",
  "localization",
  "localization-build",
- "mihoyo-api",
+ "mihomo-api",
  "once_cell",
  "rand 0.8.5",
  "rusttype",
@@ -1633,7 +1633,7 @@ dependencies = [
 ]
 
 [[package]]
-name = "mihoyo-api"
+name = "mihomo-api"
 version = "0.1.0"
 dependencies = [
  "filetime",

@@ -15,6 +15,13 @@ pub enum ScoreCounter {
 
 pub enum HsrScoreCounter {
     Attack,
+    Hp,
+    Defence,
+    Ehr,
+    Be,
+    Speed,
+    HpOnly,
+    EhrOnly,
 }
 
 impl From<&str> for ScoreCounter {
@@ -34,6 +41,13 @@ impl From<&str> for HsrScoreCounter {
     fn from(s: &str) -> Self {
         match s {
             "attack" => HsrScoreCounter::Attack,
+            "hp" => HsrScoreCounter::Hp,
+            "def" => HsrScoreCounter::Defence,
+            "ehr" => HsrScoreCounter::Ehr,
+            "be" => HsrScoreCounter::Be,
+            "speed" => HsrScoreCounter::Speed,
+            "hp_only" => HsrScoreCounter::HpOnly,
+            "ehr_only" => HsrScoreCounter::EhrOnly,
             _ => HsrScoreCounter::Attack,
         }
     }
@@ -63,6 +77,27 @@ pub fn get_hsr_score_calc(lang: String, s: impl Into<HsrScoreCounter>) -> String
     match s.into() {
         HsrScoreCounter::Attack => {
             t!(lang, "main:hsrCalculationFormula.attack")
+        }
+        HsrScoreCounter::Hp => {
+            t!(lang, "main:hsrCalculationFormula.hp")
+        }
+        HsrScoreCounter::Defence => {
+            t!(lang, "main:hsrCalculationFormula.defense")
+        }
+        HsrScoreCounter::Ehr => {
+            t!(lang, "main:hsrCalculationFormula.ehr")
+        }
+        HsrScoreCounter::Be => {
+            t!(lang, "main:hsrCalculationFormula.be")
+        }
+        HsrScoreCounter::Speed => {
+            t!(lang, "main:hsrCalculationFormula.speed")
+        }
+        HsrScoreCounter::HpOnly => {
+            t!(lang, "main:hsrCalculationFormula.hpOnly")
+        }
+        HsrScoreCounter::EhrOnly => {
+            t!(lang, "main:hsrCalculationFormula.ehrOnly")
         }
     }
 }

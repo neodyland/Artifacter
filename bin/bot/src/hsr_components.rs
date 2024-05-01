@@ -139,10 +139,19 @@ pub fn create_components<'a>(
     let score = CreateSelectMenu::new(
         "hsr_score",
         CreateSelectMenuKind::String {
-            options: [(t!(locale, "main:calculationMethod.attack"), "normal")]
-                .iter()
-                .map(|x| CreateSelectMenuOption::new(x.0.clone(), x.1))
-                .collect(),
+            options: [
+                (t!(locale, "main:hsrCalculationMethod.attack"), "normal"),
+                (t!(locale, "main:hsrCalculationMethod.defense"), "defense"),
+                (t!(locale, "main:hsrCalculationMethod.hp"), "hp"),
+                (t!(locale, "main:hsrCalculationMethod.ehr"), "ehr"),
+                (t!(locale, "main:hsrCalculationMethod.be"), "be"),
+                (t!(locale, "main:hsrCalculationMethod.speed"), "speed"),
+                (t!(locale, "main:hsrCalculationMethod.hpOnly"), "hp_only"),
+                (t!(locale, "main:hsrCalculationMethod.ehrOnly"), "ehr_only"),
+            ]
+            .iter()
+            .map(|x| CreateSelectMenuOption::new(x.0.clone(), x.1))
+            .collect(),
         },
     )
     .max_values(1)

@@ -4,4 +4,4 @@ target/
 .env
 build/
 dist/
-test.png
+test*.png
