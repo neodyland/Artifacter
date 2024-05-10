@@ -145,6 +145,7 @@ pub fn create_components<'a>(
                 (t!(locale, "main:hsrCalculationMethod.hp"), "hp"),
                 (t!(locale, "main:hsrCalculationMethod.ehr"), "ehr"),
                 (t!(locale, "main:hsrCalculationMethod.be"), "be"),
+                (t!(locale, "main:hsrCalculationMethod.beOnly"), "be_only"),
                 (t!(locale, "main:hsrCalculationMethod.speed"), "speed"),
                 (t!(locale, "main:hsrCalculationMethod.hpOnly"), "hp_only"),
                 (t!(locale, "main:hsrCalculationMethod.ehrOnly"), "ehr_only"),

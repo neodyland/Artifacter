@@ -19,6 +19,7 @@ pub enum HsrScoreCounter {
     Defence,
     Ehr,
     Be,
+    BeOnly,
     Speed,
     HpOnly,
     EhrOnly,
@@ -45,6 +46,7 @@ impl From<&str> for HsrScoreCounter {
             "def" => HsrScoreCounter::Defence,
             "ehr" => HsrScoreCounter::Ehr,
             "be" => HsrScoreCounter::Be,
+            "be_only" => HsrScoreCounter::BeOnly,
             "speed" => HsrScoreCounter::Speed,
             "hp_only" => HsrScoreCounter::HpOnly,
             "ehr_only" => HsrScoreCounter::EhrOnly,
@@ -89,6 +91,9 @@ pub fn get_hsr_score_calc(lang: String, s: impl Into<HsrScoreCounter>) -> String
         }
         HsrScoreCounter::Be => {
             t!(lang, "main:hsrCalculationFormula.be")
+        }
+        HsrScoreCounter::BeOnly => {
+            t!(lang, "main:hsrCalculationFormula.beOnly")
         }
         HsrScoreCounter::Speed => {
             t!(lang, "main:hsrCalculationFormula.speed")

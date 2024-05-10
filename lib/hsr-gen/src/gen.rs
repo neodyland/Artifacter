@@ -446,8 +446,12 @@ fn get_score(relic: &Relic, counter: &ScoreCounter) -> f64 {
                 }
             }
             "break_dmg" => {
-                if *counter == ScoreCounter::Be {
-                    score += affix.value;
+                if *counter == ScoreCounter::Be || *counter == ScoreCounter::BeOnly {
+                    if counter == &ScoreCounter::BeOnly {
+                        score += affix.value * 200.0;
+                    } else {
+                        score += affix.value * 100.0;
+                    }
                 }
             }
             _ => {}
@@ -463,6 +467,7 @@ pub enum ScoreCounter {
     Defense,
     Ehr,
     Be,
+    BeOnly,
     Speed,
     SpeedOnly,
     HpOnly,
@@ -483,8 +488,9 @@ impl ScoreCounter {
             ScoreCounter::Hp => "HP型",
             ScoreCounter::Defense => "防御型",
             ScoreCounter::Ehr => "効果命中型",
-            ScoreCounter::Be => "チャージ型",
+            ScoreCounter::Be => "撃破特攻型",
             ScoreCounter::Speed => "速度型",
+            ScoreCounter::BeOnly => "撃破特攻のみ",
             ScoreCounter::HpOnly => "HPのみ",
             ScoreCounter::EhrOnly => "効果命中のみ",
             ScoreCounter::SpeedOnly => "速度のみ",
@@ -492,6 +498,7 @@ impl ScoreCounter {
     }
     pub fn en(&self) -> &str {
         match self {
+            ScoreCounter::BeOnly => "BeOnly",
             ScoreCounter::Attack => "Attack",
             ScoreCounter::Hp => "Hp",
             ScoreCounter::Defense => "Defense",
@@ -514,6 +521,7 @@ impl FromStr for ScoreCounter {
             "defense" => Ok(ScoreCounter::Defense),
             "ehr" => Ok(ScoreCounter::Ehr),
             "be" => Ok(ScoreCounter::Be),
+            "be_only" => Ok(ScoreCounter::BeOnly),
             "speed" => Ok(ScoreCounter::Speed),
             "hp_only" => Ok(ScoreCounter::HpOnly),
             "ehr_only" => Ok(ScoreCounter::EhrOnly),
@@ -526,6 +534,7 @@ impl FromStr for ScoreCounter {
 impl ToString for ScoreCounter {
     fn to_string(&self) -> String {
         match self {
+            ScoreCounter::BeOnly => "be_only".to_string(),
             ScoreCounter::Attack => "attack".to_string(),
             ScoreCounter::Hp => "hp".to_string(),
             ScoreCounter::Defense => "defense".to_string(),
