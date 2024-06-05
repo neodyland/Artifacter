@@ -568,5 +568,26 @@
     "filename_sideIcon": "UI_AvatarIcon_Side_Arlecchino",
     "filename_gachaSplash": "UI_Gacha_AvatarImg_Arlecchino",
     "filename_gachaSlice": "UI_Gacha_AvatarIcon_Arlecchino"
+  },
+  "clorinde": {
+    "filename_icon": "UI_AvatarIcon_Clorinde",
+    "filename_iconCard": "UI_AvatarIcon_Clorinde_Card",
+    "filename_sideIcon": "UI_AvatarIcon_Side_Clorinde",
+    "filename_gachaSplash": "UI_Gacha_AvatarImg_Clorinde",
+    "filename_gachaSlice": "UI_Gacha_AvatarIcon_Clorinde"
+  },
+  "sethos": {
+    "filename_icon": "UI_AvatarIcon_Sethos",
+    "filename_iconCard": "UI_AvatarIcon_Sethos_Card",
+    "filename_sideIcon": "UI_AvatarIcon_Side_Sethos",
+    "filename_gachaSplash": "UI_Gacha_AvatarImg_Sethos",
+    "filename_gachaSlice": "UI_Gacha_AvatarIcon_Sethos"
+  },
+  "sigewinne": {
+    "filename_icon": "UI_AvatarIcon_Sigewinne",
+    "filename_iconCard": "UI_AvatarIcon_Sigewinne_Card",
+    "filename_sideIcon": "UI_AvatarIcon_Side_Sigewinne",
+    "filename_gachaSplash": "UI_Gacha_AvatarImg_Sigewinne",
+    "filename_gachaSlice": "UI_Gacha_AvatarIcon_Sigewinne"
   }
 }
