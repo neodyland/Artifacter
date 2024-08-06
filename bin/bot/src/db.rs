@@ -52,6 +52,16 @@ pub async fn find_genshin(p: &PgPool, id: u64) -> Result<Option<String>, SqlxErr
     .map(|u| u.genshin_id))
 }
 
+pub async fn find_zzz(p: &PgPool, id: u64) -> Result<Option<String>, SqlxError> {
+    Ok(query!(
+        "SELECT zzz_id FROM zzz_linker WHERE discord_id = $1",
+        id.to_string(),
+    )
+    .fetch_optional(p)
+    .await?
+    .map(|u| u.zzz_id))
+}
+
 pub async fn link(p: &PgPool, discord_id: u64, genshin_id: i32) -> Result<(), SqlxError> {
     query!(
         "INSERT INTO linker (discord_id, genshin_id) VALUES ($1, $2)",
@@ -74,6 +84,17 @@ pub async fn hsr_link(p: &PgPool, discord_id: u64, hsr_id: i32) -> Result<(), Sq
     Ok(())
 }
 
+pub async fn zzz_link(p: &PgPool, discord_id: u64, zzz_id: i32) -> Result<(), SqlxError> {
+    query!(
+        "INSERT INTO zzz_linker (discord_id, zzz_id) VALUES ($1, $2)",
+        discord_id.to_string(),
+        zzz_id.to_string()
+    )
+    .execute(p)
+    .await?;
+    Ok(())
+}
+
 pub async fn unlink(p: &PgPool, discord_id: u64) -> Result<(), SqlxError> {
     query!(
         "DELETE FROM linker WHERE discord_id = $1 OR old_discord_id = $2",
@@ -88,6 +109,16 @@ pub async fn unlink(p: &PgPool, discord_id: u64) -> Result<(), SqlxError> {
 pub async fn hsr_unlink(p: &PgPool, discord_id: u64) -> Result<(), SqlxError> {
     query!(
         "DELETE FROM hsr_linker WHERE discord_id = $1",
+        discord_id.to_string(),
+    )
+    .execute(p)
+    .await?;
+    Ok(())
+}
+
+pub async fn zzz_unlink(p: &PgPool, discord_id: u64) -> Result<(), SqlxError> {
+    query!(
+        "DELETE FROM zzz_linker WHERE discord_id = $1",
         discord_id.to_string(),
     )
     .execute(p)

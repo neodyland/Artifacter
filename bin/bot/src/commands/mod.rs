@@ -8,6 +8,8 @@ mod hsr_profile;
 mod hsr_unlink;
 mod link;
 mod unlink;
+mod zzz_link;
+mod zzz_unlink;
 use crate::state::{Error, State};
 
 pub fn load() -> Vec<Command<State, Error>> {
@@ -21,5 +23,7 @@ pub fn load() -> Vec<Command<State, Error>> {
         hsr_profile::hsr_profile(),
         hsr::hsr(),
         about::about(),
+        zzz_link::zzz_link(),
+        zzz_unlink::zzz_unlink(),
     ]
 }

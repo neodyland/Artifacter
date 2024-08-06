@@ -589,5 +589,12 @@
     "filename_sideIcon": "UI_AvatarIcon_Side_Sigewinne",
     "filename_gachaSplash": "UI_Gacha_AvatarImg_Sigewinne",
     "filename_gachaSlice": "UI_Gacha_AvatarIcon_Sigewinne"
+  },
+  "emilie": {
+    "filename_icon": "UI_AvatarIcon_Emilie",
+    "filename_iconCard": "UI_AvatarIcon_Emilie_Card",
+    "filename_sideIcon": "UI_AvatarIcon_Side_Emilie",
+    "filename_gachaSplash": "UI_Gacha_AvatarImg_Emilie",
+    "filename_gachaSlice": "UI_Gacha_AvatarIcon_Emilie"
   }
 }
