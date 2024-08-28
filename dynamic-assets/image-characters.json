@@ -596,5 +596,19 @@
     "filename_sideIcon": "UI_AvatarIcon_Side_Emilie",
     "filename_gachaSplash": "UI_Gacha_AvatarImg_Emilie",
     "filename_gachaSlice": "UI_Gacha_AvatarIcon_Emilie"
+  },
+  "mualani": {
+    "filename_icon": "UI_AvatarIcon_Mualani",
+    "filename_iconCard": "UI_AvatarIcon_Mualani_Card",
+    "filename_sideIcon": "UI_AvatarIcon_Side_Mualani",
+    "filename_gachaSplash": "UI_Gacha_AvatarImg_Mualani",
+    "filename_gachaSlice": "UI_Gacha_AvatarIcon_Mualani"
+  },
+  "kachina": {
+    "filename_icon": "UI_AvatarIcon_Kachina",
+    "filename_iconCard": "UI_AvatarIcon_Kachina_Card",
+    "filename_sideIcon": "UI_AvatarIcon_Side_Kachina",
+    "filename_gachaSplash": "UI_Gacha_AvatarImg_Kachina",
+    "filename_gachaSlice": "UI_Gacha_AvatarIcon_Kachina"
   }
 }
