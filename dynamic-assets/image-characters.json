@@ -610,5 +610,12 @@
     "filename_sideIcon": "UI_AvatarIcon_Side_Kachina",
     "filename_gachaSplash": "UI_Gacha_AvatarImg_Kachina",
     "filename_gachaSlice": "UI_Gacha_AvatarIcon_Kachina"
+  },
+  "kinich": {
+    "filename_icon": "UI_AvatarIcon_Kinich",
+    "filename_iconCard": "UI_AvatarIcon_Kinich_Card",
+    "filename_sideIcon": "UI_AvatarIcon_Side_Kinich",
+    "filename_gachaSplash": "UI_Gacha_AvatarImg_Kinich",
+    "filename_gachaSlice": "UI_Gacha_AvatarIcon_Kinich"
   }
 }
