@@ -610,5 +610,12 @@
     "filename_sideIcon": "UI_AvatarIcon_Side_Kachina",
     "filename_gachaSplash": "UI_Gacha_AvatarImg_Kachina",
     "filename_gachaSlice": "UI_Gacha_AvatarIcon_Kachina"
+  },
+  "xilonen": {
+    "filename_icon": "UI_AvatarIcon_Xilonen",
+    "filename_iconCard": "UI_AvatarIcon_Xilonen_Card",
+    "filename_sideIcon": "UI_AvatarIcon_Side_Xilonen",
+    "filename_gachaSplash": "UI_Gacha_AvatarImg_Xilonen",
+    "filename_gachaSlice": "UI_Gacha_AvatarIcon_Xilonen"
   }
 }
