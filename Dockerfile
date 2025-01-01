@@ -6,7 +6,7 @@ RUN if [ "$(arch)" = "x86_64" ]; then \
         cp -r /out/aarch64 /build; \
     fi
 RUN rm -rf /out
-FROM googlefan25/tiny-rust:latest
+FROM ubuntu:latest
 COPY --from=builder /build/artifacter /art
 COPY --from=builder /build/api /api
 CMD ["/art"]
