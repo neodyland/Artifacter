@@ -74,7 +74,7 @@ impl Api {
     }
     async fn fetch_user(&self, uid: i32) -> Result<ApiRawUser, Option<ReqwestError>> {
         let contents = self
-            .request(&format!("https://enka.network/api/uid/{}/", uid))
+            .request(&format!("https://enka.network/api/uid/{}", uid))
             .await?;
         let lastupdate = SystemTime::now();
         Ok(ApiRawUser::from_raw(contents, uid, lastupdate))
