@@ -659,5 +659,47 @@
     "filename_sideIcon": "UI_AvatarIcon_Side_Lanyan",
     "filename_gachaSplash": "UI_Gacha_AvatarImg_Lanyan",
     "filename_gachaSlice": "UI_Gacha_AvatarIcon_Lanyan"
+  },
+  "Iansan": {
+    "filename_icon": "UI_AvatarIcon_Iansan",
+    "filename_iconCard": "UI_AvatarIcon_Iansan_Card",
+    "filename_sideIcon": "UI_AvatarIcon_Side_Iansan",
+    "filename_gachaSplash": "UI_Gacha_AvatarImg_Iansan",
+    "filename_gachaSlice": "UI_Gacha_AvatarIcon_Iansan"
+  },
+  "varesa": {
+    "filename_icon": "UI_AvatarIcon_Varesa",
+    "filename_iconCard": "UI_AvatarIcon_Varesa_Card",
+    "filename_sideIcon": "UI_AvatarIcon_Side_Varesa",
+    "filename_gachaSplash": "UI_Gacha_AvatarImg_Varesa",
+    "filename_gachaSlice": "UI_Gacha_AvatarIcon_Varesa"
+  },
+  "ifa": {
+    "filename_icon": "UI_AvatarIcon_Ifa",
+    "filename_iconCard": "UI_AvatarIcon_Ifa_Card",
+    "filename_sideIcon": "UI_AvatarIcon_Side_Ifa",
+    "filename_gachaSplash": "UI_Gacha_AvatarImg_Ifa",
+    "filename_gachaSlice": "UI_Gacha_AvatarIcon_Ifa"
+  },
+  "escoffier": {
+    "filename_icon": "UI_AvatarIcon_Escoffier",
+    "filename_iconCard": "UI_AvatarIcon_Escoffier_Card",
+    "filename_sideIcon": "UI_AvatarIcon_Side_Escoffier",
+    "filename_gachaSplash": "UI_Gacha_AvatarImg_Escoffier",
+    "filename_gachaSlice": "UI_Gacha_AvatarIcon_Escoffier"
+  },
+  "dahlia": {
+    "filename_icon": "UI_AvatarIcon_Dahlia",
+    "filename_iconCard": "UI_AvatarIcon_Dahlia_Card",
+    "filename_sideIcon": "UI_AvatarIcon_Side_Dahlia",
+    "filename_gachaSplash": "UI_Gacha_AvatarImg_Dahlia",
+    "filename_gachaSlice": "UI_Gacha_AvatarIcon_Dahlia"
+  },
+  "skirk": {
+    "filename_icon": "UI_AvatarIcon_SkirkNew",
+    "filename_iconCard": "UI_AvatarIcon_SkirkNew_Card",
+    "filename_sideIcon": "UI_AvatarIcon_Side_SkirkNew",
+    "filename_gachaSplash": "UI_Gacha_AvatarImg_SkirkNew",
+    "filename_gachaSlice": "UI_Gacha_AvatarIcon_SkirkNew"
   }
 }
