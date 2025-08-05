@@ -701,5 +701,12 @@
     "filename_sideIcon": "UI_AvatarIcon_Side_SkirkNew",
     "filename_gachaSplash": "UI_Gacha_AvatarImg_SkirkNew",
     "filename_gachaSlice": "UI_Gacha_AvatarIcon_SkirkNew"
+  },
+  "ineffa": {
+    "filename_icon": "UI_AvatarIcon_Ineffa",
+    "filename_iconCard": "UI_AvatarIcon_Ineffa_Card",
+    "filename_sideIcon": "UI_AvatarIcon_Side_Ineffa",
+    "filename_gachaSplash": "UI_Gacha_AvatarImg_Ineffa",
+    "filename_gachaSlice": "UI_Gacha_AvatarIcon_Ineffa"
   }
 }
