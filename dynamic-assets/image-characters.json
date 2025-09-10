@@ -708,5 +708,26 @@
     "filename_sideIcon": "UI_AvatarIcon_Side_Ineffa",
     "filename_gachaSplash": "UI_Gacha_AvatarImg_Ineffa",
     "filename_gachaSlice": "UI_Gacha_AvatarIcon_Ineffa"
+  },
+  "lauma" : {
+    "filename_icon": "UI_AvatarIcon_Lauma",
+    "filename_iconCard": "UI_AvatarIcon_Lauma_Card",
+    "filename_sideIcon": "UI_AvatarIcon_Side_Lauma",
+    "filename_gachaSplash": "UI_Gacha_AvatarImg_Lauma",
+    "filename_gachaSlice": "UI_Gacha_AvatarIcon_Lauma"
+  },
+  "flins": {
+    "filename_icon": "UI_AvatarIcon_Flins",
+    "filename_iconCard": "UI_AvatarIcon_Flins_Card",
+    "filename_sideIcon": "UI_AvatarIcon_Side_Flins",
+    "filename_gachaSplash": "UI_Gacha_AvatarImg_Flins",
+    "filename_gachaSlice": "UI_Gacha_AvatarIcon_Flins"
+  },
+  "aino" : {
+    "filename_icon": "UI_AvatarIcon_Aino",
+    "filename_iconCard": "UI_AvatarIcon_Aino_Card",
+    "filename_sideIcon": "UI_AvatarIcon_Side_Aino",
+    "filename_gachaSplash": "UI_Gacha_AvatarImg_Aino",
+    "filename_gachaSlice": "UI_Gacha_AvatarIcon_Aino"
   }
 }
