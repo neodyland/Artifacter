@@ -729,5 +729,26 @@
     "filename_sideIcon": "UI_AvatarIcon_Side_Aino",
     "filename_gachaSplash": "UI_Gacha_AvatarImg_Aino",
     "filename_gachaSlice": "UI_Gacha_AvatarIcon_Aino"
+  },
+  "nefer": {
+    "filename_icon": "UI_AvatarIcon_Nefer",
+    "filename_iconCard": "UI_AvatarIcon_Nefer_Card",
+    "filename_sideIcon": "UI_AvatarIcon_Side_Nefer",
+    "filename_gachaSplash": "UI_Gacha_AvatarImg_Nefer",
+    "filename_gachaSlice": "UI_Gacha_AvatarIcon_Nefer"
+  },
+  "durin": {
+    "filename_icon": "UI_AvatarIcon_Durin",
+    "filename_iconCard": "UI_AvatarIcon_Durin_Card",
+    "filename_sideIcon": "UI_AvatarIcon_Side_Durin",
+    "filename_gachaSplash": "UI_Gacha_AvatarImg_Durin",
+    "filename_gachaSlice": "UI_Gacha_AvatarIcon_Durin"
+  },
+  "jahoda": {
+    "filename_icon": "UI_AvatarIcon_Jahoda",
+    "filename_iconCard": "UI_AvatarIcon_Jahoda_Card",
+    "filename_sideIcon": "UI_AvatarIcon_Side_Jahoda",
+    "filename_gachaSplash": "UI_Gacha_AvatarImg_Jahoda",
+    "filename_gachaSlice": "UI_Gacha_AvatarIcon_Jahoda"
   }
 }
