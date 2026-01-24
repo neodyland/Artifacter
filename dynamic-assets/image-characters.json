@@ -750,5 +750,26 @@
     "filename_sideIcon": "UI_AvatarIcon_Side_Jahoda",
     "filename_gachaSplash": "UI_Gacha_AvatarImg_Jahoda",
     "filename_gachaSlice": "UI_Gacha_AvatarIcon_Jahoda"
+  },
+  "columbina": {
+    "filename_icon": "UI_AvatarIcon_Columbina",
+    "filename_iconCard": "UI_AvatarIcon_Columbina_Card",
+    "filename_sideIcon": "UI_AvatarIcon_Side_Columbina",
+    "filename_gachaSplash": "UI_Gacha_AvatarImg_Columbina",
+    "filename_gachaSlice": "UI_Gacha_AvatarIcon_Columbina"
+  },
+  "illuga": {
+    "filename_icon": "UI_AvatarIcon_Illuga",
+    "filename_iconCard": "UI_AvatarIcon_Illuga_Card",
+    "filename_sideIcon": "UI_AvatarIcon_Side_Illuga",
+    "filename_gachaSplash": "UI_Gacha_AvatarImg_Illuga",
+    "filename_gachaSlice": "UI_Gacha_AvatarIcon_Illuga"
+  },
+  "zibai": {
+    "filename_icon": "UI_AvatarIcon_Zibai",
+    "filename_iconCard": "UI_AvatarIcon_Zibai_Card",
+    "filename_sideIcon": "UI_AvatarIcon_Side_Zibai",
+    "filename_gachaSplash": "UI_Gacha_AvatarImg_Zibai",
+    "filename_gachaSlice": "UI_Gacha_AvatarIcon_Zibai"
   }
 }
