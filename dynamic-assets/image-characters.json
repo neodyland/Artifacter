@@ -771,5 +771,12 @@
     "filename_sideIcon": "UI_AvatarIcon_Side_Zibai",
     "filename_gachaSplash": "UI_Gacha_AvatarImg_Zibai",
     "filename_gachaSlice": "UI_Gacha_AvatarIcon_Zibai"
+  },
+  "varka": {
+    "filename_icon": "UI_AvatarIcon_Varka",
+    "filename_iconCard": "UI_AvatarIcon_Varka_Card",
+    "filename_sideIcon": "UI_AvatarIcon_Side_Varka",
+    "filename_gachaSplash": "UI_Gacha_AvatarImg_Varka",
+    "filename_gachaSlice": "UI_Gacha_AvatarIcon_Varka"
   }
 }

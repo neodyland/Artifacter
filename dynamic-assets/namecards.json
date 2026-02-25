@@ -802,5 +802,11 @@
     },
     "210272": {
         "icon": "UI_NameCardPic_Bp47_P"
+    },
+    "210273": {
+        "icon": "UI_NameCardPic_Varka_P"
+    },
+    "210274": {
+        "icon": "UI_NameCardPic_Bp48_P"
     }
 }
