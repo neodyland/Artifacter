@@ -778,5 +778,12 @@
     "filename_sideIcon": "UI_AvatarIcon_Side_Varka",
     "filename_gachaSplash": "UI_Gacha_AvatarImg_Varka",
     "filename_gachaSlice": "UI_Gacha_AvatarIcon_Varka"
+  },
+  "linnea": {
+    "filename_icon": "UI_AvatarIcon_Linnea",
+    "filename_iconCard": "UI_AvatarIcon_Linnea_Card",
+    "filename_sideIcon": "UI_AvatarIcon_Side_Linnea",
+    "filename_gachaSplash": "UI_Gacha_AvatarImg_Linnea",
+    "filename_gachaSlice": "UI_Gacha_AvatarIcon_Linnea"
   }
 }

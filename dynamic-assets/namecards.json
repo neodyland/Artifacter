@@ -808,5 +808,17 @@
     },
     "210274": {
         "icon": "UI_NameCardPic_Bp48_P"
+    },
+    "210275": {
+        "icon": "UI_NameCardPic_Linnea_P"
+    },
+    "210276": {
+        "icon": "UI_NameCardPic_Kzsd_P"
+    },
+    "210277": {
+        "icon": "UI_NameCardPic_KzsdOffering_P"
+    },
+    "210278": {
+        "icon": "UI_NameCardPic_Bp49_P"
     }
 }
