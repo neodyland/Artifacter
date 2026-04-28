@@ -416,7 +416,7 @@ pub async fn generate(
         );
         let mut sub_y = 810;
         let gray = Rgba([240, 240, 240, 200]);
-        for (_, sub) in artifact.sub_stats.iter().enumerate() {
+        for sub in artifact.sub_stats.iter() {
             if sub.is_none() {
                 sub_y += 40;
                 continue;

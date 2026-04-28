@@ -65,19 +65,13 @@ impl Element {
             language,
             format!("FIGHT_PROP_{}_ADD_HURT", self.fight_prop_name()),
         );
-        match res {
-            Some(v) => v,
-            None => "",
-        }
+        res.unwrap_or_default()
     }
     pub fn resist_name<'a>(&self, store: &'a Store, language: impl AsRef<str>) -> &'a str {
         let res = store.locale(
             language,
             format!("FIGHT_PROP_{}_SUB_HURT", self.fight_prop_name()),
         );
-        match res {
-            Some(v) => v,
-            None => "",
-        }
+        res.unwrap_or_default()
     }
 }

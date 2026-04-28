@@ -14,26 +14,24 @@ async fn main() {
     let cl = user.characters.len();
     'a: for (i, c) in user.characters.iter().enumerate() {
         let base_image = get_base_image(BaseImage::Belobog);
-        for (i2, counter) in vec![
-            ScoreCounter::Attack,
+        for (i2, counter) in [ScoreCounter::Attack,
             ScoreCounter::Defense,
             ScoreCounter::Speed,
             ScoreCounter::Be,
             ScoreCounter::Ehr,
             ScoreCounter::EhrOnly,
             ScoreCounter::Hp,
-            ScoreCounter::HpOnly,
-        ]
+            ScoreCounter::HpOnly]
         .iter()
         .enumerate()
         {
             if let Some(img) = generate(
                 &api,
-                &c,
+                c,
                 base_image.clone(),
                 ImageFormat::Png,
                 &lang,
-                &counter,
+                counter,
             )
             .await
             {

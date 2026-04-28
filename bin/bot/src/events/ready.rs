@@ -27,7 +27,7 @@ pub async fn handler(
         tokio::spawn(async move {
             loop {
                 let activity =
-                    ActivityData::playing(&format!("{} guilds", ctx.cache.guild_count()));
+                    ActivityData::playing(format!("{} guilds", ctx.cache.guild_count()));
                 ctx.set_activity(Some(activity));
                 tokio::time::sleep(std::time::Duration::from_secs(20)).await;
             }

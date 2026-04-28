@@ -34,7 +34,7 @@ impl Character {
     }
     pub fn name<'a>(&self, api: &'a Api, language: impl AsRef<str>) -> Result<&'a str, String> {
         api.get_store()
-            .locale(language, &format!("{}", self.name))
+            .locale(language, format!("{}", self.name))
             .ok_or_else(|| String::from("no locale data"))
     }
     pub fn costumes(&self) -> Vec<&Costume> {
@@ -359,7 +359,7 @@ impl Stats {
             _ => Self::None,
         }
     }
-    pub fn id(&self) -> Cow<str> {
+    pub fn id(&self) -> Cow<'_, str> {
         match self {
             Self::Hp => Cow::Borrowed("FIGHT_PROP_HP"),
             Self::Attack => Cow::Borrowed("FIGHT_PROP_ATTACK"),
