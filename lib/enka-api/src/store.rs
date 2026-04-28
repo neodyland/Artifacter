@@ -67,7 +67,10 @@ impl Store {
     pub fn get_or_empty(&self, language: impl AsRef<str>, key: impl AsRef<str>) -> &str {
         self.locale(language, key).unwrap_or("")
     }
-    pub fn fight_prop_locale(&self, language: impl AsRef<str>) -> Result<FightPropLocale<'_>, String> {
+    pub fn fight_prop_locale(
+        &self,
+        language: impl AsRef<str>,
+    ) -> Result<FightPropLocale<'_>, String> {
         if self.is_locale_available(&language) {
             Ok(FightPropLocale::parse(self, language))
         } else {

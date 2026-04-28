@@ -32,9 +32,7 @@ impl Api {
         let headers = res.headers().clone();
         if res.status().is_client_error() || res.status().is_server_error() {
             let err = res.text().await?;
-            return Err(Box::new(std::io::Error::other(
-                err,
-            )));
+            return Err(Box::new(std::io::Error::other(err)));
         }
         Ok((res.bytes().await?.to_vec(), headers))
     }
