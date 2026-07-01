@@ -820,5 +820,26 @@
     },
     "210278": {
         "icon": "UI_NameCardPic_Bp49_P"
+    },
+    "210279": {
+        "icon": "UI_NameCardPic_Nicole_P"
+    },
+    "210280": {
+        "icon": "UI_NameCardPic_Lohen_P"
+    },
+    "210281": {
+        "icon": "UI_NameCardPic_Prune_P"
+    },
+    "210283": {
+        "icon": "UI_NameCardPic_Bp50_P"
+    },
+    "210284": {
+        "icon": "UI_NameCardPic_MarionetteNew_P"
+    },
+    "210285": {
+        "icon": "UI_NameCardPic_Moon_P"
+    },
+    "210286": {
+        "icon": "UI_NameCardPic_Bp51_P"
     }
 }

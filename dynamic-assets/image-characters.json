@@ -785,5 +785,33 @@
     "filename_sideIcon": "UI_AvatarIcon_Side_Linnea",
     "filename_gachaSplash": "UI_Gacha_AvatarImg_Linnea",
     "filename_gachaSlice": "UI_Gacha_AvatarIcon_Linnea"
+  },
+  "nicole": {
+    "filename_icon": "UI_AvatarIcon_Nicole",
+    "filename_iconCard": "UI_AvatarIcon_Nicole_Card",
+    "filename_sideIcon": "UI_AvatarIcon_Side_Nicole",
+    "filename_gachaSplash": "UI_Gacha_AvatarImg_Nicole",
+    "filename_gachaSlice": "UI_Gacha_AvatarIcon_Nicole"
+  },
+  "lohen": {
+    "filename_icon": "UI_AvatarIcon_Lohen",
+    "filename_iconCard": "UI_AvatarIcon_Lohen_Card",
+    "filename_sideIcon": "UI_AvatarIcon_Side_Lohen",
+    "filename_gachaSplash": "UI_Gacha_AvatarImg_Lohen",
+    "filename_gachaSlice": "UI_Gacha_AvatarIcon_Lohen"
+  },
+  "prune": {
+    "filename_icon": "UI_AvatarIcon_Prune",
+    "filename_iconCard": "UI_AvatarIcon_Prune_Card",
+    "filename_sideIcon": "UI_AvatarIcon_Side_Prune",
+    "filename_gachaSplash": "UI_Gacha_AvatarImg_Prune",
+    "filename_gachaSlice": "UI_Gacha_AvatarIcon_Prune"
+  },
+ "marionette_new": {
+    "filename_icon": "UI_AvatarIcon_MarionetteNew",
+    "filename_iconCard": "UI_AvatarIcon_MarionetteNew_Card",
+    "filename_sideIcon": "UI_AvatarIcon_Side_MarionetteNew",
+    "filename_gachaSplash": "UI_Gacha_AvatarImg_MarionetteNew",
+    "filename_gachaSlice": "UI_Gacha_AvatarIcon_MarionetteNew"
   }
 }
