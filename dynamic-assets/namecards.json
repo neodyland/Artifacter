@@ -841,5 +841,29 @@
     },
     "210286": {
         "icon": "UI_NameCardPic_Bp51_P"
+    },
+    "210287": {
+        "icon": "UI_NameCardPic_Odette_P"
+    },
+    "210288": {
+        "icon": "UI_NameCardPic_Alyosha_P"
+    },
+    "210289": {
+        "icon": "UI_NameCardPic_Ysxf7_P"
+    },
+    "210290": {
+        "icon": "UI_NameCardPic_Snezhnaya1_P"
+    },
+    "210291": {
+        "icon": "UI_NameCardPic_Csxy7_P"
+    },
+    "210292": {
+        "icon": "UI_NameCardPic_Tps1_P"
+    },
+    "210293": {
+        "icon": "UI_NameCardPic_Shadow_P"
+    },
+    "210294": {
+        "icon": "UI_NameCardPic_Bp52_P"
     }
 }

@@ -813,5 +813,19 @@
     "filename_sideIcon": "UI_AvatarIcon_Side_MarionetteNew",
     "filename_gachaSplash": "UI_Gacha_AvatarImg_MarionetteNew",
     "filename_gachaSlice": "UI_Gacha_AvatarIcon_MarionetteNew"
+  },
+  "odette": {
+    "filename_icon": "UI_AvatarIcon_Odette",
+    "filename_iconCard": "UI_AvatarIcon_Odette_Card",
+    "filename_sideIcon": "UI_AvatarIcon_Side_Odette",
+    "filename_gachaSplash": "UI_Gacha_AvatarImg_Odette",
+    "filename_gachaSlice": "UI_Gacha_AvatarIcon_Odette"
+  },
+  "alyosha": {
+    "filename_icon": "UI_AvatarIcon_Alyosha",
+    "filename_iconCard": "UI_AvatarIcon_Alyosha_Card",
+    "filename_sideIcon": "UI_AvatarIcon_Side_Alyosha",
+    "filename_gachaSplash": "UI_Gacha_AvatarImg_Alyosha",
+    "filename_gachaSlice": "UI_Gacha_AvatarIcon_Alyosha"
   }
 }
